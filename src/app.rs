@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc, Local};
+use chrono::{DateTime, Utc, Local, Offset};
 use ratatui::{
     layout::{Constraint, Direction as LayoutDirection, Layout, Rect},
     widgets::{Block, Borders, Paragraph},
@@ -76,7 +76,24 @@ impl Default for App {
 
 impl App {
     pub fn new() -> Self {
-        Self::default()
+        let mut app = Self::default();
+        app.select_local_timezone();
+        app
+    }
+    
+    fn select_local_timezone(&mut self) {
+        let local_time = self.current_time.with_timezone(&Local);
+        let local_offset_seconds = local_time.offset().fix().local_minus_utc();
+        let local_offset_hours = local_offset_seconds / 3600;
+        
+        // Find the timezone that matches our local offset
+        for (index, zone) in self.timezone_manager.zones().iter().enumerate() {
+            let zone_offset_hours = zone.utc_offset_hours();
+            if zone_offset_hours == local_offset_hours {
+                self.selected_zone_index = index;
+                break;
+            }
+        }
     }
     
     pub fn update(&mut self, msg: Message) -> Option<Message> {
@@ -159,9 +176,12 @@ impl App {
     
     fn render_header(&self, f: &mut Frame, area: Rect) {
         let local_time = self.current_time.with_timezone(&Local);
+        
+        // Get a shorter timezone abbreviation
+        let tz_abbrev = local_time.format("%Z").to_string();
         let local_time_str = match self.display_format {
-            TimeFormat::TwentyFourHour => local_time.format("%H:%M:%S %Z").to_string(),
-            TimeFormat::TwelveHour => local_time.format("%I:%M:%S %p %Z").to_string(),
+            TimeFormat::TwentyFourHour => format!("{} {}", local_time.format("%H:%M:%S"), tz_abbrev),
+            TimeFormat::TwelveHour => format!("{} {}", local_time.format("%I:%M:%S %p"), tz_abbrev),
         };
         
         let timeline_time_str = match self.display_format {
@@ -238,7 +258,8 @@ mod tests {
     fn test_app_creation() {
         let app = App::new();
         assert!(!app.should_quit);
-        assert_eq!(app.selected_zone_index, 0);
+        // Selected zone index is now set to match local timezone, not necessarily 0
+        assert!(app.selected_zone_index < app.timezone_manager.zones().len());
         assert_eq!(app.display_format, TimeFormat::TwentyFourHour);
     }
     
@@ -273,5 +294,24 @@ mod tests {
         
         app.update(Message::ScrubTimeline(Direction::Left));
         assert_eq!(app.timeline_position, initial_time);
+    }
+    
+    #[test]
+    fn test_local_timezone_selection() {
+        let app = App::new();
+        let zones = app.timezone_manager.zones();
+        
+        // Verify that a valid zone is selected
+        assert!(app.selected_zone_index < zones.len());
+        
+        // The selected zone should have an offset that matches local time
+        let local_time = app.current_time.with_timezone(&Local);
+        let local_offset_hours = local_time.offset().fix().local_minus_utc() / 3600;
+        
+        let selected_zone = &zones[app.selected_zone_index];
+        let selected_offset_hours = selected_zone.utc_offset_hours();
+        
+        // They should match (allowing for DST differences)
+        assert_eq!(selected_offset_hours, local_offset_hours);
     }
 }
