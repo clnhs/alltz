@@ -339,11 +339,14 @@ mod tests {
         let base_time = Utc::now();
         let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, true);
         
-        // Test that DST transitions can be detected (this may not find any in the current 48-hour window, but the function should work)
+        // Test that DST transitions can be detected - function should execute without panic
         let transitions = widget.get_dst_transitions_in_range();
         
-        // The test passes if the function doesn't panic and returns a vector (empty or not)
-        assert!(transitions.len() >= 0); // Always true, but ensures the function executes
+        // Verify the function returns a valid vector and each transition has valid data
+        for (time, transition_type) in transitions {
+            assert!(time >= widget.get_timeline_start() && time <= widget.get_timeline_end());
+            assert!(matches!(transition_type, DstTransition::SpringForward | DstTransition::FallBack));
+        }
     }
 
     #[test]

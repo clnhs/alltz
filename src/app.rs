@@ -133,7 +133,7 @@ impl App {
         }
         
         let now = Utc::now();
-        let selected_zone_index = config.selected_zone_index.min(timezone_manager.zones().len().saturating_sub(1));
+        let selected_zone_index = config.selected_zone_index.min(timezone_manager.zone_count().saturating_sub(1));
         
         Self {
             current_time: now,
@@ -260,7 +260,7 @@ impl App {
             }
             
             Message::NavigateZone(direction) => {
-                let zone_count = self.timezone_manager.zones().len();
+                let zone_count = self.timezone_manager.zone_count();
                 if zone_count > 0 {
                     let old_index = self.selected_zone_index;
                     match direction {
@@ -337,8 +337,8 @@ impl App {
                     
                     if success {
                         // Update selected index if needed
-                        if self.selected_zone_index >= self.timezone_manager.zones().len() {
-                            self.selected_zone_index = self.timezone_manager.zones().len().saturating_sub(1);
+                        if self.selected_zone_index >= self.timezone_manager.zone_count() {
+                            self.selected_zone_index = self.timezone_manager.zone_count().saturating_sub(1);
                         }
                         self.save_config();
                     }
@@ -359,8 +359,8 @@ impl App {
                     
                     if success {
                         // Update selected index if needed
-                        if self.selected_zone_index >= self.timezone_manager.zones().len() {
-                            self.selected_zone_index = self.timezone_manager.zones().len().saturating_sub(1);
+                        if self.selected_zone_index >= self.timezone_manager.zone_count() {
+                            self.selected_zone_index = self.timezone_manager.zone_count().saturating_sub(1);
                         }
                         self.save_config();
                     }
@@ -379,12 +379,12 @@ impl App {
             }
             
             Message::RemoveCurrentZone => {
-                if self.timezone_manager.zones().len() > 1 { // Keep at least one zone
+                if self.timezone_manager.zone_count() > 1 { // Keep at least one zone
                     self.timezone_manager.remove_zone(self.selected_zone_index);
                     
                     // Adjust selected index if needed
-                    if self.selected_zone_index >= self.timezone_manager.zones().len() {
-                        self.selected_zone_index = self.timezone_manager.zones().len().saturating_sub(1);
+                    if self.selected_zone_index >= self.timezone_manager.zone_count() {
+                        self.selected_zone_index = self.timezone_manager.zone_count().saturating_sub(1);
                     }
                     self.save_config();
                 }
@@ -440,7 +440,6 @@ impl App {
         // Create inner area for content
         let inner = area.inner(ratatui::layout::Margin { horizontal: 1, vertical: 1 });
         
-        // Use ratatui's layout system for even distribution
         let chunks = Layout::default()
             .direction(LayoutDirection::Horizontal)
             .constraints([
@@ -450,8 +449,6 @@ impl App {
                 Constraint::Percentage(15),  // Controls
             ])
             .split(inner);
-        
-        // Render each section
         let app_name = Paragraph::new("alltz v0.1.0");
         f.render_widget(app_name, chunks[0]);
         
@@ -464,7 +461,6 @@ impl App {
         let controls = Paragraph::new("q: Quit | ?: Help");
         f.render_widget(controls, chunks[3]);
         
-        // Render the border around the whole header
         let border = Block::default().borders(Borders::ALL).title("alltz");
         f.render_widget(border, area);
     }
@@ -477,12 +473,11 @@ impl App {
         // Look for a matching timezone in our list to get a better abbreviation
         for zone in self.timezone_manager.zones() {
             if zone.utc_offset_hours() == local_offset_hours {
-                // Use the proper timezone abbreviation (JST, EST, etc.)
                 return zone.get_timezone_abbreviation();
             }
         }
         
-        // Fallback to chrono's timezone formatting
+        // Fallback: use system timezone name
         let tz_str = local_time.format("%Z").to_string();
         if tz_str.starts_with('+') || tz_str.starts_with('-') {
             // If it's still showing offset, try a different approach
@@ -747,7 +742,7 @@ mod tests {
         let app = App::new();
         assert!(!app.should_quit);
         // Selected zone index is now set to match local timezone, not necessarily 0
-        assert!(app.selected_zone_index < app.timezone_manager.zones().len());
+        assert!(app.selected_zone_index < app.timezone_manager.zone_count());
         assert_eq!(app.display_format, TimeFormat::TwentyFourHour);
         assert_eq!(app.timezone_display_mode, TimezoneDisplayMode::Short);
         assert!(!app.show_help);

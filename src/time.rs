@@ -5,15 +5,13 @@ use std::fmt;
 #[derive(Debug, Clone)]
 pub struct TimeZone {
     pub tz: Tz,
-    pub name: String,
     pub display_name: String,
 }
 
 impl TimeZone {
-    pub fn new(tz: Tz, name: String, display_name: String) -> Self {
+    pub fn new(tz: Tz, _name: String, display_name: String) -> Self {
         Self {
             tz,
-            name,
             display_name,
         }
     }
@@ -22,6 +20,12 @@ impl TimeZone {
         let name = tz.to_string();
         let display_name = Self::generate_display_name(&tz);
         Self::new(tz, name, display_name)
+    }
+    
+    /// Gets the timezone identifier string (e.g., "UTC", "US/Eastern")
+    #[cfg(test)]
+    pub fn name(&self) -> String {
+        self.tz.to_string()
     }
     
     fn generate_display_name(tz: &Tz) -> String {
@@ -260,10 +264,6 @@ impl TimeZoneManager {
     pub fn zone_count(&self) -> usize {
         self.zones.len()
     }
-    
-    pub fn get_zone(&self, index: usize) -> Option<&TimeZone> {
-        self.zones.get(index)
-    }
 }
 
 impl Default for TimeZoneManager {
@@ -280,7 +280,7 @@ mod tests {
     #[test]
     fn test_timezone_creation() {
         let tz = TimeZone::from_tz(chrono_tz::UTC);
-        assert_eq!(tz.name, "UTC");
+        assert_eq!(tz.name(), "UTC");
         assert_eq!(tz.display_name, "UTC");
         assert_eq!(tz.utc_offset_hours(), 0);
     }

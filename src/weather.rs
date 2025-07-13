@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use chrono::{DateTime, Utc};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -56,79 +55,21 @@ impl WeatherData {
         }
     }
     
-    pub fn is_stale(&self) -> bool {
-        let now = Utc::now();
-        let duration = now.signed_duration_since(self.last_updated);
-        duration.num_minutes() > 30 // Consider data stale after 30 minutes
-    }
 }
 
 #[derive(Debug, Clone)]
 pub struct WeatherManager {
-    weather_data: HashMap<String, WeatherData>,
-    api_key: Option<String>,
-    enabled: bool,
+    // Currently only used for demo weather data
+    // Future: can be extended to cache real API weather data
 }
 
 impl WeatherManager {
     pub fn new() -> Self {
-        let api_key = std::env::var("OPENWEATHER_API_KEY").ok();
-        let enabled = api_key.is_some();
-        
-        Self {
-            weather_data: HashMap::new(),
-            api_key,
-            enabled,
-        }
+        Self {}
     }
     
-    pub fn is_enabled(&self) -> bool {
-        self.enabled
-    }
-    
-    pub fn get_weather(&self, city: &str) -> Option<&WeatherData> {
-        self.weather_data.get(city)
-    }
-    
-    pub async fn fetch_weather(&mut self, city: &str, lat: f64, lon: f64) -> Result<(), Box<dyn std::error::Error>> {
-        if !self.enabled {
-            return Ok(());
-        }
-        
-        // Check if we have recent data
-        if let Some(weather) = self.weather_data.get(city) {
-            if !weather.is_stale() {
-                return Ok(());
-            }
-        }
-        
-        let api_key = self.api_key.as_ref().unwrap();
-        let url = format!(
-            "https://api.openweathermap.org/data/2.5/weather?lat={}&lon={}&appid={}&units=metric",
-            lat, lon, api_key
-        );
-        
-        let client = reqwest::Client::new();
-        let response: serde_json::Value = client.get(&url).send().await?.json().await?;
-        
-        if let (Some(main), Some(weather_array)) = (response.get("main"), response.get("weather")) {
-            if let (Some(temp), Some(weather_obj)) = (main.get("temp"), weather_array.get(0)) {
-                if let (Some(description), Some(icon)) = (weather_obj.get("description"), weather_obj.get("icon")) {
-                    let weather_data = WeatherData::new(
-                        temp.as_f64().unwrap_or(0.0),
-                        description.as_str().unwrap_or("Unknown").to_string(),
-                        icon.as_str().unwrap_or("01d").to_string(),
-                    );
-                    
-                    self.weather_data.insert(city.to_string(), weather_data);
-                }
-            }
-        }
-        
-        Ok(())
-    }
-    
-    // Fallback weather data for demo purposes when API key is not available
+    /// Provides demo weather data for the given city.
+    /// This is used as fallback when no real weather API is configured.
     pub fn get_demo_weather(&self, city: &str) -> WeatherData {
         match city {
             "Los Angeles" => WeatherData::new(22.0, "Sunny".to_string(), "01d".to_string()),
@@ -159,7 +100,7 @@ mod tests {
         assert_eq!(weather.temperature, 25.0);
         assert_eq!(weather.description, "Sunny");
         assert_eq!(weather.emoji, "☀️");
-        assert!(!weather.is_stale()); // Should be fresh when just created
+        assert!(weather.last_updated <= Utc::now()); // Timestamp should be valid
     }
 
     #[test]
@@ -177,8 +118,9 @@ mod tests {
     #[test]
     fn test_weather_manager_creation() {
         let manager = WeatherManager::new();
-        // Should work whether API key is set or not
-        assert!(manager.weather_data.is_empty());
+        // Should create successfully
+        let demo_weather = manager.get_demo_weather("London");
+        assert_eq!(demo_weather.emoji, "🌦️");
     }
 
     #[test]

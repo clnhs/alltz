@@ -21,6 +21,7 @@ use std::{
     time::{Duration, Instant},
 };
 
+/// Rate at which the UI updates (1 second for time changes and animations)
 const TICK_RATE: Duration = Duration::from_millis(1000);
 
 #[derive(Parser)]
@@ -66,6 +67,7 @@ enum Commands {
     },
 }
 
+/// Parse theme name from CLI argument into ColorTheme enum
 fn parse_theme(s: &str) -> Result<config::ColorTheme, String> {
     match s.to_lowercase().as_str() {
         "default" => Ok(config::ColorTheme::Default),
@@ -82,22 +84,21 @@ fn parse_theme(s: &str) -> Result<config::ColorTheme, String> {
 async fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
     
-    // Handle subcommands
     if let Some(command) = cli.command {
         return handle_command(command).await;
     }
-    // Setup terminal
+    
+    // Initialize terminal for TUI mode
     enable_raw_mode()?;
     let mut stdout = io::stdout();
     execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
     
-    // Create app with CLI options
     let mut app = create_app_with_options(cli)?;
     let result = run_app(&mut terminal, &mut app).await;
     
-    // Restore terminal
+    // Cleanup: restore terminal to original state
     disable_raw_mode()?;
     execute!(
         terminal.backend_mut(),
@@ -113,6 +114,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+/// Main event loop for the TUI application
+/// Handles user input, renders the UI, and processes timed updates
 async fn run_app<B: ratatui::backend::Backend>(
     terminal: &mut Terminal<B>,
     app: &mut App,
@@ -120,10 +123,9 @@ async fn run_app<B: ratatui::backend::Backend>(
     let mut last_tick = Instant::now();
     
     loop {
-        // Render
         terminal.draw(|f| app.view(f))?;
         
-        // Handle input
+        // Calculate timeout to maintain consistent TICK_RATE
         let timeout = TICK_RATE
             .checked_sub(last_tick.elapsed())
             .unwrap_or_else(|| Duration::from_secs(0));
@@ -132,26 +134,22 @@ async fn run_app<B: ratatui::backend::Backend>(
             if let Event::Key(key) = event::read()? {
                 if key.kind == KeyEventKind::Press {
                     let message = if app.show_help {
-                        // Any key closes help modal
                         Some(Message::ToggleHelp)
                     } else if app.adding_zone {
-                        // Handle add zone modal input
+                        // Special input handling for add zone modal
                         match key.code {
                             KeyCode::Char(c) => {
-                                // Check if it's a number for selecting search results
+                                // Handle numeric selection of search results (1-9)
                                 if c.is_ascii_digit() && !app.zone_search_results.is_empty() {
                                     let digit = c.to_digit(10).unwrap() as usize;
                                     if digit >= 1 && digit <= app.zone_search_results.len() {
-                                        // Select the result by number (1-indexed) and add it immediately
                                         Some(Message::SelectSearchResult(digit - 1))
                                     } else {
-                                        // Invalid number, treat as regular input
                                         let mut input = app.add_zone_input.clone();
                                         input.push(c);
                                         Some(Message::UpdateAddZoneInput(input))
                                     }
                                 } else {
-                                    // Regular character input
                                     let mut input = app.add_zone_input.clone();
                                     input.push(c);
                                     Some(Message::UpdateAddZoneInput(input))
@@ -211,7 +209,7 @@ async fn run_app<B: ratatui::backend::Backend>(
             }
         }
         
-        // Tick
+        // Send periodic tick for time updates and animations
         if last_tick.elapsed() >= TICK_RATE {
             app.update(Message::Tick);
             last_tick = Instant::now();
@@ -219,8 +217,9 @@ async fn run_app<B: ratatui::backend::Backend>(
     }
 }
 
+/// Handle CLI subcommands (list, time, zone) and exit without starting TUI
 async fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
-    use chrono::{Utc, Local, Offset, TimeZone};
+    use chrono::{Utc, Local, Offset};
     use time::TimeZoneManager;
     
     match command {
@@ -284,17 +283,16 @@ async fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+/// Create App instance with CLI options applied (timezone, theme, format)
 fn create_app_with_options(cli: Cli) -> Result<App, Box<dyn Error>> {
     let mut app = App::new();
     
-    // Apply timezone selection
     if let Some(timezone_name) = cli.timezone {
         let timezones = time::TimeZoneManager::get_all_available_timezones();
         if let Some(_) = timezones.iter().position(|(_, name, _, _, _)| name.eq_ignore_ascii_case(&timezone_name)) {
-            // First add the timezone if it's not already in the list
             app.timezone_manager.add_timezone_by_name(&timezone_name);
             
-            // Find the index in the app's timezone list
+            // Set this timezone as selected
             if let Some(app_index) = app.timezone_manager.zones().iter().position(|zone| {
                 timezones.iter().any(|(tz, name, _, _, _)| *tz == zone.tz && name.eq_ignore_ascii_case(&timezone_name))
             }) {
@@ -305,12 +303,10 @@ fn create_app_with_options(cli: Cli) -> Result<App, Box<dyn Error>> {
         }
     }
     
-    // Apply time format
     if cli.twelve_hour {
         app.display_format = app::TimeFormat::TwelveHour;
     }
     
-    // Apply color theme
     if let Some(theme) = cli.theme {
         app.color_theme = theme;
     }
