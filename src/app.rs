@@ -562,8 +562,8 @@ impl App {
         let timezone_line = format!("{} ({})", self.get_local_timezone_name(), utc_offset_str);
         
         let time_line = match self.display_format {
-            TimeFormat::TwentyFourHour => local_time.format("%H:%M:%S %a").to_string(),
-            TimeFormat::TwelveHour => local_time.format("%I:%M:%S %p %a").to_string(),
+            TimeFormat::TwentyFourHour => local_time.format("%H:%M %a").to_string(),
+            TimeFormat::TwelveHour => local_time.format("%I:%M %p %a").to_string(),
         };
         
         let display_text = format!("{}\n{}", timezone_line, time_line);
