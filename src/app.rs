@@ -1,6 +1,6 @@
 use chrono::{DateTime, Utc, Local, Offset};
 use ratatui::{
-    layout::{Constraint, Direction as LayoutDirection, Layout, Rect},
+    layout::{Constraint, Direction as LayoutDirection, Layout, Rect, Margin},
     widgets::{Block, Borders, Paragraph},
     Frame,
 };
@@ -177,11 +177,11 @@ impl App {
     fn render_header(&self, f: &mut Frame, area: Rect) {
         let local_time = self.current_time.with_timezone(&Local);
         
-        // Get a shorter timezone abbreviation
-        let tz_abbrev = local_time.format("%Z").to_string();
+        // Use chrono-tz names for better abbreviations, fall back to %Z
+        let tz_name = self.get_local_timezone_name();
         let local_time_str = match self.display_format {
-            TimeFormat::TwentyFourHour => format!("{} {}", local_time.format("%H:%M:%S"), tz_abbrev),
-            TimeFormat::TwelveHour => format!("{} {}", local_time.format("%I:%M:%S %p"), tz_abbrev),
+            TimeFormat::TwentyFourHour => format!("{} {}", local_time.format("%H:%M:%S"), tz_name),
+            TimeFormat::TwelveHour => format!("{} {}", local_time.format("%I:%M:%S %p"), tz_name),
         };
         
         let timeline_time_str = match self.display_format {
@@ -189,15 +189,64 @@ impl App {
             TimeFormat::TwelveHour => self.timeline_position.format("%I:%M %p UTC").to_string(),
         };
         
-        let header_text = format!(
-            "alltz v0.1.0 │ Local: {} │ Timeline: {} │ [q] Quit [?] Help",
-            local_time_str, timeline_time_str
-        );
+        // Create a more spaced out header layout
+        let chunks = Layout::default()
+            .direction(LayoutDirection::Horizontal)
+            .constraints([
+                Constraint::Length(16),        // "alltz v0.1.0"
+                Constraint::Min(20),           // Local time (flexible)
+                Constraint::Min(15),           // Timeline (flexible) 
+                Constraint::Length(20),        // Controls
+            ])
+            .split(area.inner(Margin { horizontal: 1, vertical: 0 }));
         
-        let header = Paragraph::new(header_text)
-            .block(Block::default().borders(Borders::ALL).title("alltz"));
+        // Render each section
+        let app_name = Paragraph::new("alltz v0.1.0")
+            .block(Block::default());
+        f.render_widget(app_name, chunks[0]);
         
-        f.render_widget(header, area);
+        let local_display = Paragraph::new(format!("Local: {}", local_time_str))
+            .block(Block::default());
+        f.render_widget(local_display, chunks[1]);
+        
+        let timeline_display = Paragraph::new(format!("Timeline: {}", timeline_time_str))
+            .block(Block::default());
+        f.render_widget(timeline_display, chunks[2]);
+        
+        let controls = Paragraph::new("[q] Quit [?] Help")
+            .block(Block::default());
+        f.render_widget(controls, chunks[3]);
+        
+        // Render the border around the whole header
+        let border = Block::default().borders(Borders::ALL).title("alltz");
+        f.render_widget(border, area);
+    }
+    
+    fn get_local_timezone_name(&self) -> String {
+        // Try to get a better timezone name from our configured zones
+        let local_time = self.current_time.with_timezone(&Local);
+        let local_offset_hours = local_time.offset().fix().local_minus_utc() / 3600;
+        
+        // Look for a matching timezone in our list to get a better name
+        for zone in self.timezone_manager.zones() {
+            if zone.utc_offset_hours() == local_offset_hours {
+                // Use the display name from our timezone list (LAX, NYC, JST, etc.)
+                return zone.display_name().to_string();
+            }
+        }
+        
+        // Fallback to chrono's timezone formatting
+        let tz_str = local_time.format("%Z").to_string();
+        if tz_str.starts_with('+') || tz_str.starts_with('-') {
+            // If it's still showing offset, try a different approach
+            format!("UTC{}", if local_offset_hours >= 0 { 
+                format!("+{}", local_offset_hours) 
+            } else { 
+                local_offset_hours.to_string() 
+            })
+        } else {
+            tz_str
+        }
     }
     
     fn render_zones(&self, f: &mut Frame, area: Rect) {
