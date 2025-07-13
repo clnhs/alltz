@@ -145,7 +145,7 @@ impl<'a> Widget for TimelineWidget<'a> {
                 .set_style(Style::default().fg(Color::Magenta));
         }
 
-        // Render time display
+        // Render time display under the scrubber position
         if inner.height > 1 {
             let zone_time = self.timezone.convert_time(self.timeline_position);
             let time_str = match self.display_format {
@@ -154,12 +154,22 @@ impl<'a> Widget for TimelineWidget<'a> {
             };
             let time_y = inner.y + 1;
             
+            // Position the time display under the timeline position indicator
+            let timeline_pos = self.time_to_position(self.timeline_position, inner.width);
+            let time_start_x = if timeline_pos >= (time_str.len() as u16 / 2) {
+                timeline_pos - (time_str.len() as u16 / 2)
+            } else {
+                0
+            };
+            
+            // Ensure we don't go beyond the right edge
+            let time_start_x = time_start_x.min(inner.width.saturating_sub(time_str.len() as u16));
+            
             for (i, ch) in time_str.chars().enumerate() {
-                if i >= inner.width as usize {
-                    break;
+                let x = inner.x + time_start_x + i as u16;
+                if x < inner.x + inner.width {
+                    buf[(x, time_y)].set_char(ch);
                 }
-                let x = inner.x + i as u16;
-                buf[(x, time_y)].set_char(ch);
             }
         }
     }
@@ -202,9 +212,9 @@ mod tests {
         let config = crate::config::TimeDisplayConfig::default();
         let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, &config);
         
-        // Test work hours get full block
+        // Test work hours get dark shade block
         let (char, _) = widget.get_hour_display(14); // 2 PM
-        assert_eq!(char, '█'); // Work hours = full block
+        assert_eq!(char, '▓'); // Work hours = dark shade block
         
         // Test awake hours get medium shade
         let (char, _) = widget.get_hour_display(7); // 7 AM

@@ -44,7 +44,7 @@ impl TimeDisplayConfig {
         match activity {
             TimeActivity::Night => '░',  // Light shade - low activity
             TimeActivity::Awake => '▒',  // Medium shade - moderate activity  
-            TimeActivity::Work => '█',   // Full block - high activity
+            TimeActivity::Work => '▓',   // Dark shade - high activity (less intense than █)
         }
     }
     
@@ -52,7 +52,7 @@ impl TimeDisplayConfig {
         match activity {
             TimeActivity::Night => ratatui::style::Color::DarkGray,
             TimeActivity::Awake => ratatui::style::Color::Gray,
-            TimeActivity::Work => ratatui::style::Color::White,
+            TimeActivity::Work => ratatui::style::Color::Magenta,  // Less bright than white
         }
     }
 }
@@ -87,7 +87,7 @@ mod tests {
         
         assert_eq!(config.get_activity_char(TimeActivity::Night), '░');
         assert_eq!(config.get_activity_char(TimeActivity::Awake), '▒');
-        assert_eq!(config.get_activity_char(TimeActivity::Work), '█');
+        assert_eq!(config.get_activity_char(TimeActivity::Work), '▓');
     }
     
     #[test]
