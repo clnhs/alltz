@@ -59,18 +59,46 @@ impl WeatherData {
 
 #[derive(Debug, Clone)]
 pub struct WeatherManager {
-    // Currently only used for demo weather data
-    // Future: can be extended to cache real API weather data
+    #[allow(dead_code)] // Stored for future real API implementation
+    api_key: Option<String>,
+    enabled: bool,
 }
 
 impl WeatherManager {
     pub fn new() -> Self {
-        Self {}
+        let api_key = std::env::var("OPENWEATHER_API_KEY").ok();
+        let enabled = api_key.is_some();
+        
+        Self {
+            api_key,
+            enabled,
+        }
     }
     
-    /// Provides demo weather data for the given city.
-    /// This is used as fallback when no real weather API is configured.
+    /// Check if weather functionality is enabled (API key provided)
+    pub fn is_enabled(&self) -> bool {
+        self.enabled
+    }
+    
+    /// Get weather data for a city, only if API key is configured
+    /// Returns None if no API key is available
+    pub fn get_weather(&self, city: &str) -> Option<WeatherData> {
+        if !self.enabled {
+            return None;
+        }
+        
+        // For now, return demo data when API key is present
+        // TODO: Implement real API calls in the future
+        Some(self.get_demo_weather_internal(city))
+    }
+    
+    /// Internal demo weather data for testing and when API key is present
+    #[cfg(test)]
     pub fn get_demo_weather(&self, city: &str) -> WeatherData {
+        self.get_demo_weather_internal(city)
+    }
+    
+    fn get_demo_weather_internal(&self, city: &str) -> WeatherData {
         match city {
             "Los Angeles" => WeatherData::new(22.0, "Sunny".to_string(), "01d".to_string()),
             "New York" => WeatherData::new(15.0, "Partly cloudy".to_string(), "02d".to_string()),
@@ -117,10 +145,25 @@ mod tests {
 
     #[test]
     fn test_weather_manager_creation() {
+        // Test without API key (should be disabled)
         let manager = WeatherManager::new();
-        // Should create successfully
-        let demo_weather = manager.get_demo_weather("London");
-        assert_eq!(demo_weather.emoji, "🌦️");
+        assert!(!manager.is_enabled());
+        assert!(manager.get_weather("London").is_none());
+    }
+    
+    #[test]
+    fn test_weather_manager_with_api_key() {
+        // Mock API key for testing
+        std::env::set_var("OPENWEATHER_API_KEY", "test_key");
+        let manager = WeatherManager::new();
+        assert!(manager.is_enabled());
+        
+        let weather = manager.get_weather("London");
+        assert!(weather.is_some());
+        assert_eq!(weather.unwrap().emoji, "🌦️");
+        
+        // Clean up
+        std::env::remove_var("OPENWEATHER_API_KEY");
     }
 
     #[test]

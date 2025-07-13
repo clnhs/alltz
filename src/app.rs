@@ -519,16 +519,19 @@ impl App {
     }
     
     fn render_zone(&self, f: &mut Frame, area: Rect, zone: &TimeZone, is_selected: bool) {
-        // Get weather data for this zone - find the search name
-        let available = TimeZoneManager::get_all_available_timezones();
-        let zone_name = available
-            .iter()
-            .find(|(tz, _, _, _, _)| *tz == zone.tz)
-            .map(|(_, search_name, _, _, _)| search_name.as_str())
-            .unwrap_or("Unknown");
+        // Get weather data for this zone if weather is enabled
+        let weather_data = if self.weather_manager.is_enabled() && self.show_weather {
+            let available = TimeZoneManager::get_all_available_timezones();
+            let zone_name = available
+                .iter()
+                .find(|(tz, _, _, _, _)| *tz == zone.tz)
+                .map(|(_, search_name, _, _, _)| search_name.as_str())
+                .unwrap_or("Unknown");
             
-        // For now, always use demo weather data since we need a simpler approach
-        let demo_weather = self.weather_manager.get_demo_weather(zone_name);
+            self.weather_manager.get_weather(zone_name)
+        } else {
+            None
+        };
         
         let timeline_widget = TimelineWidget::new(
             self.timeline_position,
@@ -539,8 +542,8 @@ impl App {
             self.timezone_display_mode.clone(),
             &self.time_config,
             self.color_theme,
-            Some(&demo_weather),
-            self.show_weather,
+            weather_data.as_ref(),
+            self.show_weather && weather_data.is_some(),
             true, // DST indicators always on
         );
         
