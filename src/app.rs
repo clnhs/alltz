@@ -1,6 +1,6 @@
 use chrono::{DateTime, Utc, Local, Offset};
 use ratatui::{
-    layout::{Constraint, Direction as LayoutDirection, Layout, Rect, Margin},
+    layout::{Constraint, Direction as LayoutDirection, Layout, Rect},
     widgets::{Block, Borders, Paragraph},
     Frame,
 };
@@ -189,37 +189,16 @@ impl App {
             TimeFormat::TwelveHour => self.timeline_position.format("%I:%M %p UTC").to_string(),
         };
         
-        // Create a more spaced out header layout
-        let chunks = Layout::default()
-            .direction(LayoutDirection::Horizontal)
-            .constraints([
-                Constraint::Length(16),        // "alltz v0.1.0"
-                Constraint::Min(20),           // Local time (flexible)
-                Constraint::Min(15),           // Timeline (flexible) 
-                Constraint::Length(20),        // Controls
-            ])
-            .split(area.inner(Margin { horizontal: 1, vertical: 0 }));
+        // Create spaced out header text with better spacing
+        let header_text = format!(
+            "alltz v0.1.0    │    Local: {}    │    Timeline: {}    │    [q] Quit [?] Help",
+            local_time_str, timeline_time_str
+        );
         
-        // Render each section
-        let app_name = Paragraph::new("alltz v0.1.0")
-            .block(Block::default());
-        f.render_widget(app_name, chunks[0]);
+        let header = Paragraph::new(header_text)
+            .block(Block::default().borders(Borders::ALL).title("alltz"));
         
-        let local_display = Paragraph::new(format!("Local: {}", local_time_str))
-            .block(Block::default());
-        f.render_widget(local_display, chunks[1]);
-        
-        let timeline_display = Paragraph::new(format!("Timeline: {}", timeline_time_str))
-            .block(Block::default());
-        f.render_widget(timeline_display, chunks[2]);
-        
-        let controls = Paragraph::new("[q] Quit [?] Help")
-            .block(Block::default());
-        f.render_widget(controls, chunks[3]);
-        
-        // Render the border around the whole header
-        let border = Block::default().borders(Borders::ALL).title("alltz");
-        f.render_widget(border, area);
+        f.render_widget(header, area);
     }
     
     fn get_local_timezone_name(&self) -> String {
