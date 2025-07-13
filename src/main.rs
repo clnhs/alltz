@@ -1,6 +1,7 @@
 mod app;
 mod time;
 mod ui;
+mod config;
 
 use app::{App, Message, Direction};
 use crossterm::{

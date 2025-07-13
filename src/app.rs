@@ -7,6 +7,7 @@ use ratatui::{
 
 use crate::time::{TimeZone, TimeZoneManager};
 use crate::ui::TimelineWidget;
+use crate::config::TimeDisplayConfig;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum TimeFormat {
@@ -52,6 +53,7 @@ pub struct App {
     
     // UI state
     pub display_format: TimeFormat,
+    pub time_config: TimeDisplayConfig,
     
     // App state
     pub should_quit: bool,
@@ -66,6 +68,7 @@ impl Default for App {
             timezone_manager: TimeZoneManager::with_default_zones(),
             selected_zone_index: 0,
             display_format: TimeFormat::TwentyFourHour,
+            time_config: TimeDisplayConfig::default(),
             should_quit: false,
         }
     }
@@ -211,6 +214,7 @@ impl App {
             zone,
             is_selected,
             self.display_format.clone(),
+            &self.time_config,
         );
         
         f.render_widget(timeline_widget, area);

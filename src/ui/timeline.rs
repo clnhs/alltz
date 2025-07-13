@@ -8,6 +8,7 @@ use ratatui::{
 
 use crate::time::TimeZone;
 use crate::app::TimeFormat;
+use crate::config::TimeDisplayConfig;
 
 pub struct TimelineWidget<'a> {
     pub timeline_position: DateTime<Utc>,
@@ -15,6 +16,7 @@ pub struct TimelineWidget<'a> {
     pub timezone: &'a TimeZone,
     pub selected: bool,
     pub display_format: TimeFormat,
+    pub time_config: &'a TimeDisplayConfig,
 }
 
 impl<'a> TimelineWidget<'a> {
@@ -24,6 +26,7 @@ impl<'a> TimelineWidget<'a> {
         timezone: &'a TimeZone,
         selected: bool,
         display_format: TimeFormat,
+        time_config: &'a TimeDisplayConfig,
     ) -> Self {
         Self {
             timeline_position,
@@ -31,6 +34,7 @@ impl<'a> TimelineWidget<'a> {
             timezone,
             selected,
             display_format,
+            time_config,
         }
     }
 
@@ -59,21 +63,15 @@ impl<'a> TimelineWidget<'a> {
         position.min(width.saturating_sub(1))
     }
 
-    fn get_hour_character(&self, hour: u32) -> char {
-        match hour {
-            6..=8 => '▁',   // Early morning - light
-            9..=11 => '▂',  // Morning - growing
-            12..=14 => '▃', // Afternoon - medium
-            15..=17 => '▅', // Late afternoon - high
-            18..=20 => '▆', // Evening - peak business
-            21..=22 => '▄', // Night - declining
-            23 | 0..=5 => '░', // Night/early morning - minimal
-            _ => '░',
-        }
+    fn get_hour_display(&self, hour: u32) -> (char, Color) {
+        let activity = self.time_config.get_time_activity(hour);
+        let char = self.time_config.get_activity_char(activity);
+        let color = self.time_config.get_activity_color(activity);
+        (char, color)
     }
 
-    fn get_timeline_chars(&self, width: u16) -> Vec<char> {
-        let mut chars = vec!['░'; width as usize];
+    fn get_timeline_display(&self, width: u16) -> Vec<(char, Color)> {
+        let mut display = vec![('░', Color::DarkGray); width as usize];
         let start_time = self.get_timeline_start();
         
         // Convert timeline to local timezone for this zone
@@ -85,10 +83,10 @@ impl<'a> TimelineWidget<'a> {
             let time_at_position = local_start + Duration::minutes((hours_offset * 60.0) as i64);
             let hour = time_at_position.hour();
             
-            chars[i as usize] = self.get_hour_character(hour);
+            display[i as usize] = self.get_hour_display(hour);
         }
         
-        chars
+        display
     }
 }
 
@@ -113,23 +111,18 @@ impl<'a> Widget for TimelineWidget<'a> {
             .style(border_style);
         block.render(area, buf);
 
-        // Generate timeline characters
-        let timeline_chars = self.get_timeline_chars(inner.width);
+        // Generate timeline display
+        let timeline_display = self.get_timeline_display(inner.width);
         
         // Render timeline bar
         let timeline_y = inner.y;
-        for (i, &ch) in timeline_chars.iter().enumerate() {
+        for (i, &(ch, color)) in timeline_display.iter().enumerate() {
             if i >= inner.width as usize {
                 break;
             }
             
             let x = inner.x + i as u16;
-            let style = match ch {
-                '▁' | '▂' => Style::default().fg(Color::Cyan),
-                '▃' | '▄' | '▅' => Style::default().fg(Color::Green), 
-                '▆' => Style::default().fg(Color::Yellow),
-                _ => Style::default().fg(Color::DarkGray),
-            };
+            let style = Style::default().fg(color);
             
             buf[(x, timeline_y)].set_char(ch).set_style(style);
         }
@@ -181,8 +174,9 @@ mod tests {
     fn test_timeline_widget_creation() {
         let tz = crate::time::TimeZone::from_tz(chrono_tz::UTC);
         let now = Utc::now();
+        let config = crate::config::TimeDisplayConfig::default();
         
-        let widget = TimelineWidget::new(now, now, &tz, false, TimeFormat::TwentyFourHour);
+        let widget = TimelineWidget::new(now, now, &tz, false, TimeFormat::TwentyFourHour, &config);
         assert_eq!(widget.timeline_position, now);
         assert_eq!(widget.current_time, now);
         assert!(!widget.selected);
@@ -193,7 +187,8 @@ mod tests {
     fn test_time_to_position() {
         let tz = crate::time::TimeZone::from_tz(chrono_tz::UTC);
         let base_time = Utc::now();
-        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour);
+        let config = crate::config::TimeDisplayConfig::default();
+        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, &config);
         
         // Position should be in the middle for the timeline position itself
         let pos = widget.time_to_position(base_time, 100);
@@ -201,28 +196,37 @@ mod tests {
     }
 
     #[test]
-    fn test_hour_character_mapping() {
+    fn test_hour_display_mapping() {
         let tz = crate::time::TimeZone::from_tz(chrono_tz::UTC);
         let base_time = Utc::now();
-        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour);
+        let config = crate::config::TimeDisplayConfig::default();
+        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, &config);
         
-        // Test business hours get higher characters
-        assert_eq!(widget.get_hour_character(14), '▃'); // 2 PM
-        assert_eq!(widget.get_hour_character(18), '▆'); // 6 PM - peak
-        assert_eq!(widget.get_hour_character(2), '░');  // 2 AM - night
+        // Test work hours get full block
+        let (char, _) = widget.get_hour_display(14); // 2 PM
+        assert_eq!(char, '█'); // Work hours = full block
+        
+        // Test awake hours get medium shade
+        let (char, _) = widget.get_hour_display(7); // 7 AM
+        assert_eq!(char, '▒'); // Awake hours = medium shade
+        
+        // Test night hours get light shade
+        let (char, _) = widget.get_hour_display(2); // 2 AM
+        assert_eq!(char, '░'); // Night hours = light shade
     }
 
     #[test]
     fn test_time_format_handling() {
         let tz = crate::time::TimeZone::from_tz(chrono_tz::UTC);
         let base_time = Utc::now();
+        let config = crate::config::TimeDisplayConfig::default();
         
         // Test 24-hour format
-        let widget_24h = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour);
+        let widget_24h = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, &config);
         assert_eq!(widget_24h.display_format, TimeFormat::TwentyFourHour);
         
         // Test 12-hour format
-        let widget_12h = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwelveHour);
+        let widget_12h = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwelveHour, &config);
         assert_eq!(widget_12h.display_format, TimeFormat::TwelveHour);
     }
 }
