@@ -1,4 +1,8 @@
 use serde::{Deserialize, Serialize};
+use std::fs;
+use std::path::PathBuf;
+use crate::app::{TimeFormat, TimezoneDisplayMode};
+use ratatui::style::Color;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TimeDisplayConfig {
@@ -27,6 +31,112 @@ pub enum TimeActivity {
     Work,       // 8 AM - 6 PM
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+pub enum ColorTheme {
+    Default,
+    Ocean,
+    Forest,
+    Sunset,
+    Cyberpunk,
+    Monochrome,
+}
+
+impl ColorTheme {
+    pub fn all_themes() -> Vec<ColorTheme> {
+        vec![
+            ColorTheme::Default,
+            ColorTheme::Ocean,
+            ColorTheme::Forest,
+            ColorTheme::Sunset,
+            ColorTheme::Cyberpunk,
+            ColorTheme::Monochrome,
+        ]
+    }
+    
+    pub fn next(&self) -> ColorTheme {
+        let themes = Self::all_themes();
+        let current_index = themes.iter().position(|t| t == self).unwrap_or(0);
+        let next_index = (current_index + 1) % themes.len();
+        themes[next_index]
+    }
+    
+    pub fn name(&self) -> &'static str {
+        match self {
+            ColorTheme::Default => "Default",
+            ColorTheme::Ocean => "Ocean",
+            ColorTheme::Forest => "Forest",
+            ColorTheme::Sunset => "Sunset",
+            ColorTheme::Cyberpunk => "Cyberpunk",
+            ColorTheme::Monochrome => "Monochrome",
+        }
+    }
+    
+    pub fn get_night_color(&self) -> Color {
+        match self {
+            ColorTheme::Default => Color::DarkGray,
+            ColorTheme::Ocean => Color::Blue,
+            ColorTheme::Forest => Color::Green,
+            ColorTheme::Sunset => Color::Red,
+            ColorTheme::Cyberpunk => Color::Magenta,
+            ColorTheme::Monochrome => Color::Gray,
+        }
+    }
+    
+    pub fn get_awake_color(&self) -> Color {
+        match self {
+            ColorTheme::Default => Color::Gray,
+            ColorTheme::Ocean => Color::Cyan,
+            ColorTheme::Forest => Color::LightGreen,
+            ColorTheme::Sunset => Color::Yellow,
+            ColorTheme::Cyberpunk => Color::LightBlue,
+            ColorTheme::Monochrome => Color::White,
+        }
+    }
+    
+    pub fn get_work_color(&self) -> Color {
+        match self {
+            ColorTheme::Default => Color::Magenta,
+            ColorTheme::Ocean => Color::LightCyan,
+            ColorTheme::Forest => Color::LightYellow,
+            ColorTheme::Sunset => Color::LightRed,
+            ColorTheme::Cyberpunk => Color::LightMagenta,
+            ColorTheme::Monochrome => Color::White,
+        }
+    }
+    
+    pub fn get_selected_border_color(&self) -> Color {
+        match self {
+            ColorTheme::Default => Color::Yellow,
+            ColorTheme::Ocean => Color::LightCyan,
+            ColorTheme::Forest => Color::LightGreen,
+            ColorTheme::Sunset => Color::LightYellow,
+            ColorTheme::Cyberpunk => Color::LightMagenta,
+            ColorTheme::Monochrome => Color::White,
+        }
+    }
+    
+    pub fn get_timeline_position_color(&self) -> Color {
+        match self {
+            ColorTheme::Default => Color::Magenta,
+            ColorTheme::Ocean => Color::Cyan,
+            ColorTheme::Forest => Color::Green,
+            ColorTheme::Sunset => Color::Yellow,
+            ColorTheme::Cyberpunk => Color::LightMagenta,
+            ColorTheme::Monochrome => Color::White,
+        }
+    }
+    
+    pub fn get_current_time_color(&self) -> Color {
+        Color::Red // Keep consistent across all themes for clarity
+    }
+}
+
+impl Default for ColorTheme {
+    fn default() -> Self {
+        ColorTheme::Default
+    }
+}
+
 impl TimeDisplayConfig {
     pub fn get_time_activity(&self, hour: u32) -> TimeActivity {
         let hour = hour % 24; // Ensure valid hour range
@@ -48,12 +158,73 @@ impl TimeDisplayConfig {
         }
     }
     
-    pub fn get_activity_color(&self, activity: TimeActivity) -> ratatui::style::Color {
+    pub fn get_activity_color(&self, activity: TimeActivity, theme: ColorTheme) -> Color {
         match activity {
-            TimeActivity::Night => ratatui::style::Color::DarkGray,
-            TimeActivity::Awake => ratatui::style::Color::Gray,
-            TimeActivity::Work => ratatui::style::Color::Magenta,  // Less bright than white
+            TimeActivity::Night => theme.get_night_color(),
+            TimeActivity::Awake => theme.get_awake_color(),
+            TimeActivity::Work => theme.get_work_color(),
         }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AppConfig {
+    pub zones: Vec<String>,                           // List of timezone names to load
+    pub selected_zone_index: usize,                  // Currently selected timezone
+    pub display_format: TimeFormat,                  // 12/24 hour format
+    pub timezone_display_mode: TimezoneDisplayMode,  // Short/Full names
+    pub time_config: TimeDisplayConfig,              // Work/awake/night hours
+    pub color_theme: ColorTheme,                     // Color theme for UI
+}
+
+impl Default for AppConfig {
+    fn default() -> Self {
+        Self {
+            zones: vec![
+                "Los Angeles".to_string(),
+                "New York".to_string(), 
+                "UTC".to_string(),
+                "London".to_string(),
+                "Berlin".to_string(),
+                "Tokyo".to_string(),
+                "Sydney".to_string(),
+            ],
+            selected_zone_index: 0,
+            display_format: TimeFormat::TwentyFourHour,
+            timezone_display_mode: TimezoneDisplayMode::Short,
+            time_config: TimeDisplayConfig::default(),
+            color_theme: ColorTheme::default(),
+        }
+    }
+}
+
+impl AppConfig {
+    pub fn config_path() -> Option<PathBuf> {
+        dirs::config_dir().map(|config_dir| config_dir.join("alltz").join("config.toml"))
+    }
+    
+    pub fn load() -> Self {
+        if let Some(config_path) = Self::config_path() {
+            if let Ok(content) = fs::read_to_string(&config_path) {
+                if let Ok(config) = toml::from_str::<AppConfig>(&content) {
+                    return config;
+                }
+            }
+        }
+        Self::default()
+    }
+    
+    pub fn save(&self) -> Result<(), Box<dyn std::error::Error>> {
+        if let Some(config_path) = Self::config_path() {
+            // Create config directory if it doesn't exist
+            if let Some(parent) = config_path.parent() {
+                fs::create_dir_all(parent)?;
+            }
+            
+            let content = toml::to_string_pretty(self)?;
+            fs::write(&config_path, content)?;
+        }
+        Ok(())
     }
 }
 
@@ -105,5 +276,24 @@ mod tests {
         // Boundary at awake end (10 PM)
         assert_eq!(config.get_time_activity(21), TimeActivity::Awake);
         assert_eq!(config.get_time_activity(22), TimeActivity::Night);
+    }
+    
+    #[test]
+    fn test_app_config_default() {
+        let config = AppConfig::default();
+        assert!(!config.zones.is_empty());
+        assert_eq!(config.display_format, TimeFormat::TwentyFourHour);
+        assert_eq!(config.timezone_display_mode, TimezoneDisplayMode::Short);
+    }
+    
+    #[test]
+    fn test_config_serialization() {
+        let config = AppConfig::default();
+        let toml_str = toml::to_string(&config).unwrap();
+        let parsed: AppConfig = toml::from_str(&toml_str).unwrap();
+        
+        assert_eq!(config.zones, parsed.zones);
+        assert_eq!(config.display_format, parsed.display_format);
+        assert_eq!(config.timezone_display_mode, parsed.timezone_display_mode);
     }
 }
