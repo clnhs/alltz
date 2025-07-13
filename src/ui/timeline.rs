@@ -7,12 +7,14 @@ use ratatui::{
 };
 
 use crate::time::TimeZone;
+use crate::app::TimeFormat;
 
 pub struct TimelineWidget<'a> {
     pub timeline_position: DateTime<Utc>,
     pub current_time: DateTime<Utc>,
     pub timezone: &'a TimeZone,
     pub selected: bool,
+    pub display_format: TimeFormat,
 }
 
 impl<'a> TimelineWidget<'a> {
@@ -21,12 +23,14 @@ impl<'a> TimelineWidget<'a> {
         current_time: DateTime<Utc>,
         timezone: &'a TimeZone,
         selected: bool,
+        display_format: TimeFormat,
     ) -> Self {
         Self {
             timeline_position,
             current_time,
             timezone,
             selected,
+            display_format,
         }
     }
 
@@ -151,7 +155,10 @@ impl<'a> Widget for TimelineWidget<'a> {
         // Render time display
         if inner.height > 1 {
             let zone_time = self.timezone.convert_time(self.timeline_position);
-            let time_str = zone_time.format("%H:%M %a").to_string();
+            let time_str = match self.display_format {
+                TimeFormat::TwentyFourHour => zone_time.format("%H:%M %a").to_string(),
+                TimeFormat::TwelveHour => zone_time.format("%I:%M %p %a").to_string(),
+            };
             let time_y = inner.y + 1;
             
             for (i, ch) in time_str.chars().enumerate() {
@@ -175,17 +182,18 @@ mod tests {
         let tz = crate::time::TimeZone::from_tz(chrono_tz::UTC);
         let now = Utc::now();
         
-        let widget = TimelineWidget::new(now, now, &tz, false);
+        let widget = TimelineWidget::new(now, now, &tz, false, TimeFormat::TwentyFourHour);
         assert_eq!(widget.timeline_position, now);
         assert_eq!(widget.current_time, now);
         assert!(!widget.selected);
+        assert_eq!(widget.display_format, TimeFormat::TwentyFourHour);
     }
 
     #[test]
     fn test_time_to_position() {
         let tz = crate::time::TimeZone::from_tz(chrono_tz::UTC);
         let base_time = Utc::now();
-        let widget = TimelineWidget::new(base_time, base_time, &tz, false);
+        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour);
         
         // Position should be in the middle for the timeline position itself
         let pos = widget.time_to_position(base_time, 100);
@@ -196,11 +204,25 @@ mod tests {
     fn test_hour_character_mapping() {
         let tz = crate::time::TimeZone::from_tz(chrono_tz::UTC);
         let base_time = Utc::now();
-        let widget = TimelineWidget::new(base_time, base_time, &tz, false);
+        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour);
         
         // Test business hours get higher characters
         assert_eq!(widget.get_hour_character(14), '▃'); // 2 PM
         assert_eq!(widget.get_hour_character(18), '▆'); // 6 PM - peak
         assert_eq!(widget.get_hour_character(2), '░');  // 2 AM - night
+    }
+
+    #[test]
+    fn test_time_format_handling() {
+        let tz = crate::time::TimeZone::from_tz(chrono_tz::UTC);
+        let base_time = Utc::now();
+        
+        // Test 24-hour format
+        let widget_24h = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour);
+        assert_eq!(widget_24h.display_format, TimeFormat::TwentyFourHour);
+        
+        // Test 12-hour format
+        let widget_12h = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwelveHour);
+        assert_eq!(widget_12h.display_format, TimeFormat::TwelveHour);
     }
 }

@@ -210,6 +210,7 @@ impl App {
             self.current_time,
             zone,
             is_selected,
+            self.display_format.clone(),
         );
         
         f.render_widget(timeline_widget, area);
