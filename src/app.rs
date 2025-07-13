@@ -1,12 +1,12 @@
 use chrono::{DateTime, Utc, Local};
 use ratatui::{
     layout::{Constraint, Direction as LayoutDirection, Layout, Rect},
-    style::{Color, Style},
     widgets::{Block, Borders, Paragraph},
     Frame,
 };
 
 use crate::time::{TimeZone, TimeZoneManager};
+use crate::ui::TimelineWidget;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum TimeFormat {
@@ -189,7 +189,7 @@ impl App {
         
         
         let zone_constraints = zones.iter()
-            .map(|_| Constraint::Length(3))
+            .map(|_| Constraint::Length(4))
             .collect::<Vec<_>>();
         
         let zone_chunks = Layout::default()
@@ -205,34 +205,14 @@ impl App {
     }
     
     fn render_zone(&self, f: &mut Frame, area: Rect, zone: &TimeZone, is_selected: bool) {
-        let zone_time = zone.convert_time(self.timeline_position);
-        
-        let time_str = match self.display_format {
-            TimeFormat::TwentyFourHour => zone_time.format("%H:%M").to_string(),
-            TimeFormat::TwelveHour => zone_time.format("%I:%M %p").to_string(),
-        };
-        
-        let date_str = zone_time.format("%a %b %d").to_string();
-        
-        let content = format!(
-            "{} │ {} │ {} {}",
-            zone.display_name(),
-            zone.offset_string(),
-            time_str,
-            date_str
+        let timeline_widget = TimelineWidget::new(
+            self.timeline_position,
+            self.current_time,
+            zone,
+            is_selected,
         );
         
-        let style = if is_selected {
-            Style::default().fg(Color::Yellow)
-        } else {
-            Style::default()
-        };
-        
-        let widget = Paragraph::new(content)
-            .style(style)
-            .block(Block::default().borders(Borders::ALL));
-        
-        f.render_widget(widget, area);
+        f.render_widget(timeline_widget, area);
     }
     
     fn render_footer(&self, f: &mut Frame, area: Rect) {
