@@ -182,8 +182,11 @@ impl App {
             return;
         }
         
+        // Debug: Show zone count in title
+        let title = format!("Timezones ({})", zones.len());
+        
         let zone_constraints = zones.iter()
-            .map(|_| Constraint::Length(2))
+            .map(|_| Constraint::Length(3))
             .collect::<Vec<_>>();
         
         let zone_chunks = Layout::default()
@@ -216,13 +219,20 @@ impl App {
             date_str
         );
         
+        // Debug: ensure content is not empty
+        let display_content = if content.trim().is_empty() {
+            format!("DEBUG: Zone {}", zone.display_name())
+        } else {
+            content
+        };
+        
         let style = if is_selected {
             Style::default().fg(Color::Yellow)
         } else {
             Style::default()
         };
         
-        let widget = Paragraph::new(content)
+        let widget = Paragraph::new(display_content)
             .style(style)
             .block(Block::default().borders(Borders::ALL));
         
