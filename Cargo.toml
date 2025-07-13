@@ -1,0 +1,19 @@
+[package]
+name = "alltz"
+version = "0.1.0"
+edition = "2021"
+authors = ["Claude Code <noreply@anthropic.com>"]
+description = "Terminal-based time zone viewer for developers and remote teams"
+license = "MIT"
+
+[dependencies]
+ratatui = { version = "0.29.0", default-features = true }
+crossterm = "0.29.0"
+chrono = { version = "0.4", features = ["serde"] }
+chrono-tz = "0.10"
+tokio = { version = "1.0", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.8"
+
+[dev-dependencies]
+tokio-test = "0.4"
