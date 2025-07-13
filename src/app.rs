@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Utc, Local};
 use ratatui::{
     layout::{Constraint, Direction as LayoutDirection, Layout, Rect},
     style::{Color, Style},
@@ -155,15 +155,20 @@ impl App {
     }
     
     fn render_header(&self, f: &mut Frame, area: Rect) {
-        let current_time_str = self.current_time.format("%H:%M:%S UTC").to_string();
+        let local_time = self.current_time.with_timezone(&Local);
+        let local_time_str = match self.display_format {
+            TimeFormat::TwentyFourHour => local_time.format("%H:%M:%S %Z").to_string(),
+            TimeFormat::TwelveHour => local_time.format("%I:%M:%S %p %Z").to_string(),
+        };
+        
         let timeline_time_str = match self.display_format {
-            TimeFormat::TwentyFourHour => self.timeline_position.format("%H:%M").to_string(),
-            TimeFormat::TwelveHour => self.timeline_position.format("%I:%M %p").to_string(),
+            TimeFormat::TwentyFourHour => self.timeline_position.format("%H:%M UTC").to_string(),
+            TimeFormat::TwelveHour => self.timeline_position.format("%I:%M %p UTC").to_string(),
         };
         
         let header_text = format!(
-            "alltz v0.1.0 │ Current: {} │ Timeline: {} │ [q] Quit [?] Help",
-            current_time_str, timeline_time_str
+            "alltz v0.1.0 │ Local: {} │ Timeline: {} │ [q] Quit [?] Help",
+            local_time_str, timeline_time_str
         );
         
         let header = Paragraph::new(header_text)
@@ -182,8 +187,6 @@ impl App {
             return;
         }
         
-        // Debug: Show zone count in title
-        let title = format!("Timezones ({})", zones.len());
         
         let zone_constraints = zones.iter()
             .map(|_| Constraint::Length(3))
@@ -219,20 +222,13 @@ impl App {
             date_str
         );
         
-        // Debug: ensure content is not empty
-        let display_content = if content.trim().is_empty() {
-            format!("DEBUG: Zone {}", zone.display_name())
-        } else {
-            content
-        };
-        
         let style = if is_selected {
             Style::default().fg(Color::Yellow)
         } else {
             Style::default()
         };
         
-        let widget = Paragraph::new(display_content)
+        let widget = Paragraph::new(content)
             .style(style)
             .block(Block::default().borders(Borders::ALL));
         
