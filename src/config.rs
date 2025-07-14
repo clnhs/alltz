@@ -175,6 +175,8 @@ pub struct AppConfig {
     pub timezone_display_mode: TimezoneDisplayMode,  // Short/Full names
     pub time_config: TimeDisplayConfig,              // Work/awake/night hours
     pub color_theme: ColorTheme,                     // Color theme for UI
+    pub show_weather: bool,                          // Weather icons toggle
+    pub show_date: bool,                             // Date display toggle
 }
 
 impl Default for AppConfig {
@@ -194,13 +196,15 @@ impl Default for AppConfig {
             timezone_display_mode: TimezoneDisplayMode::Short,
             time_config: TimeDisplayConfig::default(),
             color_theme: ColorTheme::default(),
+            show_weather: true,
+            show_date: false,
         }
     }
 }
 
 impl AppConfig {
     pub fn config_path() -> Option<PathBuf> {
-        dirs::config_dir().map(|config_dir| config_dir.join("alltz").join("config.toml"))
+        dirs::home_dir().map(|home_dir| home_dir.join(".config").join("alltz").join("config.toml"))
     }
     
     pub fn load() -> Self {

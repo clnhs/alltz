@@ -1,0 +1,826 @@
+{
+  "cities": [
+    {
+      "name": "Los Angeles",
+      "code": "LAX",
+      "timezone": "US/Pacific",
+      "country": "USA",
+      "coordinates": [34.0522, -118.2437],
+      "aliases": ["LA", "Hollywood"]
+    },
+    {
+      "name": "San Francisco",
+      "code": "SFO",
+      "timezone": "US/Pacific",
+      "country": "USA",
+      "coordinates": [37.7749, -122.4194],
+      "aliases": ["SF", "Bay Area", "Silicon Valley"]
+    },
+    {
+      "name": "Seattle",
+      "code": "SEA",
+      "timezone": "US/Pacific",
+      "country": "USA",
+      "coordinates": [47.6062, -122.3321],
+      "aliases": []
+    },
+    {
+      "name": "Portland",
+      "code": "PDX",
+      "timezone": "US/Pacific",
+      "country": "USA",
+      "coordinates": [45.5152, -122.6784],
+      "aliases": []
+    },
+    {
+      "name": "Denver",
+      "code": "DEN",
+      "timezone": "US/Mountain",
+      "country": "USA",
+      "coordinates": [39.7392, -104.9903],
+      "aliases": []
+    },
+    {
+      "name": "Phoenix",
+      "code": "PHX",
+      "timezone": "US/Mountain",
+      "country": "USA",
+      "coordinates": [33.4484, -112.0740],
+      "aliases": []
+    },
+    {
+      "name": "Salt Lake City",
+      "code": "SLC",
+      "timezone": "US/Mountain",
+      "country": "USA",
+      "coordinates": [40.7608, -111.8910],
+      "aliases": ["SLC"]
+    },
+    {
+      "name": "Chicago",
+      "code": "CHI",
+      "timezone": "US/Central",
+      "country": "USA",
+      "coordinates": [41.8781, -87.6298],
+      "aliases": []
+    },
+    {
+      "name": "Dallas",
+      "code": "DFW",
+      "timezone": "US/Central",
+      "country": "USA",
+      "coordinates": [32.7767, -96.7970],
+      "aliases": []
+    },
+    {
+      "name": "Houston",
+      "code": "HOU",
+      "timezone": "US/Central",
+      "country": "USA",
+      "coordinates": [29.7604, -95.3698],
+      "aliases": []
+    },
+    {
+      "name": "Austin",
+      "code": "AUS",
+      "timezone": "US/Central",
+      "country": "USA",
+      "coordinates": [30.2672, -97.7431],
+      "aliases": []
+    },
+    {
+      "name": "Minneapolis",
+      "code": "MSP",
+      "timezone": "US/Central",
+      "country": "USA",
+      "coordinates": [44.9778, -93.2650],
+      "aliases": []
+    },
+    {
+      "name": "New York",
+      "code": "NYC",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [40.7128, -74.0060],
+      "aliases": ["NYC", "Manhattan", "Big Apple"]
+    },
+    {
+      "name": "Boston",
+      "code": "BOS",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [42.3601, -71.0589],
+      "aliases": ["Beantown"]
+    },
+    {
+      "name": "Washington DC",
+      "code": "DCA",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [38.9072, -77.0369],
+      "aliases": ["DC", "Washington"]
+    },
+    {
+      "name": "Atlanta",
+      "code": "ATL",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [33.7490, -84.3880],
+      "aliases": []
+    },
+    {
+      "name": "Miami",
+      "code": "MIA",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [25.7617, -80.1918],
+      "aliases": []
+    },
+    {
+      "name": "Orlando",
+      "code": "MCO",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [28.5383, -81.3792],
+      "aliases": []
+    },
+    {
+      "name": "Philadelphia",
+      "code": "PHL",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [39.9526, -75.1652],
+      "aliases": []
+    },
+    {
+      "name": "Vancouver",
+      "code": "VAN",
+      "timezone": "Canada/Pacific",
+      "country": "Canada",
+      "coordinates": [49.2827, -123.1207],
+      "aliases": []
+    },
+    {
+      "name": "Calgary",
+      "code": "YYC",
+      "timezone": "Canada/Mountain",
+      "country": "Canada",
+      "coordinates": [51.0447, -114.0719],
+      "aliases": []
+    },
+    {
+      "name": "Winnipeg",
+      "code": "YWG",
+      "timezone": "Canada/Central",
+      "country": "Canada",
+      "coordinates": [49.8951, -97.1384],
+      "aliases": []
+    },
+    {
+      "name": "Toronto",
+      "code": "YYZ",
+      "timezone": "Canada/Eastern",
+      "country": "Canada",
+      "coordinates": [43.6532, -79.3832],
+      "aliases": []
+    },
+    {
+      "name": "Montreal",
+      "code": "YUL",
+      "timezone": "Canada/Eastern",
+      "country": "Canada",
+      "coordinates": [45.5017, -73.5673],
+      "aliases": []
+    },
+    {
+      "name": "Ottawa",
+      "code": "YOW",
+      "timezone": "Canada/Eastern",
+      "country": "Canada",
+      "coordinates": [45.4215, -75.6972],
+      "aliases": []
+    },
+    {
+      "name": "Mexico City",
+      "code": "MEX",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [19.4326, -99.1332],
+      "aliases": ["CDMX", "DF"]
+    },
+    {
+      "name": "São Paulo",
+      "code": "SAO",
+      "timezone": "America/Sao_Paulo",
+      "country": "Brazil",
+      "coordinates": [-23.5505, -46.6333],
+      "aliases": ["Sao Paulo", "SP"]
+    },
+    {
+      "name": "Rio de Janeiro",
+      "code": "RIO",
+      "timezone": "America/Sao_Paulo",
+      "country": "Brazil",
+      "coordinates": [-22.9068, -43.1729],
+      "aliases": ["Rio", "RJ"]
+    },
+    {
+      "name": "Buenos Aires",
+      "code": "BUE",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "country": "Argentina",
+      "coordinates": [-34.6118, -58.3960],
+      "aliases": ["BA", "Baires"]
+    },
+    {
+      "name": "Lima",
+      "code": "LIM",
+      "timezone": "America/Lima",
+      "country": "Peru",
+      "coordinates": [-12.0464, -77.0428],
+      "aliases": []
+    },
+    {
+      "name": "Bogotá",
+      "code": "BOG",
+      "timezone": "America/Bogota",
+      "country": "Colombia",
+      "coordinates": [4.7110, -74.0721],
+      "aliases": []
+    },
+    {
+      "name": "Santiago",
+      "code": "SCL",
+      "timezone": "America/Santiago",
+      "country": "Chile",
+      "coordinates": [-33.4489, -70.6693],
+      "aliases": []
+    },
+    {
+      "name": "Caracas",
+      "code": "CCS",
+      "timezone": "America/Caracas",
+      "country": "Venezuela",
+      "coordinates": [10.4806, -66.9036],
+      "aliases": []
+    },
+    {
+      "name": "UTC",
+      "code": "UTC",
+      "timezone": "UTC",
+      "country": "UTC",
+      "coordinates": [51.4769, -0.0005],
+      "aliases": []
+    },
+    {
+      "name": "London",
+      "code": "LON",
+      "timezone": "Europe/London",
+      "country": "UK",
+      "coordinates": [51.5074, -0.1278],
+      "aliases": []
+    },
+    {
+      "name": "Dublin",
+      "code": "DUB",
+      "timezone": "Europe/Dublin",
+      "country": "Ireland",
+      "coordinates": [53.3498, -6.2603],
+      "aliases": []
+    },
+    {
+      "name": "Paris",
+      "code": "PAR",
+      "timezone": "Europe/Paris",
+      "country": "France",
+      "coordinates": [48.8566, 2.3522],
+      "aliases": []
+    },
+    {
+      "name": "Berlin",
+      "code": "BER",
+      "timezone": "Europe/Berlin",
+      "country": "Germany",
+      "coordinates": [52.5200, 13.4050],
+      "aliases": []
+    },
+    {
+      "name": "Rome",
+      "code": "ROM",
+      "timezone": "Europe/Rome",
+      "country": "Italy",
+      "coordinates": [41.9028, 12.4964],
+      "aliases": []
+    },
+    {
+      "name": "Madrid",
+      "code": "MAD",
+      "timezone": "Europe/Madrid",
+      "country": "Spain",
+      "coordinates": [40.4168, -3.7038],
+      "aliases": []
+    },
+    {
+      "name": "Amsterdam",
+      "code": "AMS",
+      "timezone": "Europe/Amsterdam",
+      "country": "Netherlands",
+      "coordinates": [52.3676, 4.9041],
+      "aliases": []
+    },
+    {
+      "name": "Zurich",
+      "code": "ZUR",
+      "timezone": "Europe/Zurich",
+      "country": "Switzerland",
+      "coordinates": [47.3769, 8.5417],
+      "aliases": []
+    },
+    {
+      "name": "Brussels",
+      "code": "BRU",
+      "timezone": "Europe/Brussels",
+      "country": "Belgium",
+      "coordinates": [50.8503, 4.3517],
+      "aliases": []
+    },
+    {
+      "name": "Vienna",
+      "code": "VIE",
+      "timezone": "Europe/Vienna",
+      "country": "Austria",
+      "coordinates": [48.2082, 16.3738],
+      "aliases": []
+    },
+    {
+      "name": "Prague",
+      "code": "PRG",
+      "timezone": "Europe/Prague",
+      "country": "Czech Republic",
+      "coordinates": [50.0755, 14.4378],
+      "aliases": []
+    },
+    {
+      "name": "Warsaw",
+      "code": "WAW",
+      "timezone": "Europe/Warsaw",
+      "country": "Poland",
+      "coordinates": [52.2297, 21.0122],
+      "aliases": []
+    },
+    {
+      "name": "Budapest",
+      "code": "BUD",
+      "timezone": "Europe/Budapest",
+      "country": "Hungary",
+      "coordinates": [47.4979, 19.0402],
+      "aliases": []
+    },
+    {
+      "name": "Copenhagen",
+      "code": "CPH",
+      "timezone": "Europe/Copenhagen",
+      "country": "Denmark",
+      "coordinates": [55.6761, 12.5683],
+      "aliases": []
+    },
+    {
+      "name": "Stockholm",
+      "code": "STO",
+      "timezone": "Europe/Stockholm",
+      "country": "Sweden",
+      "coordinates": [59.3293, 18.0686],
+      "aliases": []
+    },
+    {
+      "name": "Oslo",
+      "code": "OSL",
+      "timezone": "Europe/Oslo",
+      "country": "Norway",
+      "coordinates": [59.9139, 10.7522],
+      "aliases": []
+    },
+    {
+      "name": "Helsinki",
+      "code": "HEL",
+      "timezone": "Europe/Helsinki",
+      "country": "Finland",
+      "coordinates": [60.1699, 24.9384],
+      "aliases": []
+    },
+    {
+      "name": "Lisbon",
+      "code": "LIS",
+      "timezone": "Europe/Lisbon",
+      "country": "Portugal",
+      "coordinates": [38.7223, -9.1393],
+      "aliases": []
+    },
+    {
+      "name": "Barcelona",
+      "code": "BCN",
+      "timezone": "Europe/Madrid",
+      "country": "Spain",
+      "coordinates": [41.3851, 2.1734],
+      "aliases": []
+    },
+    {
+      "name": "Milan",
+      "code": "MXP",
+      "timezone": "Europe/Rome",
+      "country": "Italy",
+      "coordinates": [45.4642, 9.1900],
+      "aliases": []
+    },
+    {
+      "name": "Frankfurt",
+      "code": "FRA",
+      "timezone": "Europe/Berlin",
+      "country": "Germany",
+      "coordinates": [50.1109, 8.6821],
+      "aliases": []
+    },
+    {
+      "name": "Munich",
+      "code": "MUC",
+      "timezone": "Europe/Berlin",
+      "country": "Germany",
+      "coordinates": [48.1351, 11.5820],
+      "aliases": []
+    },
+    {
+      "name": "Athens",
+      "code": "ATH",
+      "timezone": "Europe/Athens",
+      "country": "Greece",
+      "coordinates": [37.9838, 23.7275],
+      "aliases": []
+    },
+    {
+      "name": "Moscow",
+      "code": "MOW",
+      "timezone": "Europe/Moscow",
+      "country": "Russia",
+      "coordinates": [55.7558, 37.6173],
+      "aliases": []
+    },
+    {
+      "name": "Istanbul",
+      "code": "IST",
+      "timezone": "Europe/Istanbul",
+      "country": "Turkey",
+      "coordinates": [41.0082, 28.9784],
+      "aliases": []
+    },
+    {
+      "name": "Tokyo",
+      "code": "NRT",
+      "timezone": "Asia/Tokyo",
+      "country": "Japan",
+      "coordinates": [35.6762, 139.6503],
+      "aliases": []
+    },
+    {
+      "name": "Seoul",
+      "code": "ICN",
+      "timezone": "Asia/Seoul",
+      "country": "South Korea",
+      "coordinates": [37.5665, 126.9780],
+      "aliases": []
+    },
+    {
+      "name": "Shanghai",
+      "code": "PVG",
+      "timezone": "Asia/Shanghai",
+      "country": "China",
+      "coordinates": [31.2304, 121.4737],
+      "aliases": []
+    },
+    {
+      "name": "Beijing",
+      "code": "PEK",
+      "timezone": "Asia/Shanghai",
+      "country": "China",
+      "coordinates": [39.9042, 116.4074],
+      "aliases": []
+    },
+    {
+      "name": "Shenzhen",
+      "code": "SZX",
+      "timezone": "Asia/Shanghai",
+      "country": "China",
+      "coordinates": [22.5431, 114.0579],
+      "aliases": []
+    },
+    {
+      "name": "Hong Kong",
+      "code": "HKG",
+      "timezone": "Asia/Hong_Kong",
+      "country": "Hong Kong",
+      "coordinates": [22.3193, 114.1694],
+      "aliases": []
+    },
+    {
+      "name": "Taipei",
+      "code": "TPE",
+      "timezone": "Asia/Taipei",
+      "country": "Taiwan",
+      "coordinates": [25.0330, 121.5654],
+      "aliases": []
+    },
+    {
+      "name": "Singapore",
+      "code": "SIN",
+      "timezone": "Asia/Singapore",
+      "country": "Singapore",
+      "coordinates": [1.3521, 103.8198],
+      "aliases": []
+    },
+    {
+      "name": "Bangkok",
+      "code": "BKK",
+      "timezone": "Asia/Bangkok",
+      "country": "Thailand",
+      "coordinates": [13.7563, 100.5018],
+      "aliases": []
+    },
+    {
+      "name": "Jakarta",
+      "code": "CGK",
+      "timezone": "Asia/Jakarta",
+      "country": "Indonesia",
+      "coordinates": [-6.2088, 106.8456],
+      "aliases": []
+    },
+    {
+      "name": "Manila",
+      "code": "MNL",
+      "timezone": "Asia/Manila",
+      "country": "Philippines",
+      "coordinates": [14.5995, 120.9842],
+      "aliases": []
+    },
+    {
+      "name": "Ho Chi Minh City",
+      "code": "SGN",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "country": "Vietnam",
+      "coordinates": [10.8231, 106.6297],
+      "aliases": ["HCMC", "Saigon"]
+    },
+    {
+      "name": "Kuala Lumpur",
+      "code": "KUL",
+      "timezone": "Asia/Kuala_Lumpur",
+      "country": "Malaysia",
+      "coordinates": [3.1390, 101.6869],
+      "aliases": ["KL"]
+    },
+    {
+      "name": "Mumbai",
+      "code": "BOM",
+      "timezone": "Asia/Kolkata",
+      "country": "India",
+      "coordinates": [19.0760, 72.8777],
+      "aliases": []
+    },
+    {
+      "name": "Delhi",
+      "code": "DEL",
+      "timezone": "Asia/Kolkata",
+      "country": "India",
+      "coordinates": [28.7041, 77.1025],
+      "aliases": []
+    },
+    {
+      "name": "Bangalore",
+      "code": "BLR",
+      "timezone": "Asia/Kolkata",
+      "country": "India",
+      "coordinates": [12.9716, 77.5946],
+      "aliases": []
+    },
+    {
+      "name": "Chennai",
+      "code": "MAA",
+      "timezone": "Asia/Kolkata",
+      "country": "India",
+      "coordinates": [13.0827, 80.2707],
+      "aliases": []
+    },
+    {
+      "name": "Hyderabad",
+      "code": "HYD",
+      "timezone": "Asia/Kolkata",
+      "country": "India",
+      "coordinates": [17.3850, 78.4867],
+      "aliases": []
+    },
+    {
+      "name": "Karachi",
+      "code": "KHI",
+      "timezone": "Asia/Karachi",
+      "country": "Pakistan",
+      "coordinates": [24.8607, 67.0011],
+      "aliases": []
+    },
+    {
+      "name": "Dhaka",
+      "code": "DAC",
+      "timezone": "Asia/Dhaka",
+      "country": "Bangladesh",
+      "coordinates": [23.8103, 90.4125],
+      "aliases": []
+    },
+    {
+      "name": "Dubai",
+      "code": "DXB",
+      "timezone": "Asia/Dubai",
+      "country": "UAE",
+      "coordinates": [25.2048, 55.2708],
+      "aliases": []
+    },
+    {
+      "name": "Riyadh",
+      "code": "RUH",
+      "timezone": "Asia/Riyadh",
+      "country": "Saudi Arabia",
+      "coordinates": [24.7136, 46.6753],
+      "aliases": []
+    },
+    {
+      "name": "Kuwait City",
+      "code": "KWI",
+      "timezone": "Asia/Kuwait",
+      "country": "Kuwait",
+      "coordinates": [29.3117, 47.4818],
+      "aliases": ["Kuwait"]
+    },
+    {
+      "name": "Doha",
+      "code": "DOH",
+      "timezone": "Asia/Qatar",
+      "country": "Qatar",
+      "coordinates": [25.2854, 51.5310],
+      "aliases": []
+    },
+    {
+      "name": "Tehran",
+      "code": "IKA",
+      "timezone": "Asia/Tehran",
+      "country": "Iran",
+      "coordinates": [35.6892, 51.3890],
+      "aliases": []
+    },
+    {
+      "name": "Tel Aviv",
+      "code": "TLV",
+      "timezone": "Asia/Tel_Aviv",
+      "country": "Israel",
+      "coordinates": [32.0853, 34.7818],
+      "aliases": ["TLV"]
+    },
+    {
+      "name": "Jerusalem",
+      "code": "JRS",
+      "timezone": "Asia/Jerusalem",
+      "country": "Israel",
+      "coordinates": [31.7683, 35.2137],
+      "aliases": []
+    },
+    {
+      "name": "Sydney",
+      "code": "SYD",
+      "timezone": "Australia/Sydney",
+      "country": "Australia",
+      "coordinates": [-33.8688, 151.2093],
+      "aliases": []
+    },
+    {
+      "name": "Melbourne",
+      "code": "MEL",
+      "timezone": "Australia/Melbourne",
+      "country": "Australia",
+      "coordinates": [-37.8136, 144.9631],
+      "aliases": []
+    },
+    {
+      "name": "Brisbane",
+      "code": "BNE",
+      "timezone": "Australia/Brisbane",
+      "country": "Australia",
+      "coordinates": [-27.4698, 153.0251],
+      "aliases": []
+    },
+    {
+      "name": "Perth",
+      "code": "PER",
+      "timezone": "Australia/Perth",
+      "country": "Australia",
+      "coordinates": [-31.9505, 115.8605],
+      "aliases": []
+    },
+    {
+      "name": "Adelaide",
+      "code": "ADL",
+      "timezone": "Australia/Adelaide",
+      "country": "Australia",
+      "coordinates": [-34.9285, 138.6007],
+      "aliases": []
+    },
+    {
+      "name": "Auckland",
+      "code": "AKL",
+      "timezone": "Pacific/Auckland",
+      "country": "New Zealand",
+      "coordinates": [-36.8485, 174.7633],
+      "aliases": []
+    },
+    {
+      "name": "Suva",
+      "code": "SUV",
+      "timezone": "Pacific/Fiji",
+      "country": "Fiji",
+      "coordinates": [-18.1248, 178.4501],
+      "aliases": []
+    },
+    {
+      "name": "Cairo",
+      "code": "CAI",
+      "timezone": "Africa/Cairo",
+      "country": "Egypt",
+      "coordinates": [30.0444, 31.2357],
+      "aliases": []
+    },
+    {
+      "name": "Johannesburg",
+      "code": "JNB",
+      "timezone": "Africa/Johannesburg",
+      "country": "South Africa",
+      "coordinates": [-26.2041, 28.0473],
+      "aliases": []
+    },
+    {
+      "name": "Cape Town",
+      "code": "CPT",
+      "timezone": "Africa/Johannesburg",
+      "country": "South Africa",
+      "coordinates": [-33.9249, 18.4241],
+      "aliases": ["CPT", "Mother City"]
+    },
+    {
+      "name": "Lagos",
+      "code": "LOS",
+      "timezone": "Africa/Lagos",
+      "country": "Nigeria",
+      "coordinates": [6.5244, 3.3792],
+      "aliases": []
+    },
+    {
+      "name": "Nairobi",
+      "code": "NBO",
+      "timezone": "Africa/Nairobi",
+      "country": "Kenya",
+      "coordinates": [-1.2921, 36.8219],
+      "aliases": []
+    },
+    {
+      "name": "Casablanca",
+      "code": "CMN",
+      "timezone": "Africa/Casablanca",
+      "country": "Morocco",
+      "coordinates": [33.5731, -7.5898],
+      "aliases": []
+    },
+    {
+      "name": "Tunis",
+      "code": "TUN",
+      "timezone": "Africa/Tunis",
+      "country": "Tunisia",
+      "coordinates": [36.8065, 10.1815],
+      "aliases": []
+    },
+    {
+      "name": "Algiers",
+      "code": "ALG",
+      "timezone": "Africa/Algiers",
+      "country": "Algeria",
+      "coordinates": [36.7538, 3.0588],
+      "aliases": []
+    },
+    {
+      "name": "Addis Ababa",
+      "code": "ADD",
+      "timezone": "Africa/Addis_Ababa",
+      "country": "Ethiopia",
+      "coordinates": [9.1450, 38.7451],
+      "aliases": []
+    }
+  ],
+  "major_cities": [
+    "New York", "London", "Tokyo", "Singapore", "Hong Kong", "San Francisco",
+    "Sydney", "Dubai", "Shanghai", "Beijing", "Seoul", "Mumbai", "Delhi",
+    "Toronto", "Frankfurt", "Zurich", "Los Angeles", "Boston", "Chicago",
+    "Paris", "Berlin", "Amsterdam", "Stockholm"
+  ]
+}

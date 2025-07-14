@@ -17,7 +17,11 @@
       "Bash(mkdir:*)",
       "Bash(cp:*)",
       "Bash(tar:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(rustc:*)",
+      "Bash(./test_config_persistence)",
+      "Bash(rm:*)",
+      "Bash(echo)"
     ],
     "deny": []
   }

@@ -65,6 +65,13 @@ enum Commands {
         /// City name to get information for
         city: String,
     },
+    
+    /// Show configuration file path and content
+    Config {
+        /// Generate default config file if it doesn't exist
+        #[arg(long)]
+        generate: bool,
+    },
 }
 
 /// Parse theme name from CLI argument into ColorTheme enum
@@ -160,6 +167,8 @@ async fn run_app<B: ratatui::backend::Backend>(
                                 input.pop();
                                 Some(Message::UpdateAddZoneInput(input))
                             },
+                            KeyCode::Up => Some(Message::NavigateSearchResults(Direction::Up)),
+                            KeyCode::Down => Some(Message::NavigateSearchResults(Direction::Down)),
                             KeyCode::Enter => Some(Message::ConfirmAddZone),
                             KeyCode::Esc => Some(Message::CancelAddZone),
                             _ => None,
@@ -173,6 +182,7 @@ async fn run_app<B: ratatui::backend::Backend>(
                             KeyCode::Char('m') => Some(Message::ToggleTimeFormat),
                             KeyCode::Char('n') => Some(Message::ToggleTimezoneDisplayMode),
                             KeyCode::Char('w') => Some(Message::ToggleWeather),
+                            KeyCode::Char('e') => Some(Message::ToggleDate),
                             KeyCode::Char('c') => Some(Message::CycleColorTheme),
                             KeyCode::Char('t') => Some(Message::ResetToNow),
                             KeyCode::Char('h') | KeyCode::Left => {
@@ -275,6 +285,53 @@ async fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
                 println!("   DST Status:   Current offset UTC{:+}", offset_hours);
             } else {
                 eprintln!("❌ City '{}' not found. Use 'alltz list' to see available timezones.", city);
+                std::process::exit(1);
+            }
+        }
+        
+        Commands::Config { generate } => {
+            use config::AppConfig;
+            
+            if let Some(config_path) = AppConfig::config_path() {
+                println!("📁 Configuration file location:");
+                println!("   {}", config_path.display());
+                println!();
+                
+                if generate || !config_path.exists() {
+                    // Generate/create config file
+                    let default_config = AppConfig::default();
+                    match default_config.save() {
+                        Ok(()) => {
+                            if generate {
+                                println!("✅ Generated default configuration file");
+                            } else {
+                                println!("✅ Created default configuration file");
+                            }
+                        },
+                        Err(e) => {
+                            eprintln!("❌ Failed to create config file: {}", e);
+                            std::process::exit(1);
+                        }
+                    }
+                }
+                
+                // Show current config content
+                if config_path.exists() {
+                    match std::fs::read_to_string(&config_path) {
+                        Ok(content) => {
+                            println!("📄 Current configuration:");
+                            println!("{}", content);
+                        },
+                        Err(e) => {
+                            eprintln!("❌ Could not read config file: {}", e);
+                        }
+                    }
+                } else {
+                    println!("❌ Configuration file does not exist");
+                    println!("   Run 'alltz config --generate' to create a default one");
+                }
+            } else {
+                eprintln!("❌ Could not determine config directory path");
                 std::process::exit(1);
             }
         }

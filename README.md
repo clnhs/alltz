@@ -10,6 +10,7 @@ A beautiful terminal-based timezone viewer for developers and remote teams. Trac
 
 - 🌍 **Multi-timezone display** with visual timeline scrubbing
 - 🌤️ **Weather integration** with real weather icons (requires API key)
+- 📅 **Date display** with timezone-aware positioning on timelines
 - 🕐 **DST transition indicators** (⇈ spring forward, ⇊ fall back)  
 - 🎨 **6 beautiful color themes** (Default, Ocean, Forest, Sunset, Cyberpunk, Monochrome)
 - 📍 **Local time display** shows scrubbed time in your timezone with day and UTC offset
@@ -67,6 +68,10 @@ alltz time Tokyo
 # Get detailed timezone information
 alltz zone "New York"
 
+# View or generate configuration file
+alltz config
+alltz config --generate
+
 # Start with specific options
 alltz --timezone London --twelve-hour --theme ocean
 ```
@@ -122,6 +127,7 @@ alltz
 
 ### Display Options
 - `w` - Toggle weather display (only works with valid API key)
+- `e` - Toggle date display on timelines
 - `c` - Cycle through color themes
 - `?` - Show/hide help
 - `q` - Quit
@@ -144,6 +150,12 @@ alltz time Tokyo
 ```bash
 alltz zone "Los Angeles"
 # Shows detailed timezone info including DST status
+```
+
+### Configuration Management
+```bash
+alltz config                    # Show config path and current content
+alltz config --generate         # Generate default config file
 ```
 
 ### CLI Options
@@ -178,12 +190,27 @@ selected_zone_index = 0
 display_format = "TwentyFourHour"
 timezone_display_mode = "Short"
 color_theme = "Default"
+show_weather = true
+show_date = false
 
 [time_config]
 work_hours_start = 8
 work_hours_end = 18
 awake_hours_start = 6
 awake_hours_end = 22
+```
+
+### Configuration Commands
+
+```bash
+# View current configuration
+alltz config
+
+# Generate default config file (if missing)
+alltz config --generate
+
+# Configuration is automatically created on first run
+# Edit ~/.config/alltz/config.toml to customize defaults
 ```
 
 ### Customizing Work Hours
@@ -197,7 +224,7 @@ Edit the config file to match your schedule.
 
 ## 🌍 Supported Timezones
 
-alltz includes 50+ major cities worldwide:
+alltz includes 100+ major cities worldwide:
 
 **Americas**: Los Angeles, Denver, Chicago, New York, Vancouver, Toronto, São Paulo, Buenos Aires
 **Europe**: London, Berlin, Paris, Madrid, Rome, Amsterdam, Stockholm, Warsaw
@@ -223,7 +250,9 @@ Plus UTC and many more. Use `alltz list` to see all available timezones.
 - Use a monospace font for best alignment
 
 ### Configuration Issues
-- Configuration is automatically created on first run
+- Configuration is automatically created on first run at `~/.config/alltz/config.toml`
+- Use `alltz config` to view current configuration
+- Use `alltz config --generate` to recreate default configuration
 - Delete `~/.config/alltz/config.toml` to reset to defaults
 - Check file permissions if saving fails
 

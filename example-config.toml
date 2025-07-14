@@ -4,7 +4,7 @@
 
 zones = [
     "Los Angeles",
-    "New York", 
+    "New York",
     "UTC",
     "London",
     "Berlin",
@@ -18,7 +18,7 @@ timezone_display_mode = "Short"   # or "Full"
 
 [time_config]
 work_hours_start = 8    # 8 AM
-work_hours_end = 18     # 6 PM  
+work_hours_end = 18     # 6 PM
 awake_hours_start = 6   # 6 AM
 awake_hours_end = 22    # 10 PM
 # Night hours are automatically: 10 PM - 6 AM

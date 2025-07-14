@@ -58,6 +58,9 @@ alltz time London
 # Get detailed timezone info
 alltz zone Tokyo
 
+# View configuration
+alltz config
+
 # Start with specific options
 alltz --timezone London --twelve-hour --theme ocean
 ```
@@ -72,6 +75,7 @@ alltz --timezone London --twelve-hour --theme ocean
 - `m` - Toggle 12/24 hour format
 - `n` - Toggle timezone display mode
 - `w` - Toggle weather icons
+- `e` - Toggle date display
 - `c` - Cycle color themes
 - `t` - Reset to current time
 - `[/]` - Fine adjust ±15 minutes
@@ -82,11 +86,12 @@ alltz --timezone London --twelve-hour --theme ocean
 
 ✨ **Timeline Scrubbing** - Navigate through time with visual timeline
 🌤️ **Weather Integration** - Real-time weather icons for each location
+📅 **Date Display** - Timezone-aware date positioning on timelines
 🎨 **6 Color Themes** - Default, Ocean, Forest, Sunset, Cyberpunk, Monochrome
 🕐 **DST Indicators** - Visual spring forward (⇈) and fall back (⇊) arrows
 📍 **Local Time Display** - Shows scrubbed time in your timezone with day and UTC offset
 💾 **Persistent Config** - Saves your timezone list and preferences
-🌍 **Global Coverage** - 50+ major cities worldwide
+🌍 **Global Coverage** - 100+ major cities worldwide
 
 ## Configuration
 

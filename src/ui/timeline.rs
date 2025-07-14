@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc, Duration, Timelike, Offset};
+use chrono::{DateTime, Utc, Duration, Timelike, Offset, Days, TimeZone as ChronoTimeZone};
 use ratatui::{
     buffer::Buffer,
     layout::{Rect, Margin},
@@ -22,6 +22,7 @@ pub struct TimelineWidget<'a> {
     pub color_theme: ColorTheme,
     pub weather_data: Option<&'a WeatherData>,
     pub show_weather: bool,
+    pub show_date: bool,
     pub show_dst: bool,
 }
 
@@ -43,6 +44,7 @@ impl<'a> TimelineWidget<'a> {
         color_theme: ColorTheme,
         weather_data: Option<&'a WeatherData>,
         show_weather: bool,
+        show_date: bool,
         show_dst: bool,
     ) -> Self {
         Self {
@@ -56,6 +58,7 @@ impl<'a> TimelineWidget<'a> {
             color_theme,
             weather_data,
             show_weather,
+            show_date,
             show_dst,
         }
     }
@@ -226,6 +229,61 @@ impl<'a> Widget for TimelineWidget<'a> {
             }
         }
 
+        // Render dates in middle of each day's work hours if enabled
+        if self.show_date {
+            let start_time = self.get_timeline_start();
+            let end_time = self.get_timeline_end();
+            
+            // Find the middle of work hours (default 8 AM to 6 PM, so middle is 1 PM)
+            let work_middle_hour = (self.time_config.work_hours_start + self.time_config.work_hours_end) / 2;
+            
+            // Convert timeline to local timezone for this specific timezone
+            let local_start = start_time.with_timezone(&self.timezone.tz);
+            let local_end = end_time.with_timezone(&self.timezone.tz);
+            let mut current_date = local_start.date_naive();
+            
+            // Iterate through each day visible in this timezone's local time
+            while current_date <= local_end.date_naive() {
+                // Create a time for the middle of work hours on this day IN THIS TIMEZONE
+                if let Some(work_middle_local) = current_date.and_hms_opt(work_middle_hour, 0, 0) {
+                    // Create the datetime in this timezone, then convert to UTC for position calculation
+                    if let Some(work_middle_tz) = self.timezone.tz.from_local_datetime(&work_middle_local).single() {
+                        let work_middle_utc = work_middle_tz.with_timezone(&chrono::Utc);
+                        let date_pos = self.time_to_position(work_middle_utc, inner.width);
+                        
+                        // Only render if this position is within the visible timeline
+                        if date_pos < inner.width {
+                            let date_str = current_date.format("%d %b").to_string(); // Format as "15 Jul"
+                            let date_y = timeline_y; // Place date directly on timeline bar
+                            
+                            // Center the date string around the calculated position
+                            let date_start_x = if date_pos >= (date_str.chars().count() as u16 / 2) {
+                                date_pos - (date_str.chars().count() as u16 / 2)
+                            } else {
+                                0
+                            };
+                            
+                            // Ensure we don't go beyond the right edge
+                            let date_start_x = date_start_x.min(inner.width.saturating_sub(date_str.chars().count() as u16));
+                            
+                            // Render the date
+                            for (i, ch) in date_str.chars().enumerate() {
+                                let x = inner.x + date_start_x + i as u16;
+                                if x < inner.x + inner.width {
+                                    buf[(x, date_y)]
+                                        .set_char(ch)
+                                        .set_style(Style::default().fg(Color::White).bg(Color::DarkGray));
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Move to next day
+                current_date = current_date + Days::new(1);
+            }
+        }
+
         // Render time display under the scrubber position
         if inner.height > 1 {
             let zone_time = self.timezone.convert_time(self.timeline_position);
@@ -275,7 +333,7 @@ mod tests {
         let now = Utc::now();
         let config = crate::config::TimeDisplayConfig::default();
         
-        let widget = TimelineWidget::new(now, now, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false);
+        let widget = TimelineWidget::new(now, now, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false, false);
         assert_eq!(widget.timeline_position, now);
         assert_eq!(widget.current_time, now);
         assert!(!widget.selected);
@@ -287,7 +345,7 @@ mod tests {
         let tz = crate::time::TimeZone::from_tz(chrono_tz::UTC);
         let base_time = Utc::now();
         let config = crate::config::TimeDisplayConfig::default();
-        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false);
+        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false, false);
         
         // Position should be in the middle for the timeline position itself
         let pos = widget.time_to_position(base_time, 100);
@@ -299,7 +357,7 @@ mod tests {
         let tz = crate::time::TimeZone::from_tz(chrono_tz::UTC);
         let base_time = Utc::now();
         let config = crate::config::TimeDisplayConfig::default();
-        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false);
+        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false, false);
         
         // Test work hours get dark shade block
         let (char, _) = widget.get_hour_display(14); // 2 PM
@@ -321,11 +379,11 @@ mod tests {
         let config = crate::config::TimeDisplayConfig::default();
         
         // Test 24-hour format
-        let widget_24h = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false);
+        let widget_24h = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false, false);
         assert_eq!(widget_24h.display_format, TimeFormat::TwentyFourHour);
         
         // Test 12-hour format
-        let widget_12h = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwelveHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false);
+        let widget_12h = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwelveHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false, false);
         assert_eq!(widget_12h.display_format, TimeFormat::TwelveHour);
     }
 
@@ -337,7 +395,7 @@ mod tests {
         
         // Create a widget with DST enabled
         let base_time = Utc::now();
-        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, true);
+        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false, true);
         
         // Test that DST transitions can be detected - function should execute without panic
         let transitions = widget.get_dst_transitions_in_range();
@@ -356,7 +414,7 @@ mod tests {
         let config = crate::config::TimeDisplayConfig::default();
         
         // DST indicators are now always enabled
-        let widget = TimelineWidget::new(now, now, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, true);
+        let widget = TimelineWidget::new(now, now, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false, true);
         assert!(widget.show_dst);
     }
 }
