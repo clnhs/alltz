@@ -1,6 +1,6 @@
 # alltz 🌍
 
-A beautiful terminal-based timezone viewer for developers and remote teams. Track multiple timezones simultaneously with intuitive timeline scrubbing, weather integration, DST indicators, and gorgeous color themes.
+A terminal-based timezone viewer. Track multiple timezones simultaneously with timeline scrubbing, weather integration, DST indicators, and multiple color themes.
 
 ![Demo](https://img.shields.io/badge/Status-Active-brightgreen)
 ![Rust](https://img.shields.io/badge/Language-Rust-orange)
@@ -11,8 +11,8 @@ A beautiful terminal-based timezone viewer for developers and remote teams. Trac
 - 🌍 **Multi-timezone display** with visual timeline scrubbing
 - 🌤️ **Weather integration** with real weather icons (requires API key)
 - 📅 **Date display** with timezone-aware positioning on timelines
-- 🕐 **DST transition indicators** (⇈ spring forward, ⇊ fall back)  
-- 🎨 **6 beautiful color themes** (Default, Ocean, Forest, Sunset, Cyberpunk, Monochrome)
+- 🕐 **DST transition indicators** (⇈ spring forward, ⇊ fall back)
+- 🎨 **6 color themes** (Default, Ocean, Forest, Sunset, Cyberpunk, Monochrome)
 - 📍 **Local time display** shows scrubbed time in your timezone with day and UTC offset
 - 💾 **Persistent configuration** saves your timezone list and preferences
 - 📱 **Intuitive TUI controls** with vim-like navigation
@@ -148,6 +148,12 @@ alltz zone "Los Angeles"
 # Shows detailed timezone info including DST status
 ```
 
+### Configuration Management
+```bash
+alltz config                    # Show config path and current content
+alltz config --generate         # Generate default config file
+```
+
 ### CLI Options
 ```bash
 alltz --help                           # Show all options
@@ -190,9 +196,15 @@ awake_hours_start = 6
 awake_hours_end = 22
 ```
 
-### Manual Configuration
+### Configuration Commands
 
 ```bash
+# View current configuration
+alltz config
+
+# Generate default config file (if missing)
+alltz config --generate
+
 # Configuration is automatically created on first run
 # Edit ~/.config/alltz/config.toml to customize defaults
 ```
@@ -201,7 +213,7 @@ awake_hours_end = 22
 
 The timeline visualization shows different activity levels:
 - **Night hours** (light shade): Sleep time
-- **Awake hours** (medium shade): Personal time  
+- **Awake hours** (medium shade): Personal time
 - **Work hours** (dark shade): Working time
 
 Edit the config file to match your schedule.
@@ -235,7 +247,8 @@ Plus UTC and many more. Use `alltz list` to see all available timezones.
 
 ### Configuration Issues
 - Configuration is automatically created on first run at `~/.config/alltz/config.toml`
-- Configuration is auto-created on first run or when changing settings
+- Use `alltz config` to view current configuration
+- Use `alltz config --generate` to recreate default configuration
 - Delete `~/.config/alltz/config.toml` to reset to defaults
 - Check file permissions if saving fails
 

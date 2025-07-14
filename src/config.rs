@@ -60,17 +60,6 @@ impl ColorTheme {
         themes[next_index]
     }
     
-    pub fn name(&self) -> &'static str {
-        match self {
-            ColorTheme::Default => "Default",
-            ColorTheme::Ocean => "Ocean",
-            ColorTheme::Forest => "Forest",
-            ColorTheme::Sunset => "Sunset",
-            ColorTheme::Cyberpunk => "Cyberpunk",
-            ColorTheme::Monochrome => "Monochrome",
-        }
-    }
-    
     pub fn get_night_color(&self) -> Color {
         match self {
             ColorTheme::Default => Color::DarkGray,
