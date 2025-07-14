@@ -840,11 +840,7 @@ impl App {
             .split(inner);
 
         // Render header and input
-        let header_text = if !self.zone_search_results.is_empty() {
-            format!("Search: {} (selected: {} of {})", self.add_zone_input, self.selected_search_result + 1, self.zone_search_results.len())
-        } else {
-            format!("Search: {}", self.add_zone_input)
-        };
+        let header_text = format!("Search: {}", self.add_zone_input);
         let header = Paragraph::new(header_text)
             .style(ratatui::style::Style::default().fg(ratatui::style::Color::White));
         f.render_widget(header, chunks[0]);
