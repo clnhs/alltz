@@ -657,9 +657,10 @@ impl App {
     }
 
     fn render_footer(&self, f: &mut Frame, area: Rect) {
-        let footer_text = format!("j/k: navigate zones │ h/l: scrub timeline │ a: add zone │ del: delete zone │ t: reset │ m: format │ n: names │ w: weather │ c: theme ({}) │ ?: help", self.color_theme.name());
+        let footer_text = "?: help │ a: add │ q: quit";
 
         let footer = Paragraph::new(footer_text)
+            .style(Style::default().fg(Color::DarkGray))
             .block(Block::default().borders(Borders::ALL).title("Controls"));
 
         f.render_widget(footer, area);
