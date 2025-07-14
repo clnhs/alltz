@@ -2,7 +2,6 @@ mod app;
 mod time;
 mod ui;
 mod config;
-mod weather;
 
 use app::{App, Message, Direction};
 use clap::{Parser, Subcommand};
@@ -80,12 +79,11 @@ fn parse_theme(s: &str) -> Result<config::ColorTheme, String> {
     }
 }
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
     
     if let Some(command) = cli.command {
-        return handle_command(command).await;
+        return handle_command(command);
     }
     
     // Initialize terminal for TUI mode
@@ -96,7 +94,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let mut terminal = Terminal::new(backend)?;
     
     let mut app = create_app_with_options(cli)?;
-    let result = run_app(&mut terminal, &mut app).await;
+    let result = run_app(&mut terminal, &mut app);
     
     // Cleanup: restore terminal to original state
     disable_raw_mode()?;
@@ -116,7 +114,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
 /// Main event loop for the TUI application
 /// Handles user input, renders the UI, and processes timed updates
-async fn run_app<B: ratatui::backend::Backend>(
+fn run_app<B: ratatui::backend::Backend>(
     terminal: &mut Terminal<B>,
     app: &mut App,
 ) -> io::Result<()> {
@@ -174,7 +172,6 @@ async fn run_app<B: ratatui::backend::Backend>(
                             KeyCode::Char('d') => Some(Message::RemoveCurrentZone),
                             KeyCode::Char('m') => Some(Message::ToggleTimeFormat),
                             KeyCode::Char('n') => Some(Message::ToggleTimezoneDisplayMode),
-                            KeyCode::Char('w') => Some(Message::ToggleWeather),
                             KeyCode::Char('e') => Some(Message::ToggleDate),
                             KeyCode::Char('c') => Some(Message::CycleColorTheme),
                             KeyCode::Char('t') => Some(Message::ResetToNow),
@@ -221,7 +218,7 @@ async fn run_app<B: ratatui::backend::Backend>(
 }
 
 /// Handle CLI subcommands (list, time, zone) and exit without starting TUI
-async fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
+fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
     use chrono::{Utc, Local, Offset};
     use time::TimeZoneManager;
     

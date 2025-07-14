@@ -9,7 +9,6 @@ use ratatui::{
 use crate::time::TimeZone;
 use crate::app::{TimeFormat, TimezoneDisplayMode};
 use crate::config::{TimeDisplayConfig, ColorTheme};
-use crate::weather::WeatherData;
 
 pub struct TimelineWidget<'a> {
     pub timeline_position: DateTime<Utc>,
@@ -20,8 +19,6 @@ pub struct TimelineWidget<'a> {
     pub timezone_display_mode: TimezoneDisplayMode,
     pub time_config: &'a TimeDisplayConfig,
     pub color_theme: ColorTheme,
-    pub weather_data: Option<&'a WeatherData>,
-    pub show_weather: bool,
     pub show_date: bool,
     pub show_dst: bool,
 }
@@ -42,8 +39,6 @@ impl<'a> TimelineWidget<'a> {
         timezone_display_mode: TimezoneDisplayMode,
         time_config: &'a TimeDisplayConfig,
         color_theme: ColorTheme,
-        weather_data: Option<&'a WeatherData>,
-        show_weather: bool,
         show_date: bool,
         show_dst: bool,
     ) -> Self {
@@ -56,8 +51,6 @@ impl<'a> TimelineWidget<'a> {
             timezone_display_mode,
             time_config,
             color_theme,
-            weather_data,
-            show_weather,
             show_date,
             show_dst,
         }
@@ -287,17 +280,10 @@ impl<'a> Widget for TimelineWidget<'a> {
         // Render time display under the scrubber position
         if inner.height > 1 {
             let zone_time = self.timezone.convert_time(self.timeline_position);
-            let mut time_str = match self.display_format {
+            let time_str = match self.display_format {
                 TimeFormat::TwentyFourHour => zone_time.format("%H:%M %a").to_string(),
                 TimeFormat::TwelveHour => zone_time.format("%I:%M %p %a").to_string(),
             };
-            
-            // Add weather icon if available and enabled
-            if self.show_weather {
-                if let Some(weather) = self.weather_data {
-                    time_str = format!("{} {}", time_str, weather.emoji);
-                }
-            }
             
             let time_y = inner.y + 1;
             
@@ -333,7 +319,7 @@ mod tests {
         let now = Utc::now();
         let config = crate::config::TimeDisplayConfig::default();
         
-        let widget = TimelineWidget::new(now, now, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false, false);
+        let widget = TimelineWidget::new(now, now, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), false, false);
         assert_eq!(widget.timeline_position, now);
         assert_eq!(widget.current_time, now);
         assert!(!widget.selected);
@@ -345,7 +331,7 @@ mod tests {
         let tz = crate::time::TimeZone::from_tz(chrono_tz::UTC);
         let base_time = Utc::now();
         let config = crate::config::TimeDisplayConfig::default();
-        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false, false);
+        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), false, false);
         
         // Position should be in the middle for the timeline position itself
         let pos = widget.time_to_position(base_time, 100);
@@ -357,7 +343,7 @@ mod tests {
         let tz = crate::time::TimeZone::from_tz(chrono_tz::UTC);
         let base_time = Utc::now();
         let config = crate::config::TimeDisplayConfig::default();
-        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false, false);
+        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), false, false);
         
         // Test work hours get dark shade block
         let (char, _) = widget.get_hour_display(14); // 2 PM
@@ -379,11 +365,11 @@ mod tests {
         let config = crate::config::TimeDisplayConfig::default();
         
         // Test 24-hour format
-        let widget_24h = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false, false);
+        let widget_24h = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), false, false);
         assert_eq!(widget_24h.display_format, TimeFormat::TwentyFourHour);
         
         // Test 12-hour format
-        let widget_12h = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwelveHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false, false);
+        let widget_12h = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwelveHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), false, false);
         assert_eq!(widget_12h.display_format, TimeFormat::TwelveHour);
     }
 
@@ -395,7 +381,7 @@ mod tests {
         
         // Create a widget with DST enabled
         let base_time = Utc::now();
-        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false, true);
+        let widget = TimelineWidget::new(base_time, base_time, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), false, true);
         
         // Test that DST transitions can be detected - function should execute without panic
         let transitions = widget.get_dst_transitions_in_range();
@@ -414,7 +400,7 @@ mod tests {
         let config = crate::config::TimeDisplayConfig::default();
         
         // DST indicators are now always enabled
-        let widget = TimelineWidget::new(now, now, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), None, false, false, true);
+        let widget = TimelineWidget::new(now, now, &tz, false, TimeFormat::TwentyFourHour, TimezoneDisplayMode::Short, &config, ColorTheme::default(), false, true);
         assert!(widget.show_dst);
     }
 }
