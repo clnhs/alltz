@@ -67,11 +67,7 @@ enum Commands {
     },
     
     /// Show configuration file path and content
-    Config {
-        /// Generate default config file if it doesn't exist
-        #[arg(long)]
-        generate: bool,
-    },
+    Config,
 }
 
 /// Parse theme name from CLI argument into ColorTheme enum
@@ -289,7 +285,7 @@ async fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
             }
         }
         
-        Commands::Config { generate } => {
+        Commands::Config => {
             use config::AppConfig;
             
             if let Some(config_path) = AppConfig::config_path() {
@@ -297,25 +293,7 @@ async fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
                 println!("   {}", config_path.display());
                 println!();
                 
-                if generate || !config_path.exists() {
-                    // Generate/create config file
-                    let default_config = AppConfig::default();
-                    match default_config.save() {
-                        Ok(()) => {
-                            if generate {
-                                println!("✅ Generated default configuration file");
-                            } else {
-                                println!("✅ Created default configuration file");
-                            }
-                        },
-                        Err(e) => {
-                            eprintln!("❌ Failed to create config file: {}", e);
-                            std::process::exit(1);
-                        }
-                    }
-                }
-                
-                // Show current config content
+                // Show current config content or explain auto-creation
                 if config_path.exists() {
                     match std::fs::read_to_string(&config_path) {
                         Ok(content) => {
@@ -327,8 +305,9 @@ async fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
                         }
                     }
                 } else {
-                    println!("❌ Configuration file does not exist");
-                    println!("   Run 'alltz config --generate' to create a default one");
+                    println!("❌ Configuration file does not exist yet");
+                    println!("   💡 It will be automatically created when you first run 'alltz'");
+                    println!("   💡 Or when you change any settings in the TUI (m, n, w, e, c keys)");
                 }
             } else {
                 eprintln!("❌ Could not determine config directory path");

@@ -21,7 +21,8 @@
       "Bash(rustc:*)",
       "Bash(./test_config_persistence)",
       "Bash(rm:*)",
-      "Bash(echo)"
+      "Bash(echo)",
+      "Bash(mv:*)"
     ],
     "deny": []
   }
