@@ -68,9 +68,6 @@ alltz time Tokyo
 # Get detailed timezone information
 alltz zone "New York"
 
-# View configuration file
-alltz config
-
 # Start with specific options
 alltz --timezone London --twelve-hour --theme ocean
 ```
@@ -151,11 +148,6 @@ alltz zone "Los Angeles"
 # Shows detailed timezone info including DST status
 ```
 
-### Configuration Management
-```bash
-alltz config                    # Show config path and current content
-```
-
 ### CLI Options
 ```bash
 alltz --help                           # Show all options
@@ -198,12 +190,9 @@ awake_hours_start = 6
 awake_hours_end = 22
 ```
 
-### Configuration Commands
+### Manual Configuration
 
 ```bash
-# View current configuration
-alltz config
-
 # Configuration is automatically created on first run
 # Edit ~/.config/alltz/config.toml to customize defaults
 ```
@@ -246,7 +235,6 @@ Plus UTC and many more. Use `alltz list` to see all available timezones.
 
 ### Configuration Issues
 - Configuration is automatically created on first run at `~/.config/alltz/config.toml`
-- Use `alltz config` to view current configuration
 - Configuration is auto-created on first run or when changing settings
 - Delete `~/.config/alltz/config.toml` to reset to defaults
 - Check file permissions if saving fails

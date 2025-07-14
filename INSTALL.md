@@ -58,9 +58,6 @@ alltz time London
 # Get detailed timezone info
 alltz zone Tokyo
 
-# View configuration file  
-alltz config
-
 # Start with specific options
 alltz --timezone London --twelve-hour --theme ocean
 ```

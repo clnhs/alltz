@@ -65,9 +65,6 @@ enum Commands {
         /// City name to get information for
         city: String,
     },
-    
-    /// Show configuration file path and content
-    Config,
 }
 
 /// Parse theme name from CLI argument into ColorTheme enum
@@ -281,36 +278,6 @@ async fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
                 println!("   DST Status:   Current offset UTC{:+}", offset_hours);
             } else {
                 eprintln!("❌ City '{}' not found. Use 'alltz list' to see available timezones.", city);
-                std::process::exit(1);
-            }
-        }
-        
-        Commands::Config => {
-            use config::AppConfig;
-            
-            if let Some(config_path) = AppConfig::config_path() {
-                println!("📁 Configuration file location:");
-                println!("   {}", config_path.display());
-                println!();
-                
-                // Show current config content or explain auto-creation
-                if config_path.exists() {
-                    match std::fs::read_to_string(&config_path) {
-                        Ok(content) => {
-                            println!("📄 Current configuration:");
-                            println!("{}", content);
-                        },
-                        Err(e) => {
-                            eprintln!("❌ Could not read config file: {}", e);
-                        }
-                    }
-                } else {
-                    println!("❌ Configuration file does not exist yet");
-                    println!("   💡 It will be automatically created when you first run 'alltz'");
-                    println!("   💡 Or when you change any settings in the TUI (m, n, w, e, c keys)");
-                }
-            } else {
-                eprintln!("❌ Could not determine config directory path");
                 std::process::exit(1);
             }
         }
