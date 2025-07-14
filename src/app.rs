@@ -520,8 +520,9 @@ impl App {
         let timeline_display = Paragraph::new(format!("Timeline: {}", timeline_time_str));
         f.render_widget(timeline_display, chunks[2]);
 
-        let controls = Paragraph::new("q: Quit | ?: Help");
-        f.render_widget(controls, chunks[3]);
+        // Empty space where controls used to be
+        let empty = Paragraph::new("");
+        f.render_widget(empty, chunks[3]);
 
         let border = Block::default().borders(Borders::ALL).title("alltz");
         f.render_widget(border, area);
@@ -661,7 +662,7 @@ impl App {
 
         let footer = Paragraph::new(footer_text)
             .style(Style::default().fg(Color::DarkGray))
-            .block(Block::default().borders(Borders::ALL).title("Controls"));
+            .alignment(Alignment::Center);
 
         f.render_widget(footer, area);
     }
