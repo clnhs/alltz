@@ -526,7 +526,7 @@ impl App {
             .alignment(Alignment::Right);
         f.render_widget(timeline_display, chunks[2]);
 
-        let border = Block::default().borders(Borders::ALL).title("alltz");
+        let border = Block::default().borders(Borders::ALL);
         f.render_widget(border, area);
     }
 
