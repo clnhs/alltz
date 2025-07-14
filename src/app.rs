@@ -505,24 +505,26 @@ impl App {
         let chunks = Layout::default()
             .direction(LayoutDirection::Horizontal)
             .constraints([
-                Constraint::Percentage(25),  // App name
-                Constraint::Percentage(30),  // Local time
-                Constraint::Percentage(30),  // Timeline
-                Constraint::Percentage(15),  // Controls
+                Constraint::Percentage(33),  // App name (left)
+                Constraint::Percentage(34),  // Local time (center)
+                Constraint::Percentage(33),  // Timeline (right)
             ])
             .split(inner);
-        let app_name = Paragraph::new("alltz v0.1.0");
+
+        // Left: App name
+        let app_name = Paragraph::new("alltz v0.1.0")
+            .alignment(Alignment::Left);
         f.render_widget(app_name, chunks[0]);
 
-        let local_display = Paragraph::new(format!("Local: {}", local_time_str));
+        // Center: Local time
+        let local_display = Paragraph::new(format!("Local: {}", local_time_str))
+            .alignment(Alignment::Center);
         f.render_widget(local_display, chunks[1]);
 
-        let timeline_display = Paragraph::new(format!("Timeline: {}", timeline_time_str));
+        // Right: Timeline time
+        let timeline_display = Paragraph::new(format!("Timeline: {}", timeline_time_str))
+            .alignment(Alignment::Right);
         f.render_widget(timeline_display, chunks[2]);
-
-        // Empty space where controls used to be
-        let empty = Paragraph::new("");
-        f.render_widget(empty, chunks[3]);
 
         let border = Block::default().borders(Borders::ALL).title("alltz");
         f.render_widget(border, area);
