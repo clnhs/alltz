@@ -230,23 +230,30 @@ fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
     match command {
         Commands::List => {
             use std::io::{self, Write};
-            
+
             let stdout = io::stdout();
             let mut handle = stdout.lock();
-            
+
             // Handle broken pipe gracefully
             let result = (|| -> io::Result<()> {
                 writeln!(handle, "🌍 Available Timezones:")?;
                 writeln!(handle)?;
                 let timezones = TimeZoneManager::get_all_available_timezones();
                 for (_, city, code, lat, lon) in timezones {
-                    writeln!(handle, "  {:<15} {:<4} ({:>7.2}, {:>8.2})", city, code, lat, lon)?;
+                    writeln!(
+                        handle,
+                        "  {:<15} {:<4} ({:>7.2}, {:>8.2})",
+                        city, code, lat, lon
+                    )?;
                 }
                 writeln!(handle)?;
-                writeln!(handle, "Use 'alltz time <city>' to see current time in any timezone")?;
+                writeln!(
+                    handle,
+                    "Use 'alltz time <city>' to see current time in any timezone"
+                )?;
                 Ok(())
             })();
-            
+
             // Ignore broken pipe errors (when output is piped to head, etc.)
             if let Err(e) = result {
                 if e.kind() != io::ErrorKind::BrokenPipe {
