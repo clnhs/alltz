@@ -292,5 +292,6 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 ---
 
 **Made with ❤️ and ☕ by developers, for developers.**
+*(lol, actually, it was completely made by Claude, I just pointed it in the right direction)
 
 *alltz - All timezones, all the time.*
