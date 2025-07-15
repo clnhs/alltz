@@ -119,12 +119,6 @@ alltz zone "Los Angeles"
 # Shows detailed timezone info including DST status
 ```
 
-### Configuration Management
-```bash
-alltz config                    # Show config path and current content
-alltz config --generate         # Generate default config file
-```
-
 ### CLI Options
 ```bash
 alltz --help                           # Show all options
@@ -166,19 +160,6 @@ awake_hours_start = 6
 awake_hours_end = 22
 ```
 
-### Configuration Commands
-
-```bash
-# View current configuration
-alltz config
-
-# Generate default config file (if missing)
-alltz config --generate
-
-# Configuration is automatically created on first run
-# Edit ~/.config/alltz/config.toml to customize defaults
-```
-
 ### Customizing Work Hours
 
 The timeline visualization shows different activity levels:
@@ -209,8 +190,6 @@ Plus UTC and many more. Use `alltz list` to see all available timezones.
 
 ### Configuration Issues
 - Configuration is automatically created on first run at `~/.config/alltz/config.toml`
-- Use `alltz config` to view current configuration
-- Use `alltz config --generate` to recreate default configuration
 - Delete `~/.config/alltz/config.toml` to reset to defaults
 - Check file permissions if saving fails
 
@@ -294,6 +273,7 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 ---
 
 **Made with ❤️ and ☕ by developers, for developers.**
-*(lol, actually, it was completely made by Claude, I just pointed it in the right direction)
+
+*(lol, actually, it was completely written by Claude Code, I just pointed it in the right direction)
 
 *alltz - All timezones, all the time.*
