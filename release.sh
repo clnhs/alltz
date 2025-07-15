@@ -1,18 +1,32 @@
 #!/bin/bash
 # alltz Release Script
+# 
+# ⚠️  DEPRECATED: Use GitHub Actions for production releases
+# For local development builds, use ./release-local.sh instead
 
 set -e
 
-VERSION="0.1.0"
+echo "⚠️  This script is deprecated!"
+echo ""
+echo "For production releases:"
+echo "1. Create a git tag: git tag v0.1.0"
+echo "2. Push tag: git push origin v0.1.0" 
+echo "3. GitHub Actions will build for all platforms automatically"
+echo ""
+echo "For local development builds:"
+echo "Run: ./release-local.sh"
+echo ""
+read -p "Continue with legacy local build? (y/N): " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    exit 0
+fi
 
-# For now, only build for native architecture due to cross-compilation issues
+VERSION="0.1.0"
 NATIVE_TARGET=$(rustc -vV | sed -n 's/host: //p')
 TARGETS=("$NATIVE_TARGET")
 
-echo "ℹ️  Building for native target only: $NATIVE_TARGET"
-echo "   (Cross-compilation requires additional setup)"
-
-echo "🚀 Building alltz v${VERSION} for multiple targets..."
+echo "🚀 Building alltz v${VERSION} for local development..."
 
 # Clean previous builds
 cargo clean

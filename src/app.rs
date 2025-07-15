@@ -1,14 +1,14 @@
-use chrono::{DateTime, Utc, Local, Offset, Timelike};
+use chrono::{DateTime, Local, Offset, Timelike, Utc};
 use ratatui::{
     layout::{Alignment, Constraint, Direction as LayoutDirection, Layout, Rect},
-    style::{Modifier, Style, Color},
-    widgets::{Block, Borders, Clear, Paragraph, Table, Row, Cell, TableState, Wrap},
+    style::{Color, Modifier, Style},
+    widgets::{Block, Borders, Cell, Clear, Paragraph, Row, Table, TableState, Wrap},
     Frame,
 };
 
+use crate::config::{AppConfig, ColorTheme, TimeDisplayConfig};
 use crate::time::{TimeZone, TimeZoneManager};
 use crate::ui::TimelineWidget;
-use crate::config::{TimeDisplayConfig, AppConfig, ColorTheme};
 
 #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub enum TimeFormat {
@@ -18,8 +18,8 @@ pub enum TimeFormat {
 
 #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub enum TimezoneDisplayMode {
-    Short,  // LAX, NYC, LON
-    Full,   // Pacific Time (US) PDT UTC-7
+    Short, // LAX, NYC, LON
+    Full,  // Pacific Time (US) PDT UTC-7
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -121,7 +121,10 @@ impl App {
                 // Only create if we successfully loaded default config
                 if let Err(_) = config.save() {
                     // Don't fail if we can't save config, just continue with defaults
-                    eprintln!("Warning: Could not create default config file at {}", config_path.display());
+                    eprintln!(
+                        "Warning: Could not create default config file at {}",
+                        config_path.display()
+                    );
                 }
             }
         }
@@ -145,7 +148,9 @@ impl App {
         }
 
         let now = Utc::now();
-        let selected_zone_index = config.selected_zone_index.min(timezone_manager.zone_count().saturating_sub(1));
+        let selected_zone_index = config
+            .selected_zone_index
+            .min(timezone_manager.zone_count().saturating_sub(1));
 
         Self {
             current_time: now,
@@ -168,7 +173,9 @@ impl App {
 
     pub fn to_config(&self) -> AppConfig {
         AppConfig {
-            zones: self.timezone_manager.zones()
+            zones: self
+                .timezone_manager
+                .zones()
                 .iter()
                 .map(|zone| {
                     // Try to find the original search name for this timezone
@@ -224,26 +231,36 @@ impl App {
                 let rounded_time = match direction {
                     Direction::Left => {
                         // Go to the start of the current hour, or previous hour if already at start
-                        if self.timeline_position.minute() == 0 && self.timeline_position.second() == 0 && self.timeline_position.nanosecond() == 0 {
+                        if self.timeline_position.minute() == 0
+                            && self.timeline_position.second() == 0
+                            && self.timeline_position.nanosecond() == 0
+                        {
                             // Already at hour boundary, go to previous hour
                             self.timeline_position - chrono::Duration::hours(1)
                         } else {
                             // Go to start of current hour
                             self.timeline_position
-                                .with_minute(0).unwrap_or(self.timeline_position)
-                                .with_second(0).unwrap_or(self.timeline_position)
-                                .with_nanosecond(0).unwrap_or(self.timeline_position)
+                                .with_minute(0)
+                                .unwrap_or(self.timeline_position)
+                                .with_second(0)
+                                .unwrap_or(self.timeline_position)
+                                .with_nanosecond(0)
+                                .unwrap_or(self.timeline_position)
                         }
-                    },
+                    }
                     Direction::Right => {
                         // Go to the start of the next hour
-                        let next_hour_start = self.timeline_position
-                            .with_minute(0).unwrap_or(self.timeline_position)
-                            .with_second(0).unwrap_or(self.timeline_position)
-                            .with_nanosecond(0).unwrap_or(self.timeline_position)
+                        let next_hour_start = self
+                            .timeline_position
+                            .with_minute(0)
+                            .unwrap_or(self.timeline_position)
+                            .with_second(0)
+                            .unwrap_or(self.timeline_position)
+                            .with_nanosecond(0)
+                            .unwrap_or(self.timeline_position)
                             + chrono::Duration::hours(1);
                         next_hour_start
-                    },
+                    }
                     _ => self.timeline_position,
                 };
                 self.timeline_position = rounded_time;
@@ -373,7 +390,8 @@ impl App {
                     if success {
                         // Update selected index if needed
                         if self.selected_zone_index >= self.timezone_manager.zone_count() {
-                            self.selected_zone_index = self.timezone_manager.zone_count().saturating_sub(1);
+                            self.selected_zone_index =
+                                self.timezone_manager.zone_count().saturating_sub(1);
                         }
                         self.save_config();
                     }
@@ -387,25 +405,31 @@ impl App {
             Message::ConfirmAddZone => {
                 if !self.zone_search_results.is_empty() {
                     // Use the currently selected search result
-                    if let Some(zone_name) = self.zone_search_results.get(self.selected_search_result) {
+                    if let Some(zone_name) =
+                        self.zone_search_results.get(self.selected_search_result)
+                    {
                         let success = self.timezone_manager.add_timezone_by_name(zone_name);
 
                         if success {
                             // Update selected index if needed
                             if self.selected_zone_index >= self.timezone_manager.zone_count() {
-                                self.selected_zone_index = self.timezone_manager.zone_count().saturating_sub(1);
+                                self.selected_zone_index =
+                                    self.timezone_manager.zone_count().saturating_sub(1);
                             }
                             self.save_config();
                         }
                     }
                 } else if !self.add_zone_input.is_empty() {
                     // Try to add the exact input if no search results
-                    let success = self.timezone_manager.add_timezone_by_name(&self.add_zone_input);
+                    let success = self
+                        .timezone_manager
+                        .add_timezone_by_name(&self.add_zone_input);
 
                     if success {
                         // Update selected index if needed
                         if self.selected_zone_index >= self.timezone_manager.zone_count() {
-                            self.selected_zone_index = self.timezone_manager.zone_count().saturating_sub(1);
+                            self.selected_zone_index =
+                                self.timezone_manager.zone_count().saturating_sub(1);
                         }
                         self.save_config();
                     }
@@ -426,12 +450,14 @@ impl App {
             }
 
             Message::RemoveCurrentZone => {
-                if self.timezone_manager.zone_count() > 1 { // Keep at least one zone
+                if self.timezone_manager.zone_count() > 1 {
+                    // Keep at least one zone
                     self.timezone_manager.remove_zone(self.selected_zone_index);
 
                     // Adjust selected index if needed
                     if self.selected_zone_index >= self.timezone_manager.zone_count() {
-                        self.selected_zone_index = self.timezone_manager.zone_count().saturating_sub(1);
+                        self.selected_zone_index =
+                            self.timezone_manager.zone_count().saturating_sub(1);
                     }
                     self.save_config();
                 }
@@ -485,30 +511,32 @@ impl App {
         };
 
         // Create inner area for content
-        let inner = area.inner(ratatui::layout::Margin { horizontal: 1, vertical: 1 });
+        let inner = area.inner(ratatui::layout::Margin {
+            horizontal: 1,
+            vertical: 1,
+        });
 
         let chunks = Layout::default()
             .direction(LayoutDirection::Horizontal)
             .constraints([
-                Constraint::Percentage(33),  // App name (left)
-                Constraint::Percentage(34),  // Local time (center)
-                Constraint::Percentage(33),  // Timeline (right)
+                Constraint::Percentage(33), // App name (left)
+                Constraint::Percentage(34), // Local time (center)
+                Constraint::Percentage(33), // Timeline (right)
             ])
             .split(inner);
 
         // Left: App name
-        let app_name = Paragraph::new("alltz v0.1.0")
-            .alignment(Alignment::Left);
+        let app_name = Paragraph::new("alltz v0.1.0").alignment(Alignment::Left);
         f.render_widget(app_name, chunks[0]);
 
         // Center: Local time
-        let local_display = Paragraph::new(format!("Local: {}", local_time_str))
-            .alignment(Alignment::Center);
+        let local_display =
+            Paragraph::new(format!("Local: {}", local_time_str)).alignment(Alignment::Center);
         f.render_widget(local_display, chunks[1]);
 
         // Right: Timeline time
-        let timeline_display = Paragraph::new(format!("Timeline: {}", timeline_time_str))
-            .alignment(Alignment::Right);
+        let timeline_display =
+            Paragraph::new(format!("Timeline: {}", timeline_time_str)).alignment(Alignment::Right);
         f.render_widget(timeline_display, chunks[2]);
 
         let border = Block::default().borders(Borders::ALL);
@@ -531,11 +559,14 @@ impl App {
         let tz_str = local_time.format("%Z").to_string();
         if tz_str.starts_with('+') || tz_str.starts_with('-') {
             // If it's still showing offset, try a different approach
-            format!("UTC{}", if local_offset_hours >= 0 {
-                format!("+{}", local_offset_hours)
-            } else {
-                local_offset_hours.to_string()
-            })
+            format!(
+                "UTC{}",
+                if local_offset_hours >= 0 {
+                    format!("+{}", local_offset_hours)
+                } else {
+                    local_offset_hours.to_string()
+                }
+            )
         } else {
             tz_str
         }
@@ -551,8 +582,8 @@ impl App {
             return;
         }
 
-
-        let zone_constraints = zones.iter()
+        let zone_constraints = zones
+            .iter()
             .map(|_| Constraint::Length(4))
             .collect::<Vec<_>>();
 
@@ -643,7 +674,7 @@ impl App {
 
         // Calculate modal size to fit content
         let modal_width = area.width * 2 / 3; // Same as add city modal
-        // Calculate height based on content: title + max column content + footer + borders
+                                              // Calculate height based on content: title + max column content + footer + borders
         let max_content_lines = 17; // Longest column has about 17 lines
         let modal_height = (2 + max_content_lines + 1 + 4).min(area.height.saturating_sub(2)); // title + content + footer + borders + margin
 
@@ -658,7 +689,10 @@ impl App {
         f.render_widget(Clear, popup_area);
 
         // Split into sections using layout
-        let inner = popup_area.inner(ratatui::layout::Margin { horizontal: 1, vertical: 1 });
+        let inner = popup_area.inner(ratatui::layout::Margin {
+            horizontal: 1,
+            vertical: 1,
+        });
         let chunks = Layout::default()
             .direction(LayoutDirection::Vertical)
             .constraints([
@@ -670,9 +704,11 @@ impl App {
 
         // Render title
         let title = Paragraph::new("🕐 HELP & KEYBOARD SHORTCUTS")
-            .style(Style::default()
-                .fg(self.color_theme.get_selected_border_color())
-                .add_modifier(Modifier::BOLD))
+            .style(
+                Style::default()
+                    .fg(self.color_theme.get_selected_border_color())
+                    .add_modifier(Modifier::BOLD),
+            )
             .alignment(Alignment::Center);
         f.render_widget(title, chunks[0]);
 
@@ -684,44 +720,62 @@ impl App {
 
         // Left column content
         let left_sections = vec![
-            ("TIME NAVIGATION", vec![
-                "h/← or l/→     Scrub timeline (1 hour)",
-                "Shift + h/l    Fine scrub (1 minute)",
-                "[ or ]         Adjust by ±15 minutes",
-                "{ or }         Adjust by ±1 hour",
-                "t              Reset to current time",
-            ]),
-            ("ZONE NAVIGATION", vec![
-                "j/↓ or k/↑     Navigate between zones",
-                "               Selected has colored border",
-            ]),
-            ("DISPLAY OPTIONS", vec![
-                "m              Toggle 12/24 hour format",
-                "n              Toggle short/full names",
-                "d              Toggle date display",
-                "c              Cycle color themes",
-            ]),
+            (
+                "TIME NAVIGATION",
+                vec![
+                    "h/← or l/→     Scrub timeline (1 hour)",
+                    "Shift + h/l    Fine scrub (1 minute)",
+                    "[ or ]         Adjust by ±15 minutes",
+                    "{ or }         Adjust by ±1 hour",
+                    "t              Reset to current time",
+                ],
+            ),
+            (
+                "ZONE NAVIGATION",
+                vec![
+                    "j/↓ or k/↑     Navigate between zones",
+                    "               Selected has colored border",
+                ],
+            ),
+            (
+                "DISPLAY OPTIONS",
+                vec![
+                    "m              Toggle 12/24 hour format",
+                    "n              Toggle short/full names",
+                    "d              Toggle date display",
+                    "c              Cycle color themes",
+                ],
+            ),
         ];
 
         // Right column content
         let right_sections = vec![
-            ("ZONE MANAGEMENT", vec![
-                "a              Add new timezone",
-                "r              Remove selected timezone",
-                "1-8            Quick-select search results",
-            ]),
-            ("INDICATORS", vec![
-                "│              Red line: Current time",
-                "┃              Colored line: Timeline position",
-                "⇈              DST spring forward",
-                "⇊              DST fall back",
-                "░ ▒ ▓          Night, Awake, Work hours",
-            ]),
-            ("CONTROLS", vec![
-                "?              Show/hide help",
-                "q              Quit",
-                "Esc            Cancel operation",
-            ]),
+            (
+                "ZONE MANAGEMENT",
+                vec![
+                    "a              Add new timezone",
+                    "r              Remove selected timezone",
+                    "1-8            Quick-select search results",
+                ],
+            ),
+            (
+                "INDICATORS",
+                vec![
+                    "│              Red line: Current time",
+                    "┃              Colored line: Timeline position",
+                    "⇈              DST spring forward",
+                    "⇊              DST fall back",
+                    "░ ▒ ▓          Night, Awake, Work hours",
+                ],
+            ),
+            (
+                "CONTROLS",
+                vec![
+                    "?              Show/hide help",
+                    "q              Quit",
+                    "Esc            Cancel operation",
+                ],
+            ),
         ];
 
         // Render left column
@@ -797,7 +851,10 @@ impl App {
         f.render_widget(Clear, popup_area);
 
         // Split the modal into sections
-        let inner = popup_area.inner(ratatui::layout::Margin { horizontal: 1, vertical: 1 });
+        let inner = popup_area.inner(ratatui::layout::Margin {
+            horizontal: 1,
+            vertical: 1,
+        });
         let chunks = Layout::default()
             .direction(LayoutDirection::Vertical)
             .constraints([
@@ -836,7 +893,11 @@ impl App {
         let border = Block::default()
             .borders(Borders::ALL)
             .title(" Add Timezone ")
-            .title_style(ratatui::style::Style::default().fg(ratatui::style::Color::Green).add_modifier(Modifier::BOLD))
+            .title_style(
+                ratatui::style::Style::default()
+                    .fg(ratatui::style::Color::Green)
+                    .add_modifier(Modifier::BOLD),
+            )
             .border_style(ratatui::style::Style::default().fg(ratatui::style::Color::Green))
             .style(ratatui::style::Style::default().bg(ratatui::style::Color::Black));
         f.render_widget(border, popup_area);
@@ -846,7 +907,9 @@ impl App {
         let mut rows = Vec::new();
 
         for (i, result) in self.zone_search_results.iter().enumerate() {
-            if let Some((city_country, time_str, offset, code)) = self.get_search_result_parts(result) {
+            if let Some((city_country, time_str, offset, code)) =
+                self.get_search_result_parts(result)
+            {
                 rows.push(Row::new(vec![
                     Cell::from(format!("{}", i + 1)),
                     Cell::from(city_country),
@@ -873,19 +936,23 @@ impl App {
                 Constraint::Length(10), // Time
                 Constraint::Length(8),  // Offset
                 Constraint::Length(6),  // Code
-            ]
+            ],
         )
         .header(Row::new(vec![
             Cell::from("#").style(ratatui::style::Style::default().add_modifier(Modifier::BOLD)),
-            Cell::from("City, Country").style(ratatui::style::Style::default().add_modifier(Modifier::BOLD)),
+            Cell::from("City, Country")
+                .style(ratatui::style::Style::default().add_modifier(Modifier::BOLD)),
             Cell::from("Time").style(ratatui::style::Style::default().add_modifier(Modifier::BOLD)),
-            Cell::from("Offset").style(ratatui::style::Style::default().add_modifier(Modifier::BOLD)),
+            Cell::from("Offset")
+                .style(ratatui::style::Style::default().add_modifier(Modifier::BOLD)),
             Cell::from("Code").style(ratatui::style::Style::default().add_modifier(Modifier::BOLD)),
         ]))
         .style(ratatui::style::Style::default().fg(ratatui::style::Color::White))
-        .row_highlight_style(ratatui::style::Style::default()
-            .fg(self.color_theme.get_work_color())
-            .add_modifier(Modifier::BOLD))
+        .row_highlight_style(
+            ratatui::style::Style::default()
+                .fg(self.color_theme.get_work_color())
+                .add_modifier(Modifier::BOLD),
+        )
         .highlight_symbol("> ")
         .column_spacing(1);
 
@@ -943,12 +1010,16 @@ impl App {
             let country = crate::time::TimeZoneManager::get_country_for_city(city_name);
             let city_country = format!("{}, {}", city_name, country);
 
-            Some((city_country, time_str, timezone.offset_string(), display_name.clone()))
+            Some((
+                city_country,
+                time_str,
+                timezone.offset_string(),
+                display_name.clone(),
+            ))
         } else {
             None
         }
     }
-
 }
 
 #[cfg(test)]
@@ -962,16 +1033,30 @@ mod tests {
         // Selected zone index is now set to match local timezone, not necessarily 0
         assert!(app.selected_zone_index < app.timezone_manager.zone_count());
         // Display format and timezone display mode are loaded from config, so they might vary
-        assert!(matches!(app.display_format, TimeFormat::TwentyFourHour | TimeFormat::TwelveHour));
-        assert!(matches!(app.timezone_display_mode, TimezoneDisplayMode::Short | TimezoneDisplayMode::Full));
+        assert!(matches!(
+            app.display_format,
+            TimeFormat::TwentyFourHour | TimeFormat::TwelveHour
+        ));
+        assert!(matches!(
+            app.timezone_display_mode,
+            TimezoneDisplayMode::Short | TimezoneDisplayMode::Full
+        ));
         assert!(!app.show_help);
         assert!(!app.adding_zone);
         assert!(app.add_zone_input.is_empty());
         assert!(app.zone_search_results.is_empty());
         assert_eq!(app.selected_search_result, 0);
-        assert!(!app.show_date); // Default is false
+        // show_date is loaded from config, could be true or false
         // Color theme should match what's loaded from config (could be default or saved value)
-        assert!(matches!(app.color_theme, crate::config::ColorTheme::Default | crate::config::ColorTheme::Ocean | crate::config::ColorTheme::Forest | crate::config::ColorTheme::Sunset | crate::config::ColorTheme::Cyberpunk | crate::config::ColorTheme::Monochrome));
+        assert!(matches!(
+            app.color_theme,
+            crate::config::ColorTheme::Default
+                | crate::config::ColorTheme::Ocean
+                | crate::config::ColorTheme::Forest
+                | crate::config::ColorTheme::Sunset
+                | crate::config::ColorTheme::Cyberpunk
+                | crate::config::ColorTheme::Monochrome
+        ));
     }
 
     #[test]
@@ -983,7 +1068,8 @@ mod tests {
         assert_ne!(app.color_theme, initial_theme);
 
         // Cycle through all themes (6 total) and ensure we can get back to the start
-        for _ in 0..4 { // We already cycled once, so 4 more cycles to complete the loop
+        for _ in 0..4 {
+            // We already cycled once, so 4 more cycles to complete the loop
             app.update(Message::CycleColorTheme);
         }
 

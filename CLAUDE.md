@@ -4,32 +4,40 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**alltz** is a terminal-based time zone viewer designed for developers, remote teams, and frequent schedulers. Inspired by Every Time Zone (everytimezone.com), it provides an at-a-glance view of major timezones with visual horizontal representation of yesterday, today, and tomorrow, with a vertical "now" indicator.
+**alltz** is a terminal-based timezone viewer for developers and remote teams. It provides visual timeline scrubbing across multiple timezones with DST indicators, color themes, and persistent configuration.
 
-Built with Rust edition 2024, using ratatui for terminal UI and crossterm for cross-platform terminal manipulation.
+Built with Rust, using ratatui for terminal UI, designed for fast CLI workflow integration.
 
 ## Architecture
 
-The project has a simple structure:
-- `src/main.rs`: Entry point with main function
-- `Cargo.toml`: Project configuration with ratatui and crossterm dependencies
+The project structure:
+- `src/main.rs`: CLI entry point and TUI event loop
+- `src/app.rs`: Main application state and message handling
+- `src/time.rs`: Timezone management and time calculations  
+- `src/config.rs`: Configuration persistence and color themes
+- `src/ui/timeline.rs`: Timeline widget rendering
+- `.github/workflows/`: CI/CD automation for releases
 
 ## Dependencies
 
-- **ratatui** (0.29.0): Terminal user interface library for building rich TUI applications
-- **crossterm** (0.29.0): Cross-platform terminal manipulation library
-- **chrono** (future): Date and time handling for timezone calculations
-- **chrono-tz** (future): Timezone database support for accurate conversions
+- **ratatui** (0.29.0): Terminal user interface library
+- **crossterm** (0.29.0): Terminal manipulation and events
+- **chrono** (0.4): Date and time handling
+- **chrono-tz** (0.10): Timezone database support
+- **clap** (4.5): CLI argument parsing
+- **serde/toml** (1.0): Configuration serialization
 
 ## Common Commands
 
 ### Building and Running
 ```bash
-# Build the project
-cargo build
-
-# Run the project
+# Build and run in development
 cargo run
+
+# Run with CLI options
+cargo run -- --help
+cargo run -- time Tokyo
+cargo run -- list
 
 # Build for release
 cargo build --release
@@ -37,34 +45,51 @@ cargo build --release
 
 ### Development
 ```bash
-# Check code without building
-cargo check
+# Run tests
+cargo test
 
-# Format code
+# Format code  
 cargo fmt
 
 # Run linter
 cargo clippy
 
-# Run tests
-cargo test
+# Local development build
+./release-local.sh
 ```
 
-### Dependencies
+### Release Process
 ```bash
-# Add a new dependency
-cargo add <crate_name>
+# Create release (triggers GitHub Actions)
+git tag v0.1.0
+git push origin v0.1.0
 
-# Update dependencies
-cargo update
+# Local testing only
+./release-local.sh
 ```
 
-## Development Notes
+## Current Features
 
-- Project uses Rust edition 2024
-- Built for terminal UI development with ratatui framework
-- Uses crossterm for terminal event handling and manipulation
-- See PLAN.md for detailed project architecture and development phases
-- Core features: real-time timezone display, visual timeline, "now" indicator
-- Target: developers, remote teams, and frequent schedulers
-- Design inspired by everytimezone.com but optimized for CLI workflows
+- ✅ **Multi-timezone display** with UTC offset ordering
+- ✅ **Timeline scrubbing** with visual indicators
+- ✅ **6 color themes** (Default, Ocean, Forest, Sunset, Cyberpunk, Monochrome)
+- ✅ **DST indicators** (⇈ spring forward, ⇊ fall back)
+- ✅ **Persistent configuration** (~/.config/alltz/config.toml)
+- ✅ **CLI commands** (list, time <city>, zone <city>)
+- ✅ **Date display** toggle
+- ✅ **12/24 hour format** toggle
+
+## Key Behaviors
+
+- Configuration auto-loads from ~/.config/alltz/config.toml
+- Zones ordered by UTC offset (-12 to +14)
+- Timeline shows 48-hour span (yesterday → today → tomorrow)
+- Real-time updates every second
+- Vim-like navigation (h/j/k/l)
+
+## Testing
+
+- Run `cargo test` for unit tests
+- GitHub Actions runs CI on push to main
+- Release workflow builds cross-platform binaries
+- Homebrew formula supports precompiled + source builds

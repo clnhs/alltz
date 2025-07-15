@@ -1,0 +1,197 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-apple-darwin
+            os: macos-latest
+            name: alltz-x86_64-apple-darwin
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            name: alltz-aarch64-apple-darwin
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            name: alltz-x86_64-unknown-linux-gnu
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            name: alltz-x86_64-pc-windows-msvc
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Run tests
+        run: cargo test --all-features
+
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Package (Unix)
+        if: matrix.os != 'windows-latest'
+        run: |
+          cd target/${{ matrix.target }}/release
+          tar czf ../../../${{ matrix.name }}.tar.gz alltz
+          cd -
+
+      - name: Package (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          cd target/${{ matrix.target }}/release
+          7z a ../../../${{ matrix.name }}.zip alltz.exe
+          cd -
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          path: |
+            *.tar.gz
+            *.zip
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create checksums
+        run: |
+          cd artifacts
+          sha256sum */*.tar.gz */*.zip > checksums.txt
+          mv */*.tar.gz */*.zip .
+          rm -rf */
+
+      - name: Extract version
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: alltz ${{ steps.version.outputs.VERSION }}
+          body: |
+            ## 🌍 alltz ${{ steps.version.outputs.VERSION }}
+
+            ### Features
+            - 🎨 **6 Color Themes** - Default, Ocean, Forest, Sunset, Cyberpunk, Monochrome
+            - 🕐 **DST Indicators** - Visual spring forward (⇈) and fall back (⇊) arrows
+            - 📍 **Local Time Display** - Shows scrubbed time in your timezone with day and UTC offset
+            - 💻 **CLI Commands** - `list`, `time <city>`, `zone <city>`
+            - 💾 **Persistent Config** - Saves your timezone list and preferences
+
+            ### Installation
+
+            #### Homebrew (macOS/Linux)
+            ```bash
+            brew tap abradburne/alltz
+            brew install alltz
+            ```
+
+            #### Direct Download
+            Download the appropriate binary for your platform below.
+
+            #### From Source
+            ```bash
+            cargo install --git https://github.com/${{ github.repository }}
+            ```
+
+            ### Checksums
+            See `checksums.txt` for SHA256 hashes of all binaries.
+          files: |
+            artifacts/*.tar.gz
+            artifacts/*.zip
+            artifacts/checksums.txt
+          draft: false
+          prerelease: false
+
+  update-homebrew:
+    name: Update Homebrew Formula
+    needs: release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Extract version
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Calculate SHA256 for macOS builds
+        id: sha
+        run: |
+          cd artifacts
+          INTEL_SHA=$(sha256sum alltz-x86_64-apple-darwin/alltz-x86_64-apple-darwin.tar.gz | cut -d' ' -f1)
+          ARM_SHA=$(sha256sum alltz-aarch64-apple-darwin/alltz-aarch64-apple-darwin.tar.gz | cut -d' ' -f1)
+          echo "INTEL_SHA=$INTEL_SHA" >> $GITHUB_OUTPUT
+          echo "ARM_SHA=$ARM_SHA" >> $GITHUB_OUTPUT
+
+      - name: Update Homebrew formula
+        run: |
+          sed -i "s/version \".*\"/version \"${{ steps.version.outputs.VERSION }}\"/" homebrew-tap/Formula/alltz.rb
+          sed -i "s|url \".*x86_64.*\"|url \"https://github.com/${{ github.repository }}/releases/download/v${{ steps.version.outputs.VERSION }}/alltz-x86_64-apple-darwin.tar.gz\"|" homebrew-tap/Formula/alltz.rb
+          sed -i "s|sha256 \".*\" # x86_64|sha256 \"${{ steps.sha.outputs.INTEL_SHA }}\" # x86_64|" homebrew-tap/Formula/alltz.rb
+          sed -i "s|url \".*aarch64.*\"|url \"https://github.com/${{ github.repository }}/releases/download/v${{ steps.version.outputs.VERSION }}/alltz-aarch64-apple-darwin.tar.gz\"|" homebrew-tap/Formula/alltz.rb
+          sed -i "s|sha256 \".*\" # aarch64|sha256 \"${{ steps.sha.outputs.ARM_SHA }}\" # aarch64|" homebrew-tap/Formula/alltz.rb
+
+      - name: Create Draft Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update Homebrew formula to ${{ steps.version.outputs.VERSION }}"
+          title: "[DRAFT] Update Homebrew formula to ${{ steps.version.outputs.VERSION }}"
+          body: |
+            🤖 **Automated Homebrew Formula Update**
+            
+            This PR updates the Homebrew formula for release v${{ steps.version.outputs.VERSION }}
+            
+            **SHA256 checksums:**
+            - Intel macOS: `${{ steps.sha.outputs.INTEL_SHA }}`
+            - ARM64 macOS: `${{ steps.sha.outputs.ARM_SHA }}`
+            
+            **Manual steps:**
+            1. ✅ GitHub release created automatically  
+            2. ⏳ Review this PR and test formula changes
+            3. ⏳ Update Linux SHA256 if needed
+            4. ⏳ Merge when ready to publish to Homebrew
+            
+            **Testing the formula:**
+            ```bash
+            # Test locally before merging
+            brew install --build-from-source ./homebrew-tap/Formula/alltz.rb
+            ```
+          branch: homebrew-${{ steps.version.outputs.VERSION }}
+          base: main
+          draft: true

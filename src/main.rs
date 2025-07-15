@@ -1,19 +1,18 @@
 mod app;
+mod config;
 mod time;
 mod ui;
-mod config;
 
-use app::{App, Message, Direction};
+use app::{App, Direction, Message};
 use clap::{Parser, Subcommand};
 use crossterm::{
-    event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEventKind, KeyModifiers},
+    event::{
+        self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEventKind, KeyModifiers,
+    },
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
-use ratatui::{
-    backend::CrosstermBackend,
-    Terminal,
-};
+use ratatui::{backend::CrosstermBackend, Terminal};
 use std::{
     error::Error,
     io,
@@ -27,7 +26,9 @@ const TICK_RATE: Duration = Duration::from_millis(1000);
 #[command(name = "alltz")]
 #[command(version = "0.1.0")]
 #[command(about = "🌍 Terminal-based timezone viewer for developers and remote teams")]
-#[command(long_about = "alltz is a terminal application for tracking multiple timezones simultaneously. Features include DST indicators, color themes, and intuitive timeline scrubbing.")]
+#[command(
+    long_about = "alltz is a terminal application for tracking multiple timezones simultaneously. Features include DST indicators, color themes, and intuitive timeline scrubbing."
+)]
 struct Cli {
     #[command(subcommand)]
     command: Option<Commands>,
@@ -152,12 +153,12 @@ fn run_app<B: ratatui::backend::Backend>(
                                     input.push(c);
                                     Some(Message::UpdateAddZoneInput(input))
                                 }
-                            },
+                            }
                             KeyCode::Backspace => {
                                 let mut input = app.add_zone_input.clone();
                                 input.pop();
                                 Some(Message::UpdateAddZoneInput(input))
-                            },
+                            }
                             KeyCode::Up => Some(Message::NavigateSearchResults(Direction::Up)),
                             KeyCode::Down => Some(Message::NavigateSearchResults(Direction::Down)),
                             KeyCode::Enter => Some(Message::ConfirmAddZone),
@@ -181,16 +182,20 @@ fn run_app<B: ratatui::backend::Backend>(
                                 } else {
                                     Some(Message::ScrubTimeline(Direction::Left))
                                 }
-                            },
+                            }
                             KeyCode::Char('l') | KeyCode::Right => {
                                 if key.modifiers.contains(KeyModifiers::SHIFT) {
                                     Some(Message::ScrubTimelineWithShift(Direction::Right))
                                 } else {
                                     Some(Message::ScrubTimeline(Direction::Right))
                                 }
-                            },
-                            KeyCode::Char('j') | KeyCode::Down => Some(Message::NavigateZone(Direction::Down)),
-                            KeyCode::Char('k') | KeyCode::Up => Some(Message::NavigateZone(Direction::Up)),
+                            }
+                            KeyCode::Char('j') | KeyCode::Down => {
+                                Some(Message::NavigateZone(Direction::Down))
+                            }
+                            KeyCode::Char('k') | KeyCode::Up => {
+                                Some(Message::NavigateZone(Direction::Up))
+                            }
                             KeyCode::Char('[') => Some(Message::FineAdjust(-15)),
                             KeyCode::Char(']') => Some(Message::FineAdjust(15)),
                             KeyCode::Char('{') => Some(Message::FineAdjust(-60)),
@@ -219,7 +224,7 @@ fn run_app<B: ratatui::backend::Backend>(
 
 /// Handle CLI subcommands (list, time, zone) and exit without starting TUI
 fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
-    use chrono::{Utc, Local, Offset};
+    use chrono::{Local, Offset, Utc};
     use time::TimeZoneManager;
 
     match command {
@@ -236,9 +241,10 @@ fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
 
         Commands::Time { city } => {
             let timezones = TimeZoneManager::get_all_available_timezones();
-            if let Some((tz, city_name, _, _, _)) = timezones.iter()
-                .find(|(_, name, _, _, _)| name.eq_ignore_ascii_case(&city)) {
-
+            if let Some((tz, city_name, _, _, _)) = timezones
+                .iter()
+                .find(|(_, name, _, _, _)| name.eq_ignore_ascii_case(&city))
+            {
                 let now = Utc::now();
                 let local_time = now.with_timezone(tz);
                 let local_system = now.with_timezone(&Local);
@@ -249,16 +255,20 @@ fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
                 println!("🏠 Your local time:");
                 println!("   {}", local_system.format("%H:%M:%S %Z (%a, %b %d)"));
             } else {
-                eprintln!("❌ City '{}' not found. Use 'alltz list' to see available timezones.", city);
+                eprintln!(
+                    "❌ City '{}' not found. Use 'alltz list' to see available timezones.",
+                    city
+                );
                 std::process::exit(1);
             }
         }
 
         Commands::Zone { city } => {
             let timezones = TimeZoneManager::get_all_available_timezones();
-            if let Some((tz, city_name, code, lat, lon)) = timezones.iter()
-                .find(|(_, name, _, _, _)| name.eq_ignore_ascii_case(&city)) {
-
+            if let Some((tz, city_name, code, lat, lon)) = timezones
+                .iter()
+                .find(|(_, name, _, _, _)| name.eq_ignore_ascii_case(&city))
+            {
                 let now = Utc::now();
                 let local_time = now.with_timezone(tz);
                 let offset_seconds = local_time.offset().fix().local_minus_utc();
@@ -269,12 +279,18 @@ fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
                 println!("   Timezone:     {}", tz);
                 println!("   UTC Offset:   UTC{:+}", offset_hours);
                 println!("   Coordinates:  {:.2}°N, {:.2}°W", lat, lon.abs());
-                println!("   Current Time: {}", local_time.format("%H:%M:%S %Z (%a, %b %d, %Y)"));
+                println!(
+                    "   Current Time: {}",
+                    local_time.format("%H:%M:%S %Z (%a, %b %d, %Y)")
+                );
 
                 // Simple DST status (just show current offset)
                 println!("   DST Status:   Current offset UTC{:+}", offset_hours);
             } else {
-                eprintln!("❌ City '{}' not found. Use 'alltz list' to see available timezones.", city);
+                eprintln!(
+                    "❌ City '{}' not found. Use 'alltz list' to see available timezones.",
+                    city
+                );
                 std::process::exit(1);
             }
         }
@@ -289,17 +305,25 @@ fn create_app_with_options(cli: Cli) -> Result<App, Box<dyn Error>> {
 
     if let Some(timezone_name) = cli.timezone {
         let timezones = time::TimeZoneManager::get_all_available_timezones();
-        if let Some(_) = timezones.iter().position(|(_, name, _, _, _)| name.eq_ignore_ascii_case(&timezone_name)) {
+        if let Some(_) = timezones
+            .iter()
+            .position(|(_, name, _, _, _)| name.eq_ignore_ascii_case(&timezone_name))
+        {
             app.timezone_manager.add_timezone_by_name(&timezone_name);
 
             // Set this timezone as selected
             if let Some(app_index) = app.timezone_manager.zones().iter().position(|zone| {
-                timezones.iter().any(|(tz, name, _, _, _)| *tz == zone.tz && name.eq_ignore_ascii_case(&timezone_name))
+                timezones.iter().any(|(tz, name, _, _, _)| {
+                    *tz == zone.tz && name.eq_ignore_ascii_case(&timezone_name)
+                })
             }) {
                 app.selected_zone_index = app_index;
             }
         } else {
-            eprintln!("⚠️  Warning: Timezone '{}' not found. Use 'alltz list' to see available options.", timezone_name);
+            eprintln!(
+                "⚠️  Warning: Timezone '{}' not found. Use 'alltz list' to see available options.",
+                timezone_name
+            );
         }
     }
 
