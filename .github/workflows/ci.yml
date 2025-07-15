@@ -54,7 +54,8 @@ jobs:
         run: |
           cargo build --release
           ./target/release/alltz --version
-          ./target/release/alltz list | head -10
+          ./target/release/alltz list | head -5
+          ./target/release/alltz time London
         shell: bash
 
   build:

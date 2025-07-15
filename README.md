@@ -2,11 +2,11 @@
 
 A terminal-based timezone viewer. Track multiple timezones simultaneously with timeline scrubbing, DST indicators, and multiple color themes.
 
-![alltz screenshot](alltz-screenshot.png)
-
 ![Demo](https://img.shields.io/badge/Status-Active-brightgreen)
 ![Rust](https://img.shields.io/badge/Language-Rust-orange)
 ![License](https://img.shields.io/badge/License-MIT-blue)
+
+![alltz screenshot](alltz-screenshot.png)
 
 ## ✨ Features
 
