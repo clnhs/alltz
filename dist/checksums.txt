@@ -1,0 +1,1 @@
+f32e26ae696d24f4f36d07e247172b1a73b753ad472cc837d5b14b2084ac6b6a  alltz-v0.1.0-aarch64-apple-darwin.tar.gz

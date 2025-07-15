@@ -1,6 +1,6 @@
 # alltz 🌍
 
-A terminal-based timezone viewer. Track multiple timezones simultaneously with timeline scrubbing, weather integration, DST indicators, and multiple color themes.
+A terminal-based timezone viewer. Track multiple timezones simultaneously with timeline scrubbing, DST indicators, and multiple color themes.
 
 ![Demo](https://img.shields.io/badge/Status-Active-brightgreen)
 ![Rust](https://img.shields.io/badge/Language-Rust-orange)
@@ -9,7 +9,6 @@ A terminal-based timezone viewer. Track multiple timezones simultaneously with t
 ## ✨ Features
 
 - 🌍 **Multi-timezone display** with visual timeline scrubbing
-- 🌤️ **Weather integration** with real weather icons (requires API key)
 - 📅 **Date display** with timezone-aware positioning on timelines
 - 🕐 **DST transition indicators** (⇈ spring forward, ⇊ fall back)
 - 🎨 **6 color themes** (Default, Ocean, Forest, Sunset, Cyberpunk, Monochrome)
@@ -25,7 +24,7 @@ A terminal-based timezone viewer. Track multiple timezones simultaneously with t
 
 ```bash
 # Add the tap (once alltz is published)
-brew tap your-username/alltz
+brew tap abradburne/alltz
 brew install alltz
 ```
 
@@ -33,7 +32,7 @@ brew install alltz
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/alltz.git
+git clone https://github.com/abradburne/alltz.git
 cd alltz
 
 # Build and install with Cargo
@@ -46,7 +45,7 @@ sudo cp target/release/alltz /usr/local/bin/
 
 ### Option 3: Download Pre-built Binary
 
-1. Download the latest release from [GitHub Releases](https://github.com/your-username/alltz/releases)
+1. Download the latest release from [GitHub Releases](https://github.com/abradburne/alltz/releases)
 2. Extract the binary to your PATH:
    ```bash
    tar -xzf alltz-v0.1.0-your-platform.tar.gz
@@ -72,35 +71,6 @@ alltz zone "New York"
 alltz --timezone London --twelve-hour --theme ocean
 ```
 
-## ⚙️ Weather Setup (Optional)
-
-alltz supports real weather data from OpenWeatherMap. **Without an API key, weather display is disabled** - no fake data is shown.
-
-### Getting an API Key
-
-1. Sign up for a free account at [OpenWeatherMap](https://openweathermap.org/api)
-2. Generate an API key (free tier allows 1,000 calls/day)
-3. Set the environment variable:
-
-```bash
-# For current session
-export OPENWEATHER_API_KEY="your_api_key_here"
-
-# For permanent setup, add to your shell profile
-echo 'export OPENWEATHER_API_KEY="your_api_key_here"' >> ~/.bashrc
-# or for zsh users:
-echo 'export OPENWEATHER_API_KEY="your_api_key_here"' >> ~/.zshrc
-```
-
-### Verifying Weather Setup
-
-```bash
-# Check if weather is enabled
-alltz
-# Press 'w' to toggle weather display
-# If API key is valid, you'll see weather icons
-# If no API key, weather toggle has no effect
-```
 
 ## 🎮 TUI Controls
 
@@ -118,12 +88,11 @@ alltz
 
 ### Zone Management
 - `a` - Add new timezone (with search)
-- `d` - Remove current timezone
+- `r` - Remove current timezone
 - `1-9` - Quick select search results when adding zones
 
 ### Display Options
-- `w` - Toggle weather display (only works with valid API key)
-- `e` - Toggle date display on timelines
+- `d` - Toggle date display on timelines
 - `c` - Cycle through color themes
 - `?` - Show/hide help
 - `q` - Quit
@@ -186,7 +155,6 @@ selected_zone_index = 0
 display_format = "TwentyFourHour"
 timezone_display_mode = "Short"
 color_theme = "Default"
-show_weather = true
 show_date = false
 
 [time_config]
@@ -232,14 +200,6 @@ Plus UTC and many more. Use `alltz list` to see all available timezones.
 
 ## 🔧 Troubleshooting
 
-### Weather Not Showing
-- Verify API key is set: `echo $OPENWEATHER_API_KEY`
-- Check key is valid by testing manually:
-  ```bash
-  curl "https://api.openweathermap.org/data/2.5/weather?q=London&appid=$OPENWEATHER_API_KEY"
-  ```
-- Restart alltz after setting the environment variable
-
 ### Terminal Display Issues
 - Ensure your terminal supports Unicode characters
 - Try different color themes if colors appear wrong
@@ -261,7 +221,7 @@ Plus UTC and many more. Use `alltz list` to see all available timezones.
 ### Building from Source
 
 ```bash
-git clone https://github.com/your-username/alltz.git
+git clone https://github.com/abradburne/alltz.git
 cd alltz
 
 # Run in development mode
@@ -285,7 +245,6 @@ src/
 ├── main.rs          # CLI and TUI setup
 ├── app.rs           # Application state and logic
 ├── time.rs          # Timezone management
-├── weather.rs       # Weather API integration
 ├── config.rs        # Configuration and themes
 └── ui/
     └── timeline.rs  # Timeline visualization widget
@@ -297,11 +256,8 @@ src/
 # Run all tests
 cargo test
 
-# Run with weather API key for full testing
-OPENWEATHER_API_KEY="test_key" cargo test
-
 # Test specific module
-cargo test weather
+cargo test time
 ```
 
 ## 📄 License
@@ -314,20 +270,18 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 
 ### Areas for Contribution
 - Additional timezone support
-- Weather API improvements
 - New color themes
 - Performance optimizations
 - Documentation improvements
 
 ## 🙋 Support
 
-- **Issues**: Report bugs and request features on [GitHub Issues](https://github.com/your-username/alltz/issues)
-- **Discussions**: Join conversations on [GitHub Discussions](https://github.com/your-username/alltz/discussions)
+- **Issues**: Report bugs and request features on [GitHub Issues](https://github.com/abradburne/alltz/issues)
+- **Discussions**: Join conversations on [GitHub Discussions](https://github.com/abradburne/alltz/discussions)
 - **Documentation**: Check the [installation guide](INSTALL.md) for detailed setup instructions
 
 ## 🎯 Roadmap
 
-- [ ] Real weather API integration with caching
 - [ ] Custom timezone support
 - [ ] Export timezone schedules
 - [ ] Meeting scheduler integration

@@ -1,12 +1,12 @@
 # Homebrew Tap for alltz
 
-This is the official Homebrew tap for [alltz](https://github.com/your-username/alltz) - a beautiful terminal timezone viewer.
+This is the official Homebrew tap for [alltz](https://github.com/abradburne/alltz) - a beautiful terminal timezone viewer.
 
 ## Installation
 
 ```bash
 # Add the tap
-brew tap your-username/alltz
+brew tap abradburne/alltz
 
 # Install alltz
 brew install alltz
@@ -14,7 +14,7 @@ brew install alltz
 
 Or install directly:
 ```bash
-brew install your-username/alltz/alltz
+brew install abradburne/alltz/alltz
 ```
 
 ## Usage
@@ -23,7 +23,7 @@ brew install your-username/alltz/alltz
 # Launch interactive TUI
 alltz
 
-# Show available timezones  
+# Show available timezones
 alltz list
 
 # Check time in specific city
@@ -36,7 +36,6 @@ alltz zone London
 ## Features
 
 - 🌍 **Multi-timezone display** with visual timeline
-- 🌤️ **Weather integration** with emoji icons
 - 🎨 **6 beautiful color themes**
 - 🕐 **DST transition indicators**
 - 💾 **Persistent configuration**
@@ -48,4 +47,4 @@ The formula is automatically updated when new releases are published to the main
 
 ## Support
 
-For issues and feature requests, please visit the [main repository](https://github.com/your-username/alltz/issues).
+For issues and feature requests, please visit the [main repository](https://github.com/abradburne/alltz/issues).

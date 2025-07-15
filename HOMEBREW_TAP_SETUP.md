@@ -16,7 +16,7 @@ This guide walks you through creating a complete Homebrew tap for alltz.
 git init
 git add .
 git commit -m "Initial commit"
-git remote add origin https://github.com/your-username/alltz.git
+git remote add origin https://github.com/abradburne/alltz.git
 git push -u origin main
 ```
 
@@ -24,7 +24,7 @@ git push -u origin main
 ```bash
 # Create new repository on GitHub named: homebrew-alltz
 # Clone it locally
-git clone https://github.com/your-username/homebrew-alltz.git
+git clone https://github.com/abradburne/homebrew-alltz.git
 cd homebrew-alltz
 
 # Copy the tap files we created
@@ -48,9 +48,9 @@ This will:
 # Copy the SHA256 hashes from step 3 output
 # Edit homebrew-alltz/Formula/alltz.rb and replace:
 # - SHA256_ARM64_HASH with ARM64 macOS hash
-# - SHA256_X86_64_HASH with Intel macOS hash  
+# - SHA256_X86_64_HASH with Intel macOS hash
 # - SHA256_LINUX_HASH with Linux hash
-# - your-username with your actual GitHub username
+# - abradburne with your actual GitHub username
 
 git add .
 git commit -m "Add alltz formula v0.1.0"
@@ -60,7 +60,7 @@ git push origin main
 ### 5. Test Installation
 ```bash
 # Test the tap locally
-brew tap your-username/alltz
+brew tap abradburne/alltz
 brew install alltz
 
 # Verify installation
@@ -75,21 +75,21 @@ Here's the template for `Formula/alltz.rb`:
 ```ruby
 class Alltz < Formula
   desc "🌍 Terminal-based timezone viewer for developers and remote teams"
-  homepage "https://github.com/your-username/alltz"
+  homepage "https://github.com/abradburne/alltz"
   version "0.1.0"
-  
+
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/your-username/alltz/releases/download/v0.1.0/alltz-v0.1.0-aarch64-apple-darwin.tar.gz"
+      url "https://github.com/abradburne/alltz/releases/download/v0.1.0/alltz-v0.1.0-aarch64-apple-darwin.tar.gz"
       sha256 "REPLACE_WITH_ARM64_SHA"
     else
-      url "https://github.com/your-username/alltz/releases/download/v0.1.0/alltz-v0.1.0-x86_64-apple-darwin.tar.gz"
+      url "https://github.com/abradburne/alltz/releases/download/v0.1.0/alltz-v0.1.0-x86_64-apple-darwin.tar.gz"
       sha256 "REPLACE_WITH_INTEL_SHA"
     end
   end
 
   on_linux do
-    url "https://github.com/your-username/alltz/releases/download/v0.1.0/alltz-v0.1.0-x86_64-unknown-linux-gnu.tar.gz"
+    url "https://github.com/abradburne/alltz/releases/download/v0.1.0/alltz-v0.1.0-x86_64-unknown-linux-gnu.tar.gz"
     sha256 "REPLACE_WITH_LINUX_SHA"
   end
 
@@ -111,13 +111,13 @@ Once your tap is set up, users can install alltz with:
 
 ```bash
 # Add your tap
-brew tap your-username/alltz
+brew tap abradburne/alltz
 
 # Install alltz
 brew install alltz
 
 # Or install directly
-brew install your-username/alltz/alltz
+brew install abradburne/alltz/alltz
 ```
 
 ## Updating for New Releases

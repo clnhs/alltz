@@ -114,7 +114,7 @@ impl Default for App {
 impl App {
     pub fn new() -> Self {
         let config = AppConfig::load();
-        
+
         // Create default config file if it doesn't exist
         if let Some(config_path) = AppConfig::config_path() {
             if !config_path.exists() {
@@ -125,7 +125,7 @@ impl App {
                 }
             }
         }
-        
+
         let mut app = Self::from_config(config);
         app.select_local_timezone();
         app
@@ -640,13 +640,13 @@ impl App {
 
     fn render_help_modal(&self, f: &mut Frame) {
         let area = f.area();
-        
+
         // Calculate modal size to fit content
         let modal_width = area.width * 2 / 3; // Same as add city modal
         // Calculate height based on content: title + max column content + footer + borders
         let max_content_lines = 17; // Longest column has about 17 lines
         let modal_height = (2 + max_content_lines + 1 + 4).min(area.height.saturating_sub(2)); // title + content + footer + borders + margin
-        
+
         let popup_area = Rect {
             x: (area.width.saturating_sub(modal_width)) / 2,
             y: (area.height.saturating_sub(modal_height)) / 2,
@@ -686,7 +686,7 @@ impl App {
         let left_sections = vec![
             ("TIME NAVIGATION", vec![
                 "h/← or l/→     Scrub timeline (1 hour)",
-                "Shift + h/l    Fine scrub (1 minute)", 
+                "Shift + h/l    Fine scrub (1 minute)",
                 "[ or ]         Adjust by ±15 minutes",
                 "{ or }         Adjust by ±1 hour",
                 "t              Reset to current time",
@@ -698,7 +698,7 @@ impl App {
             ("DISPLAY OPTIONS", vec![
                 "m              Toggle 12/24 hour format",
                 "n              Toggle short/full names",
-                "e              Toggle date display",
+                "d              Toggle date display",
                 "c              Cycle color themes",
             ]),
         ];
@@ -707,7 +707,7 @@ impl App {
         let right_sections = vec![
             ("ZONE MANAGEMENT", vec![
                 "a              Add new timezone",
-                "d              Delete selected timezone",
+                "r              Remove selected timezone",
                 "1-8            Quick-select search results",
             ]),
             ("INDICATORS", vec![

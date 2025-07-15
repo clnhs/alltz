@@ -4,7 +4,13 @@
 set -e
 
 VERSION="0.1.0"
-TARGETS=("x86_64-apple-darwin" "aarch64-apple-darwin" "x86_64-unknown-linux-gnu")
+
+# For now, only build for native architecture due to cross-compilation issues
+NATIVE_TARGET=$(rustc -vV | sed -n 's/host: //p')
+TARGETS=("$NATIVE_TARGET")
+
+echo "ℹ️  Building for native target only: $NATIVE_TARGET"
+echo "   (Cross-compilation requires additional setup)"
 
 echo "🚀 Building alltz v${VERSION} for multiple targets..."
 

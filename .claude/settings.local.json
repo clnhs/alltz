@@ -22,7 +22,11 @@
       "Bash(./test_config_persistence)",
       "Bash(rm:*)",
       "Bash(echo)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(find:*)",
+      "Bash(./release.sh)",
+      "Bash(rustup target:*)",
+      "Bash(rustup:*)"
     ],
     "deny": []
   }

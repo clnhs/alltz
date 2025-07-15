@@ -27,19 +27,19 @@ const TICK_RATE: Duration = Duration::from_millis(1000);
 #[command(name = "alltz")]
 #[command(version = "0.1.0")]
 #[command(about = "🌍 Terminal-based timezone viewer for developers and remote teams")]
-#[command(long_about = "alltz is a beautiful terminal application for tracking multiple timezones simultaneously. Features include real-time weather icons, DST indicators, color themes, and intuitive timeline scrubbing.")]
+#[command(long_about = "alltz is a terminal application for tracking multiple timezones simultaneously. Features include DST indicators, color themes, and intuitive timeline scrubbing.")]
 struct Cli {
     #[command(subcommand)]
     command: Option<Commands>,
-    
+
     /// Start with a specific timezone selected
     #[arg(short, long)]
     timezone: Option<String>,
-    
+
     /// Use 12-hour time format instead of 24-hour
     #[arg(long)]
     twelve_hour: bool,
-    
+
     /// Start with a specific color theme
     #[arg(long, value_parser = parse_theme)]
     theme: Option<config::ColorTheme>,
@@ -50,14 +50,14 @@ enum Commands {
     /// List all available timezones
     #[command(alias = "ls")]
     List,
-    
+
     /// Show current time in a specific timezone
     #[command(alias = "show")]
     Time {
         /// City name to show time for
         city: String,
     },
-    
+
     /// Show timezone information and current time
     #[command(alias = "info")]
     Zone {
@@ -81,21 +81,21 @@ fn parse_theme(s: &str) -> Result<config::ColorTheme, String> {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
-    
+
     if let Some(command) = cli.command {
         return handle_command(command);
     }
-    
+
     // Initialize terminal for TUI mode
     enable_raw_mode()?;
     let mut stdout = io::stdout();
     execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
-    
+
     let mut app = create_app_with_options(cli)?;
     let result = run_app(&mut terminal, &mut app);
-    
+
     // Cleanup: restore terminal to original state
     disable_raw_mode()?;
     execute!(
@@ -104,11 +104,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         DisableMouseCapture
     )?;
     terminal.show_cursor()?;
-    
+
     if let Err(err) = result {
         println!("Error: {}", err);
     }
-    
+
     Ok(())
 }
 
@@ -119,15 +119,15 @@ fn run_app<B: ratatui::backend::Backend>(
     app: &mut App,
 ) -> io::Result<()> {
     let mut last_tick = Instant::now();
-    
+
     loop {
         terminal.draw(|f| app.view(f))?;
-        
+
         // Calculate timeout to maintain consistent TICK_RATE
         let timeout = TICK_RATE
             .checked_sub(last_tick.elapsed())
             .unwrap_or_else(|| Duration::from_secs(0));
-        
+
         if crossterm::event::poll(timeout)? {
             if let Event::Key(key) = event::read()? {
                 if key.kind == KeyEventKind::Press {
@@ -169,10 +169,10 @@ fn run_app<B: ratatui::backend::Backend>(
                             KeyCode::Char('q') => Some(Message::Quit),
                             KeyCode::Char('?') => Some(Message::ToggleHelp),
                             KeyCode::Char('a') => Some(Message::StartAddZone),
-                            KeyCode::Char('d') => Some(Message::RemoveCurrentZone),
+                            KeyCode::Char('r') => Some(Message::RemoveCurrentZone),
                             KeyCode::Char('m') => Some(Message::ToggleTimeFormat),
                             KeyCode::Char('n') => Some(Message::ToggleTimezoneDisplayMode),
-                            KeyCode::Char('e') => Some(Message::ToggleDate),
+                            KeyCode::Char('d') => Some(Message::ToggleDate),
                             KeyCode::Char('c') => Some(Message::CycleColorTheme),
                             KeyCode::Char('t') => Some(Message::ResetToNow),
                             KeyCode::Char('h') | KeyCode::Left => {
@@ -198,7 +198,7 @@ fn run_app<B: ratatui::backend::Backend>(
                             _ => None,
                         }
                     };
-                    
+
                     if let Some(msg) = message {
                         app.update(msg);
                         if app.should_quit {
@@ -208,7 +208,7 @@ fn run_app<B: ratatui::backend::Backend>(
                 }
             }
         }
-        
+
         // Send periodic tick for time updates and animations
         if last_tick.elapsed() >= TICK_RATE {
             app.update(Message::Tick);
@@ -221,7 +221,7 @@ fn run_app<B: ratatui::backend::Backend>(
 fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
     use chrono::{Utc, Local, Offset};
     use time::TimeZoneManager;
-    
+
     match command {
         Commands::List => {
             println!("🌍 Available Timezones:");
@@ -233,16 +233,16 @@ fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
             println!();
             println!("Use 'alltz time <city>' to see current time in any timezone");
         }
-        
+
         Commands::Time { city } => {
             let timezones = TimeZoneManager::get_all_available_timezones();
             if let Some((tz, city_name, _, _, _)) = timezones.iter()
                 .find(|(_, name, _, _, _)| name.eq_ignore_ascii_case(&city)) {
-                
+
                 let now = Utc::now();
                 let local_time = now.with_timezone(tz);
                 let local_system = now.with_timezone(&Local);
-                
+
                 println!("🕐 Current time in {}:", city_name);
                 println!("   {}", local_time.format("%H:%M:%S %Z (%a, %b %d)"));
                 println!();
@@ -253,24 +253,24 @@ fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
                 std::process::exit(1);
             }
         }
-        
+
         Commands::Zone { city } => {
             let timezones = TimeZoneManager::get_all_available_timezones();
             if let Some((tz, city_name, code, lat, lon)) = timezones.iter()
                 .find(|(_, name, _, _, _)| name.eq_ignore_ascii_case(&city)) {
-                
+
                 let now = Utc::now();
                 let local_time = now.with_timezone(tz);
                 let offset_seconds = local_time.offset().fix().local_minus_utc();
                 let offset_hours = offset_seconds / 3600;
-                
+
                 println!("🌍 Timezone Information for {}:", city_name);
                 println!("   Code:         {}", code);
                 println!("   Timezone:     {}", tz);
                 println!("   UTC Offset:   UTC{:+}", offset_hours);
                 println!("   Coordinates:  {:.2}°N, {:.2}°W", lat, lon.abs());
                 println!("   Current Time: {}", local_time.format("%H:%M:%S %Z (%a, %b %d, %Y)"));
-                
+
                 // Simple DST status (just show current offset)
                 println!("   DST Status:   Current offset UTC{:+}", offset_hours);
             } else {
@@ -279,19 +279,19 @@ fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
             }
         }
     }
-    
+
     Ok(())
 }
 
 /// Create App instance with CLI options applied (timezone, theme, format)
 fn create_app_with_options(cli: Cli) -> Result<App, Box<dyn Error>> {
     let mut app = App::new();
-    
+
     if let Some(timezone_name) = cli.timezone {
         let timezones = time::TimeZoneManager::get_all_available_timezones();
         if let Some(_) = timezones.iter().position(|(_, name, _, _, _)| name.eq_ignore_ascii_case(&timezone_name)) {
             app.timezone_manager.add_timezone_by_name(&timezone_name);
-            
+
             // Set this timezone as selected
             if let Some(app_index) = app.timezone_manager.zones().iter().position(|zone| {
                 timezones.iter().any(|(tz, name, _, _, _)| *tz == zone.tz && name.eq_ignore_ascii_case(&timezone_name))
@@ -302,14 +302,14 @@ fn create_app_with_options(cli: Cli) -> Result<App, Box<dyn Error>> {
             eprintln!("⚠️  Warning: Timezone '{}' not found. Use 'alltz list' to see available options.", timezone_name);
         }
     }
-    
+
     if cli.twelve_hour {
         app.display_format = app::TimeFormat::TwelveHour;
     }
-    
+
     if let Some(theme) = cli.theme {
         app.color_theme = theme;
     }
-    
+
     Ok(app)
 }

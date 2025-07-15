@@ -13,7 +13,7 @@ Create a TUI application that presents time zones in a horizontally-scrollable t
 - **UTC Offset Ordering**: Zones always displayed from UTC-12 to UTC+14 for natural time progression
 - **48-Hour Timeline**: Yesterday → Today → Tomorrow span for comprehensive time context
 - **Real-time Interactivity**: Navigate through time and zones with keyboard controls
-- **Visual Clarity**: Color coding, weather icons, and business hours highlighting
+- **Visual Clarity**: Color coding and business hours highlighting
 
 ## Technical Architecture
 
@@ -22,9 +22,7 @@ Create a TUI application that presents time zones in a horizontally-scrollable t
 - **crossterm**: Cross-platform terminal manipulation and event handling
 - **chrono**: Date and time handling for precise time calculations
 - **chrono-tz**: Timezone database support for accurate conversions and DST handling
-- **tokio**: Async runtime for weather API requests and real-time updates
 - **serde**: JSON serialization for configuration and weather data
-- **reqwest**: HTTP client for weather API integration (optional)
 
 ### Performance Specifications
 - **Startup time**: < 200ms cold start
@@ -97,7 +95,6 @@ Zones are always displayed in UTC offset order from most negative to most positi
 
 ### Visual Elements
 - **Gradient time bars**: Dark (░) during night hours, bright (█) during business hours
-- **Weather integration**: Real-time weather icons per zone (☀️⛅🌧️🌙)
 - **Working hours highlight**: Distinct visual treatment for 9AM-5PM equivalent
 - **DST indicators**: Visual markers during daylight saving transitions
 - **Color coding**: Distinct colors for different offset groups
@@ -155,7 +152,6 @@ Zones are always displayed in UTC offset order from most negative to most positi
    - Build zone persistence using TOML configuration
 
 2. **Enhanced Visual Elements**
-   - Add weather integration with API calls and emoji icons
    - Implement color themes with 'c' key cycling
    - Add DST transition indicators
    - Create progressive detail modes based on terminal width
@@ -164,7 +160,6 @@ Zones are always displayed in UTC offset order from most negative to most positi
    - Implement 'm' key for 12/24 hour format toggle
    - Add compact/normal/detailed view modes with Tab key
    - Create working hours highlighting (9AM-5PM equivalent)
-   - Add 'w' key for weather display toggle
 
 ### Phase 4: Advanced Features & Polish
 **Goal**: Advanced navigation and professional polish
@@ -215,7 +210,6 @@ Zones are always displayed in UTC offset order from most negative to most positi
 - **Custom labels**: Override display names (e.g., "NYC Office" instead of "New York")
 
 ### 3. Visual Enhancement
-- **Weather integration**: Real-time weather icons per zone
 - **DST indicators**: Visual markers during daylight saving transitions
 - **Color coding**: Distinct colors for different offset groups
 - **Progressive detail**: More information as terminal width increases
@@ -246,7 +240,6 @@ Zones are always displayed in UTC offset order from most negative to most positi
 | Enter | Focus mode | Expand selected zone with detailed info |
 | Tab | Layout mode | Cycle between compact/normal/detailed views |
 | m | Time format | Toggle 12/24 hour display |
-| w | Weather toggle | Show/hide weather information |
 | c | Color theme | Cycle through available color schemes |
 
 #### Time Manipulation
@@ -267,7 +260,6 @@ default = ["UTC-8:LAX", "UTC-5:NYC", "UTC+0:LON", "UTC+1:BER", "UTC+9:TOK"]
 
 [display]
 format_24h = true
-show_weather = true
 show_seconds = false
 color_theme = "default"
 
@@ -290,7 +282,6 @@ startup_to_now = true
 
 ### Data Sources
 - **Timezone data**: IANA Time Zone Database
-- **Weather API**: OpenWeatherMap or similar (optional, configurable)
 - **Configuration**: TOML/YAML file in ~/.config/alltz/
 
 ## Success Metrics

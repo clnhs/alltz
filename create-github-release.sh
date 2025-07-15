@@ -4,7 +4,7 @@
 set -e
 
 VERSION="0.1.0"
-REPO="your-username/alltz"
+REPO="abradburne/alltz"
 TAG="v${VERSION}"
 
 echo "🚀 Creating GitHub release for alltz v${VERSION}..."
@@ -32,7 +32,6 @@ gh release create "$TAG" \
     --notes "## 🌍 alltz v${VERSION}
 
 ### Features
-- 🌤️ **Weather Integration** - Real-time weather icons for each timezone
 - 🎨 **6 Color Themes** - Default, Ocean, Forest, Sunset, Cyberpunk, Monochrome
 - 🕐 **DST Indicators** - Visual spring forward (⇈) and fall back (⇊) arrows
 - 📍 **Local Time Display** - Shows scrubbed time in your timezone with day and UTC offset
@@ -43,7 +42,7 @@ gh release create "$TAG" \
 
 #### Homebrew (macOS/Linux)
 \`\`\`bash
-brew tap your-username/alltz
+brew tap abradburne/alltz
 brew install alltz
 \`\`\`
 
@@ -72,7 +71,7 @@ alltz time London
 - \`h/l\` or \`←/→\` - Scrub timeline
 - \`j/k\` or \`↑/↓\` - Navigate timezones
 - \`c\` - Cycle color themes
-- \`w\` - Toggle weather
+- \`d\` - Toggle date display
 - \`q\` - Quit
 
 Full documentation available in [INSTALL.md](https://github.com/${REPO}/blob/main/INSTALL.md)" \
@@ -89,7 +88,7 @@ cd dist
 while IFS= read -r line; do
     sha=$(echo "$line" | cut -d' ' -f1)
     file=$(echo "$line" | cut -d' ' -f2)
-    
+
     case "$file" in
         *aarch64-apple-darwin*)
             echo "ARM64 macOS: $sha"
@@ -108,4 +107,4 @@ echo ""
 echo "📝 Next steps:"
 echo "1. Update homebrew-tap/Formula/alltz.rb with the SHA256 hashes above"
 echo "2. Commit and push the tap repository"
-echo "3. Users can now install with: brew tap your-username/alltz && brew install alltz"
+echo "3. Users can now install with: brew tap abradburne/alltz && brew install alltz"

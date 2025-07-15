@@ -2,7 +2,7 @@
 
 ## 🌍 Terminal Timezone Viewer
 
-alltz is a beautiful terminal application for tracking multiple timezones simultaneously with weather icons, DST indicators, and color themes.
+alltz is a beautiful terminal application for tracking multiple timezones simultaneously with DST indicators and color themes.
 
 ## Installation Options
 
@@ -68,11 +68,10 @@ alltz --timezone London --twelve-hour --theme ocean
 - `h/l` or `←/→` - Scrub timeline (Shift for fine control)
 - `j/k` or `↑/↓` - Navigate timezones
 - `a` - Add timezone
-- `d` - Remove current timezone
+- `r` - Remove current timezone
 - `m` - Toggle 12/24 hour format
 - `n` - Toggle timezone display mode
-- `w` - Toggle weather icons
-- `e` - Toggle date display
+- `d` - Toggle date display
 - `c` - Cycle color themes
 - `t` - Reset to current time
 - `[/]` - Fine adjust ±15 minutes
@@ -82,7 +81,6 @@ alltz --timezone London --twelve-hour --theme ocean
 ## Features
 
 ✨ **Timeline Scrubbing** - Navigate through time with visual timeline
-🌤️ **Weather Integration** - Real-time weather icons for each location
 📅 **Date Display** - Timezone-aware date positioning on timelines
 🎨 **6 Color Themes** - Default, Ocean, Forest, Sunset, Cyberpunk, Monochrome
 🕐 **DST Indicators** - Visual spring forward (⇈) and fall back (⇊) arrows
