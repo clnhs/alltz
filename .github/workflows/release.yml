@@ -170,7 +170,7 @@ jobs:
       - name: Create Draft Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
           commit-message: "chore: update Homebrew formula to ${{ steps.version.outputs.VERSION }}"
           title: "[DRAFT] Update Homebrew formula to ${{ steps.version.outputs.VERSION }}"
           body: |
