@@ -128,6 +128,47 @@ impl<'a> TimelineWidget<'a> {
         transitions
     }
 
+    fn get_midnight_markers_in_range(&self) -> Vec<DateTime<Utc>> {
+        let mut midnight_markers = Vec::new();
+        let start = self.get_timeline_start();
+        let end = self.get_timeline_end();
+
+        // Convert to this timezone to find local midnights
+        let local_start = start.with_timezone(&self.timezone.tz);
+        let local_end = end.with_timezone(&self.timezone.tz);
+
+        // Find the first midnight after start
+        let mut current_date = local_start.date_naive();
+
+        // If we're not at the start of the day, move to next day
+        if local_start.time() != chrono::NaiveTime::from_hms_opt(0, 0, 0).unwrap() {
+            current_date = current_date + Days::new(1);
+        }
+
+        // Iterate through each midnight in the range
+        while current_date <= local_end.date_naive() {
+            if let Some(midnight_local) = current_date.and_hms_opt(0, 0, 0) {
+                // Convert midnight in this timezone to UTC
+                if let Some(midnight_tz) = self
+                    .timezone
+                    .tz
+                    .from_local_datetime(&midnight_local)
+                    .single()
+                {
+                    let midnight_utc = midnight_tz.with_timezone(&chrono::Utc);
+
+                    // Only include if it's within our timeline range
+                    if midnight_utc >= start && midnight_utc <= end {
+                        midnight_markers.push(midnight_utc);
+                    }
+                }
+            }
+            current_date = current_date + Days::new(1);
+        }
+
+        midnight_markers
+    }
+
     fn get_timeline_display(&self, width: u16) -> Vec<(char, Color)> {
         let mut display = vec![('░', Color::DarkGray); width as usize];
         let start_time = self.get_timeline_start();
@@ -228,6 +269,20 @@ impl<'a> Widget for TimelineWidget<'a> {
                         .set_char(symbol)
                         .set_style(Style::default().fg(color));
                 }
+            }
+        }
+
+        // Render midnight markers (subtle day change indicators)
+        let midnight_markers = self.get_midnight_markers_in_range();
+        for midnight_time in midnight_markers {
+            let midnight_pos = self.time_to_position(midnight_time, inner.width);
+            if midnight_pos < inner.width && midnight_pos != now_pos && midnight_pos != timeline_pos
+            {
+                let x = inner.x + midnight_pos;
+                // Use a subtle vertical line character with night color
+                buf[(x, timeline_y)]
+                    .set_char('┊')
+                    .set_style(Style::default().fg(self.color_theme.get_night_color()));
             }
         }
 
@@ -500,5 +555,41 @@ mod tests {
             true,
         );
         assert!(widget.show_dst);
+    }
+
+    #[test]
+    fn test_midnight_markers() {
+        let tz = crate::time::TimeZone::from_tz(chrono_tz::US::Eastern);
+        let config = crate::config::TimeDisplayConfig::default();
+
+        // Create a specific time: 2024-01-15 12:00 UTC
+        let base_time = chrono::DateTime::parse_from_rfc3339("2024-01-15T12:00:00Z")
+            .unwrap()
+            .with_timezone(&Utc);
+
+        let widget = TimelineWidget::new(
+            base_time,
+            base_time,
+            &tz,
+            false,
+            TimeFormat::TwentyFourHour,
+            TimezoneDisplayMode::Short,
+            &config,
+            ColorTheme::default(),
+            false,
+            false,
+        );
+
+        // Get midnight markers - should find at least one midnight in 48-hour span
+        let midnight_markers = widget.get_midnight_markers_in_range();
+
+        // Should have some midnight markers (48 hour span should contain multiple midnights)
+        assert!(!midnight_markers.is_empty());
+
+        // Each marker should be within the timeline range
+        for marker in midnight_markers {
+            assert!(marker >= widget.get_timeline_start());
+            assert!(marker <= widget.get_timeline_end());
+        }
     }
 }

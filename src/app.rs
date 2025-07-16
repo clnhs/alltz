@@ -478,6 +478,7 @@ impl App {
                 Constraint::Length(3), // Header
                 Constraint::Length(4), // Current time display (taller)
                 Constraint::Min(1),    // Main content
+                Constraint::Length(2), // Legend
                 Constraint::Length(3), // Footer
             ])
             .split(f.area());
@@ -485,7 +486,8 @@ impl App {
         self.render_header(f, chunks[0]);
         self.render_current_time_display(f, chunks[1]);
         self.render_zones(f, chunks[2]);
-        self.render_footer(f, chunks[3]);
+        self.render_legend(f, chunks[3]);
+        self.render_footer(f, chunks[4]);
 
         // Render modals on top if needed
         if self.show_help {
@@ -657,6 +659,40 @@ impl App {
             .block(Block::default().borders(Borders::ALL).title("Local"));
 
         f.render_widget(time_display, time_area);
+    }
+
+    fn render_legend(&self, f: &mut Frame, area: Rect) {
+        use ratatui::text::{Line, Span};
+        
+        // Create legend showing what the different timeline colors/characters mean
+        let night_char = self.time_config.get_activity_char(crate::config::TimeActivity::Night);
+        let awake_char = self.time_config.get_activity_char(crate::config::TimeActivity::Awake);
+        let work_char = self.time_config.get_activity_char(crate::config::TimeActivity::Work);
+        
+        let night_color = self.color_theme.get_night_color();
+        let awake_color = self.color_theme.get_awake_color();
+        let work_color = self.color_theme.get_work_color();
+        
+        let legend_line = Line::from(vec![
+            Span::styled(format!("{} ", night_char), Style::default().fg(night_color)),
+            Span::raw("Night  "),
+            Span::styled(format!("{} ", awake_char), Style::default().fg(awake_color)),
+            Span::raw("Awake  "),
+            Span::styled(format!("{} ", work_char), Style::default().fg(work_color)),
+            Span::raw("Work  "),
+            Span::styled("┊ ", Style::default().fg(night_color)),
+            Span::raw("Midnight  "),
+            Span::styled("│ ", Style::default().fg(Color::Red)),
+            Span::raw("Now  "),
+            Span::styled("┃ ", Style::default().fg(self.color_theme.get_timeline_position_color())),
+            Span::raw("Timeline"),
+        ]);
+
+        let legend = Paragraph::new(legend_line)
+            .style(Style::default().fg(Color::DarkGray))
+            .alignment(Alignment::Center);
+
+        f.render_widget(legend, area);
     }
 
     fn render_footer(&self, f: &mut Frame, area: Rect) {
