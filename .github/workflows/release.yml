@@ -137,7 +137,12 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout homebrew tap repository
+        uses: actions/checkout@v4
+        with:
+          repository: abradburne/homebrew-alltz
+          token: ${{ secrets.PAT_TOKEN }}
+          path: homebrew-tap
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -161,38 +166,24 @@ jobs:
 
       - name: Update Homebrew formula
         run: |
-          sed -i "s/version \".*\"/version \"${{ steps.version.outputs.VERSION }}\"/" homebrew-tap/Formula/alltz.rb
-          sed -i "s|url \".*x86_64.*\"|url \"https://github.com/${{ github.repository }}/releases/download/v${{ steps.version.outputs.VERSION }}/alltz-x86_64-apple-darwin.tar.gz\"|" homebrew-tap/Formula/alltz.rb
-          sed -i "s|sha256 \".*\" # x86_64|sha256 \"${{ steps.sha.outputs.INTEL_SHA }}\" # x86_64|" homebrew-tap/Formula/alltz.rb
-          sed -i "s|url \".*aarch64.*\"|url \"https://github.com/${{ github.repository }}/releases/download/v${{ steps.version.outputs.VERSION }}/alltz-aarch64-apple-darwin.tar.gz\"|" homebrew-tap/Formula/alltz.rb
-          sed -i "s|sha256 \".*\" # aarch64|sha256 \"${{ steps.sha.outputs.ARM_SHA }}\" # aarch64|" homebrew-tap/Formula/alltz.rb
+          cd homebrew-tap
+          sed -i "s/version \".*\"/version \"${{ steps.version.outputs.VERSION }}\"/" Formula/alltz.rb
+          sed -i "s|url \".*x86_64.*\"|url \"https://github.com/abradburne/alltz/releases/download/v${{ steps.version.outputs.VERSION }}/alltz-x86_64-apple-darwin.tar.gz\"|" Formula/alltz.rb
+          sed -i "s|sha256 \".*\" # x86_64|sha256 \"${{ steps.sha.outputs.INTEL_SHA }}\" # x86_64|" Formula/alltz.rb
+          sed -i "s|url \".*aarch64.*\"|url \"https://github.com/abradburne/alltz/releases/download/v${{ steps.version.outputs.VERSION }}/alltz-aarch64-apple-darwin.tar.gz\"|" Formula/alltz.rb
+          sed -i "s|sha256 \".*\" # aarch64|sha256 \"${{ steps.sha.outputs.ARM_SHA }}\" # aarch64|" Formula/alltz.rb
 
-      - name: Create Draft Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.PAT_TOKEN }}
-          commit-message: "chore: update Homebrew formula to ${{ steps.version.outputs.VERSION }}"
-          title: "[DRAFT] Update Homebrew formula to ${{ steps.version.outputs.VERSION }}"
-          body: |
-            🤖 **Automated Homebrew Formula Update**
-
-            This PR updates the Homebrew formula for release v${{ steps.version.outputs.VERSION }}
-
-            **SHA256 checksums:**
-            - Intel macOS: `${{ steps.sha.outputs.INTEL_SHA }}`
-            - ARM64 macOS: `${{ steps.sha.outputs.ARM_SHA }}`
-
-            **Manual steps:**
-            1. ✅ GitHub release created automatically
-            2. ⏳ Review this PR and test formula changes
-            3. ⏳ Update Linux SHA256 if needed
-            4. ⏳ Merge when ready to publish to Homebrew
-
-            **Testing the formula:**
-            ```bash
-            # Test locally before merging
-            brew install --build-from-source ./homebrew-tap/Formula/alltz.rb
-            ```
-          branch: homebrew-${{ steps.version.outputs.VERSION }}
-          base: main
-          draft: true
+      - name: Commit and push to homebrew tap
+        run: |
+          cd homebrew-tap
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/alltz.rb
+          git commit -m "Update alltz formula to v${{ steps.version.outputs.VERSION }}
+          
+          🤖 Automated update from release workflow
+          
+          SHA256 checksums:
+          - Intel macOS: ${{ steps.sha.outputs.INTEL_SHA }}
+          - ARM64 macOS: ${{ steps.sha.outputs.ARM_SHA }}"
+          git push origin main
