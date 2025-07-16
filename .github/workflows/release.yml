@@ -155,23 +155,27 @@ jobs:
           VERSION=${GITHUB_REF#refs/tags/v}
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Calculate SHA256 for macOS builds
+      - name: Calculate SHA256 for all builds
         id: sha
         run: |
           cd artifacts
           INTEL_SHA=$(sha256sum alltz-x86_64-apple-darwin/alltz-x86_64-apple-darwin.tar.gz | cut -d' ' -f1)
           ARM_SHA=$(sha256sum alltz-aarch64-apple-darwin/alltz-aarch64-apple-darwin.tar.gz | cut -d' ' -f1)
+          LINUX_SHA=$(sha256sum alltz-x86_64-unknown-linux-gnu/alltz-x86_64-unknown-linux-gnu.tar.gz | cut -d' ' -f1)
           echo "INTEL_SHA=$INTEL_SHA" >> $GITHUB_OUTPUT
           echo "ARM_SHA=$ARM_SHA" >> $GITHUB_OUTPUT
+          echo "LINUX_SHA=$LINUX_SHA" >> $GITHUB_OUTPUT
 
       - name: Update Homebrew formula
         run: |
           cd homebrew-tap
           sed -i "s/version \".*\"/version \"${{ steps.version.outputs.VERSION }}\"/" Formula/alltz.rb
-          sed -i "s|url \".*x86_64.*\"|url \"https://github.com/abradburne/alltz/releases/download/v${{ steps.version.outputs.VERSION }}/alltz-x86_64-apple-darwin.tar.gz\"|" Formula/alltz.rb
+          sed -i "s|url \".*x86_64-apple-darwin.tar.gz\"|url \"https://github.com/abradburne/alltz/releases/download/v${{ steps.version.outputs.VERSION }}/alltz-x86_64-apple-darwin.tar.gz\"|" Formula/alltz.rb
           sed -i "s|sha256 \".*\" # x86_64|sha256 \"${{ steps.sha.outputs.INTEL_SHA }}\" # x86_64|" Formula/alltz.rb
-          sed -i "s|url \".*aarch64.*\"|url \"https://github.com/abradburne/alltz/releases/download/v${{ steps.version.outputs.VERSION }}/alltz-aarch64-apple-darwin.tar.gz\"|" Formula/alltz.rb
+          sed -i "s|url \".*aarch64-apple-darwin.tar.gz\"|url \"https://github.com/abradburne/alltz/releases/download/v${{ steps.version.outputs.VERSION }}/alltz-aarch64-apple-darwin.tar.gz\"|" Formula/alltz.rb
           sed -i "s|sha256 \".*\" # aarch64|sha256 \"${{ steps.sha.outputs.ARM_SHA }}\" # aarch64|" Formula/alltz.rb
+          sed -i "s|url \".*x86_64-unknown-linux-gnu.tar.gz\"|url \"https://github.com/abradburne/alltz/releases/download/v${{ steps.version.outputs.VERSION }}/alltz-x86_64-unknown-linux-gnu.tar.gz\"|" Formula/alltz.rb
+          sed -i "s|sha256 \".*\" # linux|sha256 \"${{ steps.sha.outputs.LINUX_SHA }}\" # linux|" Formula/alltz.rb
 
       - name: Commit and push to homebrew tap
         run: |
@@ -185,5 +189,6 @@ jobs:
           
           SHA256 checksums:
           - Intel macOS: ${{ steps.sha.outputs.INTEL_SHA }}
-          - ARM64 macOS: ${{ steps.sha.outputs.ARM_SHA }}"
+          - ARM64 macOS: ${{ steps.sha.outputs.ARM_SHA }}
+          - Linux x86_64: ${{ steps.sha.outputs.LINUX_SHA }}"
           git push origin main
