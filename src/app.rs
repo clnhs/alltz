@@ -528,7 +528,7 @@ impl App {
             .split(inner);
 
         // Left: App name
-        let app_name = Paragraph::new("alltz v0.1.0").alignment(Alignment::Left);
+        let app_name = Paragraph::new("alltz v0.1.1").alignment(Alignment::Left);
         f.render_widget(app_name, chunks[0]);
 
         // Center: Local time
@@ -663,16 +663,22 @@ impl App {
 
     fn render_legend(&self, f: &mut Frame, area: Rect) {
         use ratatui::text::{Line, Span};
-        
+
         // Create legend showing what the different timeline colors/characters mean
-        let night_char = self.time_config.get_activity_char(crate::config::TimeActivity::Night);
-        let awake_char = self.time_config.get_activity_char(crate::config::TimeActivity::Awake);
-        let work_char = self.time_config.get_activity_char(crate::config::TimeActivity::Work);
-        
+        let night_char = self
+            .time_config
+            .get_activity_char(crate::config::TimeActivity::Night);
+        let awake_char = self
+            .time_config
+            .get_activity_char(crate::config::TimeActivity::Awake);
+        let work_char = self
+            .time_config
+            .get_activity_char(crate::config::TimeActivity::Work);
+
         let night_color = self.color_theme.get_night_color();
         let awake_color = self.color_theme.get_awake_color();
         let work_color = self.color_theme.get_work_color();
-        
+
         let legend_line = Line::from(vec![
             Span::styled(format!("{} ", night_char), Style::default().fg(night_color)),
             Span::raw("Night  "),
@@ -684,7 +690,10 @@ impl App {
             Span::raw("Midnight  "),
             Span::styled("│ ", Style::default().fg(Color::Red)),
             Span::raw("Now  "),
-            Span::styled("┃ ", Style::default().fg(self.color_theme.get_timeline_position_color())),
+            Span::styled(
+                "┃ ",
+                Style::default().fg(self.color_theme.get_timeline_position_color()),
+            ),
             Span::raw("Timeline"),
         ]);
 

@@ -56,19 +56,35 @@ impl<'a> TimelineWidget<'a> {
         }
     }
 
-    fn get_timeline_start(&self) -> DateTime<Utc> {
-        // Start timeline 24 hours before current position
-        self.timeline_position - Duration::hours(24)
+    fn get_timeline_hours(&self, width: u16) -> f64 {
+        // Optimal display: approximately 2 characters per hour for dense but readable display
+        // This means 48 hours fits in ~96 characters, allowing expansion on wider screens
+        const OPTIMAL_CHARS_PER_HOUR: f64 = 2.0;
+        const MIN_HOURS: f64 = 48.0; // Minimum 48-hour window (24h before + 24h after)
+        const MAX_HOURS: f64 = 168.0; // Maximum 1 week window
+
+        // Calculate how many hours we can display optimally with current width
+        let optimal_hours = (width as f64) / OPTIMAL_CHARS_PER_HOUR;
+
+        // Clamp between minimum and maximum
+        optimal_hours.max(MIN_HOURS).min(MAX_HOURS)
     }
 
-    fn get_timeline_end(&self) -> DateTime<Utc> {
-        // End timeline 24 hours after current position
-        self.timeline_position + Duration::hours(24)
+    fn get_timeline_start(&self, width: u16) -> DateTime<Utc> {
+        let total_hours = self.get_timeline_hours(width);
+        let hours_before = total_hours / 2.0;
+        self.timeline_position - Duration::minutes((hours_before * 60.0) as i64)
+    }
+
+    fn get_timeline_end(&self, width: u16) -> DateTime<Utc> {
+        let total_hours = self.get_timeline_hours(width);
+        let hours_after = total_hours / 2.0;
+        self.timeline_position + Duration::minutes((hours_after * 60.0) as i64)
     }
 
     fn time_to_position(&self, time: DateTime<Utc>, width: u16) -> u16 {
-        let start = self.get_timeline_start();
-        let end = self.get_timeline_end();
+        let start = self.get_timeline_start(width);
+        let end = self.get_timeline_end(width);
         let total_duration = end.signed_duration_since(start);
         let time_duration = time.signed_duration_since(start);
 
@@ -111,10 +127,10 @@ impl<'a> TimelineWidget<'a> {
         }
     }
 
-    fn get_dst_transitions_in_range(&self) -> Vec<(DateTime<Utc>, DstTransition)> {
+    fn get_dst_transitions_in_range(&self, width: u16) -> Vec<(DateTime<Utc>, DstTransition)> {
         let mut transitions = Vec::new();
-        let start = self.get_timeline_start();
-        let end = self.get_timeline_end();
+        let start = self.get_timeline_start(width);
+        let end = self.get_timeline_end(width);
 
         // Check every hour for DST transitions
         let mut current = start;
@@ -128,10 +144,10 @@ impl<'a> TimelineWidget<'a> {
         transitions
     }
 
-    fn get_midnight_markers_in_range(&self) -> Vec<DateTime<Utc>> {
+    fn get_midnight_markers_in_range(&self, width: u16) -> Vec<DateTime<Utc>> {
         let mut midnight_markers = Vec::new();
-        let start = self.get_timeline_start();
-        let end = self.get_timeline_end();
+        let start = self.get_timeline_start(width);
+        let end = self.get_timeline_end(width);
 
         // Convert to this timezone to find local midnights
         let local_start = start.with_timezone(&self.timezone.tz);
@@ -171,14 +187,15 @@ impl<'a> TimelineWidget<'a> {
 
     fn get_timeline_display(&self, width: u16) -> Vec<(char, Color)> {
         let mut display = vec![('░', Color::DarkGray); width as usize];
-        let start_time = self.get_timeline_start();
+        let start_time = self.get_timeline_start(width);
+        let total_hours = self.get_timeline_hours(width);
 
         // Convert timeline to local timezone for this zone
         let local_start = start_time.with_timezone(&self.timezone.tz);
 
         for i in 0..width {
             // Calculate what time this position represents in the local timezone
-            let hours_offset = (i as f64 / width as f64) * 48.0; // 48 hours total
+            let hours_offset = (i as f64 / width as f64) * total_hours;
             let time_at_position = local_start + Duration::minutes((hours_offset * 60.0) as i64);
             let hour = time_at_position.hour();
 
@@ -256,7 +273,7 @@ impl<'a> Widget for TimelineWidget<'a> {
 
         // Render DST transition indicators if enabled
         if self.show_dst {
-            let dst_transitions = self.get_dst_transitions_in_range();
+            let dst_transitions = self.get_dst_transitions_in_range(inner.width);
             for (transition_time, transition_type) in dst_transitions {
                 let dst_pos = self.time_to_position(transition_time, inner.width);
                 if dst_pos < inner.width {
@@ -273,7 +290,7 @@ impl<'a> Widget for TimelineWidget<'a> {
         }
 
         // Render midnight markers (subtle day change indicators)
-        let midnight_markers = self.get_midnight_markers_in_range();
+        let midnight_markers = self.get_midnight_markers_in_range(inner.width);
         for midnight_time in midnight_markers {
             let midnight_pos = self.time_to_position(midnight_time, inner.width);
             if midnight_pos < inner.width && midnight_pos != now_pos && midnight_pos != timeline_pos
@@ -288,8 +305,8 @@ impl<'a> Widget for TimelineWidget<'a> {
 
         // Render dates in middle of each day's work hours if enabled
         if self.show_date {
-            let start_time = self.get_timeline_start();
-            let end_time = self.get_timeline_end();
+            let start_time = self.get_timeline_start(inner.width);
+            let end_time = self.get_timeline_end(inner.width);
 
             // Find the middle of work hours (default 8 AM to 6 PM, so middle is 1 PM)
             let work_middle_hour =
@@ -523,11 +540,15 @@ mod tests {
         );
 
         // Test that DST transitions can be detected - function should execute without panic
-        let transitions = widget.get_dst_transitions_in_range();
+        const TEST_WIDTH: u16 = 120; // Use standard width for testing
+        let transitions = widget.get_dst_transitions_in_range(TEST_WIDTH);
 
         // Verify the function returns a valid vector and each transition has valid data
         for (time, transition_type) in transitions {
-            assert!(time >= widget.get_timeline_start() && time <= widget.get_timeline_end());
+            assert!(
+                time >= widget.get_timeline_start(TEST_WIDTH)
+                    && time <= widget.get_timeline_end(TEST_WIDTH)
+            );
             assert!(matches!(
                 transition_type,
                 DstTransition::SpringForward | DstTransition::FallBack
@@ -558,6 +579,48 @@ mod tests {
     }
 
     #[test]
+    fn test_adaptive_timeline_window() {
+        let tz = crate::time::TimeZone::from_tz(chrono_tz::UTC);
+        let now = Utc::now();
+        let config = crate::config::TimeDisplayConfig::default();
+
+        let widget = TimelineWidget::new(
+            now,
+            now,
+            &tz,
+            false,
+            TimeFormat::TwentyFourHour,
+            TimezoneDisplayMode::Short,
+            &config,
+            ColorTheme::default(),
+            false,
+            false,
+        );
+
+        // Test narrow width - should use minimum 48 hours
+        let narrow_width = 80u16; // 80 chars / 2 chars per hour = 40 hours, but min is 48
+        let narrow_hours = widget.get_timeline_hours(narrow_width);
+        assert_eq!(narrow_hours, 48.0);
+
+        // Test width that expands beyond minimum
+        let medium_width = 200u16; // 200 chars / 2 chars per hour = 100 hours
+        let medium_hours = widget.get_timeline_hours(medium_width);
+        assert_eq!(medium_hours, 100.0);
+
+        // Test very wide width - should be clamped to maximum
+        let wide_width = 1000u16; // 1000 chars / 2 chars per hour = 500 hours, but max is 168
+        let wide_hours = widget.get_timeline_hours(wide_width);
+        assert_eq!(wide_hours, 168.0); // Should be clamped to max
+
+        // Test that timeline spans are calculated correctly
+        let start = widget.get_timeline_start(medium_width);
+        let end = widget.get_timeline_end(medium_width);
+        let actual_duration = end.signed_duration_since(start);
+        let expected_duration = Duration::minutes((100.0 * 60.0) as i64); // 100 hours for 200-char width
+        assert_eq!(actual_duration, expected_duration);
+    }
+
+    #[test]
     fn test_midnight_markers() {
         let tz = crate::time::TimeZone::from_tz(chrono_tz::US::Eastern);
         let config = crate::config::TimeDisplayConfig::default();
@@ -581,15 +644,16 @@ mod tests {
         );
 
         // Get midnight markers - should find at least one midnight in 48-hour span
-        let midnight_markers = widget.get_midnight_markers_in_range();
+        const TEST_WIDTH: u16 = 120; // Use standard width for testing
+        let midnight_markers = widget.get_midnight_markers_in_range(TEST_WIDTH);
 
         // Should have some midnight markers (48 hour span should contain multiple midnights)
         assert!(!midnight_markers.is_empty());
 
         // Each marker should be within the timeline range
         for marker in midnight_markers {
-            assert!(marker >= widget.get_timeline_start());
-            assert!(marker <= widget.get_timeline_end());
+            assert!(marker >= widget.get_timeline_start(TEST_WIDTH));
+            assert!(marker <= widget.get_timeline_end(TEST_WIDTH));
         }
     }
 }
