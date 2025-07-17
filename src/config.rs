@@ -165,6 +165,7 @@ pub struct AppConfig {
     pub time_config: TimeDisplayConfig, // Work/awake/night hours
     pub color_theme: ColorTheme,    // Color theme for UI
     pub show_date: bool,            // Date display toggle
+    pub merge_same_time_cities: bool, // Merge cities when they have the same time
 }
 
 impl Default for AppConfig {
@@ -185,6 +186,7 @@ impl Default for AppConfig {
             time_config: TimeDisplayConfig::default(),
             color_theme: ColorTheme::default(),
             show_date: false,
+            merge_same_time_cities: true,
         }
     }
 }

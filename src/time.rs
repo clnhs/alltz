@@ -1,4 +1,4 @@
-use chrono::{DateTime, Offset, Utc};
+use chrono::{DateTime, Offset, Timelike, Utc};
 use chrono_tz::Tz;
 use serde::{Deserialize, Serialize};
 use std::fmt;
@@ -24,12 +24,18 @@ pub struct CitiesData {
 pub struct TimeZone {
     pub tz: Tz,
     pub display_name: String,
+    pub cities: Vec<String>, // List of cities in this timezone
 }
 
 impl TimeZone {
     pub fn new(tz: Tz, _name: String, display_name: String) -> Self {
-        Self { tz, display_name }
+        Self { 
+            tz, 
+            display_name, 
+            cities: Vec::new() 
+        }
     }
+
 
     pub fn from_tz(tz: Tz) -> Self {
         let name = tz.to_string();
@@ -59,6 +65,23 @@ impl TimeZone {
             });
 
         Self::new(tz, name, display_name)
+    }
+
+    pub fn add_city(&mut self, city: String) {
+        if !self.cities.contains(&city) {
+            self.cities.push(city);
+        }
+    }
+
+    pub fn get_display_name(&self) -> String {
+        if self.cities.is_empty() {
+            self.display_name.clone()
+        } else if self.cities.len() == 1 {
+            self.cities[0].clone()
+        } else {
+            // Show first city + count, or abbreviations
+            format!("{} +{}", self.cities[0], self.cities.len() - 1)
+        }
     }
 
     /// Gets the timezone identifier string (e.g., "UTC", "US/Eastern")
@@ -113,9 +136,6 @@ impl TimeZone {
         }
     }
 
-    pub fn display_name(&self) -> &str {
-        &self.display_name
-    }
 }
 
 impl fmt::Display for TimeZone {
@@ -244,7 +264,8 @@ impl TimeZoneManager {
             .unwrap_or_else(|| "Unknown".to_string())
     }
 
-    pub fn add_timezone_by_name(&mut self, name: &str) -> bool {
+
+    pub fn add_timezone_by_name_with_merging(&mut self, name: &str, merge_same_time: bool) -> bool {
         if let Some(city) = self
             .cities_data
             .cities
@@ -252,13 +273,34 @@ impl TimeZoneManager {
             .find(|c| c.name.eq_ignore_ascii_case(name))
         {
             if let Ok(tz) = Tz::from_str(&city.timezone) {
-                let timezone = TimeZone::new(tz, tz.to_string(), city.code.clone());
-
-                // Check if we already have this timezone
-                if !self.zones.iter().any(|z| z.tz == tz) {
-                    self.add_zone(timezone);
+                // First, check if we already have this exact timezone (always merge same timezone)
+                if let Some(existing_zone) = self.zones.iter_mut().find(|z| z.tz == tz) {
+                    existing_zone.add_city(city.name.clone());
                     return true;
                 }
+
+                // If merge_same_time is enabled, check for zones with same current time
+                if merge_same_time {
+                    let current_time = chrono::Utc::now();
+                    let new_time = current_time.with_timezone(&tz);
+                    
+                    for existing_zone in &mut self.zones {
+                        let existing_time = current_time.with_timezone(&existing_zone.tz);
+                        if new_time.hour() == existing_time.hour() 
+                            && new_time.minute() == existing_time.minute()
+                            && new_time.offset().fix().local_minus_utc() == existing_time.offset().fix().local_minus_utc() {
+                            // Same time, merge into existing zone
+                            existing_zone.add_city(city.name.clone());
+                            return true;
+                        }
+                    }
+                }
+
+                // Create new timezone
+                let mut timezone = TimeZone::new(tz, tz.to_string(), city.code.clone());
+                timezone.add_city(city.name.clone());
+                self.add_zone(timezone);
+                return true;
             }
         }
         false
@@ -286,7 +328,11 @@ impl TimeZoneManager {
                     .and_then(|city| {
                         Tz::from_str(&city.timezone)
                             .ok()
-                            .map(|tz| TimeZone::new(tz, tz.to_string(), city.code.clone()))
+                            .map(|tz| {
+                                let mut timezone = TimeZone::new(tz, tz.to_string(), city.code.clone());
+                                timezone.add_city(city.name.clone());
+                                timezone
+                            })
                     })
             })
             .collect();
@@ -317,6 +363,74 @@ impl TimeZoneManager {
 
     pub fn zone_count(&self) -> usize {
         self.zones.len()
+    }
+
+    pub fn reorganize_zones_for_merge(&mut self, merge_same_time: bool) {
+        if merge_same_time {
+            // When merge is enabled, first merge by same timezone, then by same time
+            let mut new_zones: Vec<TimeZone> = Vec::new();
+            let current_time = chrono::Utc::now();
+            
+            for zone in &self.zones {
+                let zone_time = current_time.with_timezone(&zone.tz);
+                
+                // First, check if we already have the same timezone
+                if let Some(existing_zone) = new_zones.iter_mut().find(|existing| existing.tz == zone.tz) {
+                    // Same timezone, merge cities
+                    for city in &zone.cities {
+                        existing_zone.add_city(city.clone());
+                    }
+                } else if let Some(existing_zone) = new_zones.iter_mut().find(|existing| {
+                    // Different timezone, but check if time is the same
+                    let existing_time = current_time.with_timezone(&existing.tz);
+                    zone_time.hour() == existing_time.hour() 
+                        && zone_time.minute() == existing_time.minute()
+                        && zone_time.offset().fix().local_minus_utc() == existing_time.offset().fix().local_minus_utc()
+                }) {
+                    // Same time, merge into existing zone
+                    for city in &zone.cities {
+                        existing_zone.add_city(city.clone());
+                    }
+                } else {
+                    // Create a new zone
+                    new_zones.push(zone.clone());
+                }
+            }
+
+            self.zones = new_zones;
+        } else {
+            // When merge is disabled, split zones back based on their original timezone
+            let mut new_zones: Vec<TimeZone> = Vec::new();
+            
+            for zone in &self.zones {
+                if zone.cities.len() <= 1 {
+                    // Single city zone, keep as is
+                    new_zones.push(zone.clone());
+                } else {
+                    // Multi-city zone, split into separate zones by actual timezone
+                    for city in &zone.cities {
+                        // Find the appropriate timezone for this city
+                        if let Some(city_data) = self.cities_data.cities.iter().find(|c| c.name == *city) {
+                            if let Ok(tz) = chrono_tz::Tz::from_str(&city_data.timezone) {
+                                // Check if we already have a zone for this timezone
+                                if let Some(existing_zone) = new_zones.iter_mut().find(|z| z.tz == tz) {
+                                    existing_zone.add_city(city.clone());
+                                } else {
+                                    let mut new_zone = TimeZone::new(tz, tz.to_string(), city_data.code.clone());
+                                    new_zone.add_city(city.clone());
+                                    new_zones.push(new_zone);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            self.zones = new_zones;
+        }
+        
+        // Re-sort to maintain UTC offset order
+        self.zones.sort_by_key(|tz| tz.utc_offset_hours());
     }
 }
 
@@ -381,6 +495,251 @@ mod tests {
         let removed = manager.remove_zone(0);
         assert!(removed.is_some());
         assert_eq!(manager.zone_count(), 0);
+    }
+
+    #[test]
+    fn test_merge_same_time_cities() {
+        let mut manager = TimeZoneManager::new();
+        
+        // Add first city
+        let success = manager.add_timezone_by_name_with_merging("New York", true);
+        assert!(success);
+        assert_eq!(manager.zone_count(), 1);
+        
+        // Add another city in the same timezone (should merge if they're in the same timezone)
+        let success = manager.add_timezone_by_name_with_merging("Boston", true);
+        assert!(success);
+        
+        // Check the timezones to debug what's happening
+        let zones = manager.zones();
+        if zones.len() == 1 {
+            // Same timezone, should have merged
+            assert_eq!(zones[0].cities.len(), 2);
+            assert!(zones[0].cities.contains(&"New York".to_string()));
+            assert!(zones[0].cities.contains(&"Boston".to_string()));
+        } else {
+            // Different timezones, should not have merged
+            assert_eq!(zones.len(), 2);
+            assert_eq!(zones[0].cities.len(), 1);
+            assert_eq!(zones[1].cities.len(), 1);
+        }
+    }
+
+    #[test]
+    fn test_no_merge_when_disabled() {
+        let mut manager = TimeZoneManager::new();
+        
+        // Add first city
+        let success = manager.add_timezone_by_name_with_merging("New York", false);
+        assert!(success);
+        assert_eq!(manager.zone_count(), 1);
+        
+        // Add another city in the same timezone (should still merge since they're exact same timezone)
+        let success = manager.add_timezone_by_name_with_merging("Boston", false);
+        assert!(success);
+        // Should be 1 zone with 2 cities since they're in the same timezone
+        assert_eq!(manager.zone_count(), 1);
+        assert_eq!(manager.zones()[0].cities.len(), 2);
+    }
+
+    #[test]
+    fn test_timezone_display_name_with_cities() {
+        let mut timezone = TimeZone::from_tz(chrono_tz::US::Eastern);
+        
+        // No cities - should use display name
+        assert_eq!(timezone.get_display_name(), timezone.display_name);
+        
+        // One city - should use city name
+        timezone.add_city("New York".to_string());
+        assert_eq!(timezone.get_display_name(), "New York");
+        
+        // Multiple cities - should show first city + count
+        timezone.add_city("Toronto".to_string());
+        assert_eq!(timezone.get_display_name(), "New York +1");
+        
+        // Adding duplicate city should not change count
+        timezone.add_city("New York".to_string());
+        assert_eq!(timezone.get_display_name(), "New York +1");
+    }
+
+    #[test]
+    fn test_default_zone_loading_with_cities() {
+        let mut manager = TimeZoneManager::new();
+        
+        // Add a few cities and check that they have cities associated
+        manager.add_timezone_by_name_with_merging("New York", false);
+        manager.add_timezone_by_name_with_merging("Boston", false);
+        
+        let zones = manager.zones();
+        assert_eq!(zones.len(), 1); // Should merge into same timezone
+        assert_eq!(zones[0].cities.len(), 2); // Should have both cities
+        assert_eq!(zones[0].get_display_name(), "New York +1"); // Should show merged format
+    }
+
+    #[test]
+    fn test_app_config_default_zones_have_cities() {
+        use crate::app::App;
+        
+        let app = App::new();
+        
+        // Check that default zones have cities
+        let zones = app.timezone_manager.zones();
+        println!("Number of zones: {}", zones.len());
+        
+        for (i, zone) in zones.iter().enumerate() {
+            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(), zone.cities);
+            assert!(!zone.cities.is_empty(), "Zone {} should have cities", i);
+        }
+    }
+
+    #[test]
+    fn test_app_with_merge_enabled() {
+        use crate::app::App;
+        use crate::app::Message;
+        
+        let mut app = App::new();
+        
+        // Merge functionality is now enabled by default
+        assert!(app.merge_same_time_cities);
+        
+        // Add a city to the same timezone as New York
+        app.update(Message::StartAddZone);
+        app.update(Message::UpdateAddZoneInput("Boston".to_string()));
+        app.update(Message::ConfirmAddZone);
+        
+        let zones = app.timezone_manager.zones();
+        println!("Zones after adding Boston with merge enabled:");
+        for (i, zone) in zones.iter().enumerate() {
+            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(), zone.cities);
+        }
+        
+        // Check that Boston was merged into the New York zone
+        let ny_zone = zones.iter().find(|z| z.cities.contains(&"New York".to_string()));
+        assert!(ny_zone.is_some());
+        assert!(ny_zone.unwrap().cities.contains(&"Boston".to_string()));
+    }
+
+    #[test]
+    fn test_reorganize_zones_for_merge() {
+        let mut manager = TimeZoneManager::new();
+        
+        // Add some cities in the same timezone
+        manager.add_timezone_by_name_with_merging("New York", false);
+        manager.add_timezone_by_name_with_merging("Boston", false);
+        manager.add_timezone_by_name_with_merging("Washington DC", false);
+        
+        println!("Before merge reorganization:");
+        for (i, zone) in manager.zones().iter().enumerate() {
+            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(), zone.cities);
+        }
+        
+        // Enable merge - should combine zones with same time
+        manager.reorganize_zones_for_merge(true);
+        
+        println!("After enabling merge:");
+        for (i, zone) in manager.zones().iter().enumerate() {
+            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(), zone.cities);
+        }
+        
+        // Should have fewer zones now
+        assert!(manager.zone_count() <= 3);
+        
+        // Disable merge - should split back into individual zones
+        manager.reorganize_zones_for_merge(false);
+        
+        println!("After disabling merge:");
+        for (i, zone) in manager.zones().iter().enumerate() {
+            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(), zone.cities);
+        }
+    }
+
+    #[test]
+    fn test_app_merge_toggle_effect() {
+        use crate::app::App;
+        use crate::app::Message;
+        
+        let mut app = App::new();
+        
+        // Add some cities first
+        app.update(Message::StartAddZone);
+        app.update(Message::UpdateAddZoneInput("Boston".to_string()));
+        app.update(Message::ConfirmAddZone);
+        
+        app.update(Message::StartAddZone);
+        app.update(Message::UpdateAddZoneInput("Washington DC".to_string()));
+        app.update(Message::ConfirmAddZone);
+        
+        println!("Initial state (merge ON):");
+        for (i, zone) in app.timezone_manager.zones().iter().enumerate() {
+            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(), zone.cities);
+        }
+        let initial_count = app.timezone_manager.zone_count();
+        
+        // Toggle merge OFF
+        app.update(Message::ToggleMergeSameTimeCities);
+        assert!(!app.merge_same_time_cities);
+        
+        println!("After toggling merge OFF:");
+        for (i, zone) in app.timezone_manager.zones().iter().enumerate() {
+            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(), zone.cities);
+        }
+        let after_toggle_count = app.timezone_manager.zone_count();
+        
+        // Should have more zones when merge is disabled
+        assert!(after_toggle_count >= initial_count);
+        
+        // Toggle merge back ON
+        app.update(Message::ToggleMergeSameTimeCities);
+        assert!(app.merge_same_time_cities);
+        
+        println!("After toggling merge ON:");
+        for (i, zone) in app.timezone_manager.zones().iter().enumerate() {
+            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(), zone.cities);
+        }
+        
+        // Should have fewer zones when merge is enabled again
+        assert!(app.timezone_manager.zone_count() <= after_toggle_count);
+    }
+
+    #[test]
+    fn test_timezone_vs_time_merge() {
+        let mut manager = TimeZoneManager::new();
+        
+        // Add Toronto and Montreal (both Canada/Eastern)
+        manager.add_timezone_by_name_with_merging("Toronto", false);
+        manager.add_timezone_by_name_with_merging("Montreal", false);
+        
+        println!("After adding Toronto and Montreal (same timezone):");
+        for (i, zone) in manager.zones().iter().enumerate() {
+            println!("Zone {}: {} - cities: {:?} - tz: {}", i, zone.get_display_name(), zone.cities, zone.tz);
+        }
+        
+        // They should be merged because they have the same timezone
+        assert_eq!(manager.zone_count(), 1);
+        assert_eq!(manager.zones()[0].cities.len(), 2);
+        
+        // Add New York (US/Eastern) - different timezone but same time
+        manager.add_timezone_by_name_with_merging("New York", false);
+        
+        println!("After adding New York (different timezone, same time):");
+        for (i, zone) in manager.zones().iter().enumerate() {
+            println!("Zone {}: {} - cities: {:?} - tz: {}", i, zone.get_display_name(), zone.cities, zone.tz);
+        }
+        
+        // Should be 2 zones because New York has different timezone
+        assert_eq!(manager.zone_count(), 2);
+        
+        // Now enable merge by time
+        manager.reorganize_zones_for_merge(true);
+        
+        println!("After enabling merge by time:");
+        for (i, zone) in manager.zones().iter().enumerate() {
+            println!("Zone {}: {} - cities: {:?} - tz: {}", i, zone.get_display_name(), zone.cities, zone.tz);
+        }
+        
+        // Should be 1 zone because all cities have the same time
+        assert_eq!(manager.zone_count(), 1);
+        assert_eq!(manager.zones()[0].cities.len(), 3);
     }
 
     #[test]

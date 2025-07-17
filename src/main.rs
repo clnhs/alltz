@@ -172,6 +172,7 @@ fn run_app<B: ratatui::backend::Backend>(
                             KeyCode::Char('a') => Some(Message::StartAddZone),
                             KeyCode::Char('r') => Some(Message::RemoveCurrentZone),
                             KeyCode::Char('m') => Some(Message::ToggleTimeFormat),
+                            KeyCode::Char('M') => Some(Message::ToggleMergeSameTimeCities),
                             KeyCode::Char('n') => Some(Message::ToggleTimezoneDisplayMode),
                             KeyCode::Char('d') => Some(Message::ToggleDate),
                             KeyCode::Char('c') => Some(Message::CycleColorTheme),
@@ -332,7 +333,7 @@ fn create_app_with_options(cli: Cli) -> Result<App, Box<dyn Error>> {
             .iter()
             .position(|(_, name, _, _, _)| name.eq_ignore_ascii_case(&timezone_name))
         {
-            app.timezone_manager.add_timezone_by_name(&timezone_name);
+            app.timezone_manager.add_timezone_by_name_with_merging(&timezone_name, app.merge_same_time_cities);
 
             // Set this timezone as selected
             if let Some(app_index) = app.timezone_manager.zones().iter().position(|zone| {

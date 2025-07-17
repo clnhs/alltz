@@ -226,10 +226,16 @@ impl<'a> Widget for TimelineWidget<'a> {
         let title = match self.timezone_display_mode {
             TimezoneDisplayMode::Short => format!(
                 "{} {}",
-                self.timezone.display_name(),
+                self.timezone.get_display_name(),
                 self.timezone.offset_string()
             ),
-            TimezoneDisplayMode::Full => self.timezone.get_full_display_name(),
+            TimezoneDisplayMode::Full => {
+                if self.timezone.cities.is_empty() {
+                    self.timezone.get_full_display_name()
+                } else {
+                    format!("{} {}", self.timezone.get_display_name(), self.timezone.offset_string())
+                }
+            }
         };
         let block = Block::default()
             .borders(Borders::ALL)

@@ -48,6 +48,7 @@ pub enum Message {
     ToggleDate,
     ToggleHelp,
     CycleColorTheme,
+    ToggleMergeSameTimeCities,
 
     // Zone management
     StartAddZone,
@@ -83,6 +84,7 @@ pub struct App {
     pub zone_search_results: Vec<String>,
     pub selected_search_result: usize,
     pub show_date: bool,
+    pub merge_same_time_cities: bool,
 
     // App state
     pub should_quit: bool,
@@ -106,6 +108,7 @@ impl Default for App {
             zone_search_results: Vec::new(),
             selected_search_result: 0,
             show_date: false,
+            merge_same_time_cities: true,
             should_quit: false,
         }
     }
@@ -139,12 +142,23 @@ impl App {
 
         // Load timezones from config
         for zone_name in &config.zones {
-            timezone_manager.add_timezone_by_name(zone_name);
+            timezone_manager.add_timezone_by_name_with_merging(zone_name, config.merge_same_time_cities);
         }
 
         // If no zones were loaded, use defaults
         if timezone_manager.zones().is_empty() {
-            timezone_manager = TimeZoneManager::with_default_zones();
+            let default_cities = vec![
+                "Los Angeles",
+                "New York",
+                "UTC",
+                "London",
+                "Berlin",
+                "Tokyo",
+                "Sydney",
+            ];
+            for city in default_cities {
+                timezone_manager.add_timezone_by_name_with_merging(city, config.merge_same_time_cities);
+            }
         }
 
         let now = Utc::now();
@@ -167,6 +181,7 @@ impl App {
             zone_search_results: Vec::new(),
             selected_search_result: 0,
             show_date: config.show_date,
+            merge_same_time_cities: config.merge_same_time_cities,
             should_quit: false,
         }
     }
@@ -193,6 +208,7 @@ impl App {
             time_config: self.time_config.clone(),
             color_theme: self.color_theme,
             show_date: self.show_date,
+            merge_same_time_cities: self.merge_same_time_cities,
         }
     }
 
@@ -338,6 +354,19 @@ impl App {
                 None
             }
 
+            Message::ToggleMergeSameTimeCities => {
+                self.merge_same_time_cities = !self.merge_same_time_cities;
+                self.timezone_manager.reorganize_zones_for_merge(self.merge_same_time_cities);
+                
+                // Adjust selected zone index if needed
+                if self.selected_zone_index >= self.timezone_manager.zone_count() {
+                    self.selected_zone_index = self.timezone_manager.zone_count().saturating_sub(1);
+                }
+                
+                self.save_config();
+                None
+            }
+
             Message::CycleColorTheme => {
                 self.color_theme = self.color_theme.next();
                 self.save_config();
@@ -385,7 +414,7 @@ impl App {
 
             Message::SelectSearchResult(index) => {
                 if let Some(zone_name) = self.zone_search_results.get(index) {
-                    let success = self.timezone_manager.add_timezone_by_name(zone_name);
+                    let success = self.timezone_manager.add_timezone_by_name_with_merging(zone_name, self.merge_same_time_cities);
 
                     if success {
                         // Update selected index if needed
@@ -408,7 +437,7 @@ impl App {
                     if let Some(zone_name) =
                         self.zone_search_results.get(self.selected_search_result)
                     {
-                        let success = self.timezone_manager.add_timezone_by_name(zone_name);
+                        let success = self.timezone_manager.add_timezone_by_name_with_merging(zone_name, self.merge_same_time_cities);
 
                         if success {
                             // Update selected index if needed
@@ -423,7 +452,7 @@ impl App {
                     // Try to add the exact input if no search results
                     let success = self
                         .timezone_manager
-                        .add_timezone_by_name(&self.add_zone_input);
+                        .add_timezone_by_name_with_merging(&self.add_zone_input, self.merge_same_time_cities);
 
                     if success {
                         // Update selected index if needed
@@ -705,7 +734,13 @@ impl App {
     }
 
     fn render_footer(&self, f: &mut Frame, area: Rect) {
-        let footer_text = "?: help │ a: add │ q: quit";
+        let merge_status = if self.merge_same_time_cities {
+            "merge: ON"
+        } else {
+            "merge: OFF"
+        };
+        
+        let footer_text = format!("?: help │ a: add │ M: {} │ q: quit", merge_status);
 
         let footer = Paragraph::new(footer_text)
             .style(Style::default().fg(Color::DarkGray))
@@ -786,6 +821,7 @@ impl App {
                 "DISPLAY OPTIONS",
                 vec![
                     "m              Toggle 12/24 hour format",
+                    "M              Toggle merge same-time cities",
                     "n              Toggle short/full names",
                     "d              Toggle date display",
                     "c              Cycle color themes",
@@ -1175,5 +1211,21 @@ mod tests {
 
         // They should match (allowing for DST differences)
         assert_eq!(selected_offset_hours, local_offset_hours);
+    }
+
+    #[test]
+    fn test_toggle_merge_same_time_cities() {
+        let mut app = App::new();
+        
+        // App should start with merge enabled (new default)
+        assert!(app.merge_same_time_cities);
+        
+        // Toggle it off
+        app.update(Message::ToggleMergeSameTimeCities);
+        assert!(!app.merge_same_time_cities);
+        
+        // Toggle it back on
+        app.update(Message::ToggleMergeSameTimeCities);
+        assert!(app.merge_same_time_cities);
     }
 }
