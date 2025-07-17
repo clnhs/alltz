@@ -51,6 +51,7 @@ pub enum Message {
     ToggleGroupSameTimeCities,
     ToggleFullCityNames,
     ToggleShowAllCitiesInGroups,
+    ToggleTimezoneAbbreviations,
     ToggleOptions,
 
     // Zone management
@@ -90,6 +91,7 @@ pub struct App {
     pub group_same_time_cities: bool,
     pub use_full_city_names: bool,
     pub show_all_cities_in_groups: bool,
+    pub use_timezone_abbreviations: bool,
     pub show_options: bool,
 
     // App state
@@ -117,6 +119,7 @@ impl Default for App {
             group_same_time_cities: true,
             use_full_city_names: false,
             show_all_cities_in_groups: false,
+            use_timezone_abbreviations: false,
             show_options: false,
             should_quit: false,
         }
@@ -193,6 +196,7 @@ impl App {
             group_same_time_cities: config.group_same_time_cities,
             use_full_city_names: config.use_full_city_names,
             show_all_cities_in_groups: config.show_all_cities_in_groups,
+            use_timezone_abbreviations: config.use_timezone_abbreviations,
             show_options: false,
             should_quit: false,
         }
@@ -223,6 +227,7 @@ impl App {
             group_same_time_cities: self.group_same_time_cities,
             use_full_city_names: self.use_full_city_names,
             show_all_cities_in_groups: self.show_all_cities_in_groups,
+            use_timezone_abbreviations: self.use_timezone_abbreviations,
         }
     }
 
@@ -400,6 +405,12 @@ impl App {
 
             Message::ToggleShowAllCitiesInGroups => {
                 self.show_all_cities_in_groups = !self.show_all_cities_in_groups;
+                self.save_config();
+                None
+            }
+
+            Message::ToggleTimezoneAbbreviations => {
+                self.use_timezone_abbreviations = !self.use_timezone_abbreviations;
                 self.save_config();
                 None
             }
@@ -677,6 +688,7 @@ impl App {
             true, // DST indicators always on
             self.use_full_city_names,
             self.show_all_cities_in_groups,
+            self.use_timezone_abbreviations,
         );
 
         f.render_widget(timeline_widget, area);
@@ -853,6 +865,7 @@ impl App {
                     "g              Toggle group same-time cities",
                     "f              Toggle full city names",
                     "s              Toggle show all cities in groups",
+                    "z              Toggle timezone abbreviations",
                     "n              Toggle short/full names",
                     "d              Toggle date display",
                     "c              Cycle color themes",
@@ -945,7 +958,7 @@ impl App {
         let area = f.area();
 
         let modal_width = 60;
-        let modal_height = 16;
+        let modal_height = 18;
 
         let popup_area = Rect {
             x: (area.width.saturating_sub(modal_width)) / 2,
@@ -985,9 +998,10 @@ impl App {
         let group_status = if self.group_same_time_cities { "ON" } else { "OFF" };
         let full_names_status = if self.use_full_city_names { "ON" } else { "OFF" };
         let show_all_status = if self.show_all_cities_in_groups { "ON" } else { "OFF" };
+        let timezone_abbrev_status = if self.use_timezone_abbreviations { "ON" } else { "OFF" };
         let options_text = format!(
-            "\n  [g]  Group same-time cities: {}\n       Groups cities that show the same time (e.g., NYC and Montreal)\n\n  [f]  Use full city names: {}\n       Show full names instead of abbreviations\n\n  [s]  Show all cities in groups: {}\n       Display all cities instead of 'City +N' format\n\n\n  Press g/f/s to toggle, Esc to close",
-            group_status, full_names_status, show_all_status
+            "\n  [g]  Group same-time cities: {}\n       Groups cities that show the same time (e.g., NYC and Montreal)\n\n  [f]  Use full city names: {}\n       Show full names instead of abbreviations\n\n  [s]  Show all cities in groups: {}\n       Display all cities instead of 'City +N' format\n\n  [z]  Use timezone abbreviations: {}\n       Show timezone abbreviations instead of city codes\n\n\n  Press g/f/s/z to toggle, Esc to close",
+            group_status, full_names_status, show_all_status, timezone_abbrev_status
         );
 
         let options_content = Paragraph::new(options_text)
@@ -996,7 +1010,7 @@ impl App {
         f.render_widget(options_content, chunks[1]);
 
         // Render footer
-        let footer = Paragraph::new("Press g/f/s to toggle, Esc to close")
+        let footer = Paragraph::new("Press g/f/s/z to toggle, Esc to close")
             .style(Style::default().fg(Color::DarkGray))
             .alignment(Alignment::Center);
         f.render_widget(footer, chunks[2]);

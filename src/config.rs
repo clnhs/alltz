@@ -168,6 +168,7 @@ pub struct AppConfig {
     pub group_same_time_cities: bool, // Group cities when they have the same time
     pub use_full_city_names: bool,  // Use full city names instead of abbreviations
     pub show_all_cities_in_groups: bool, // Show all cities in groups instead of "City +N"
+    pub use_timezone_abbreviations: bool, // Use timezone abbreviations instead of city codes
 }
 
 impl Default for AppConfig {
@@ -191,6 +192,7 @@ impl Default for AppConfig {
             group_same_time_cities: true,
             use_full_city_names: false,  // Default to abbreviations
             show_all_cities_in_groups: false, // Default to "City +N" format
+            use_timezone_abbreviations: false, // Default to city codes
         }
     }
 }

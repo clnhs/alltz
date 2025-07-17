@@ -23,6 +23,7 @@ pub struct TimelineWidget<'a> {
     pub show_dst: bool,
     pub use_full_city_names: bool,
     pub show_all_cities_in_groups: bool,
+    pub use_timezone_abbreviations: bool,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -45,6 +46,7 @@ impl<'a> TimelineWidget<'a> {
         show_dst: bool,
         use_full_city_names: bool,
         show_all_cities_in_groups: bool,
+        use_timezone_abbreviations: bool,
     ) -> Self {
         Self {
             timeline_position,
@@ -59,6 +61,7 @@ impl<'a> TimelineWidget<'a> {
             show_dst,
             use_full_city_names,
             show_all_cities_in_groups,
+            use_timezone_abbreviations,
         }
     }
 
@@ -232,14 +235,14 @@ impl<'a> Widget for TimelineWidget<'a> {
         let title = match self.timezone_display_mode {
             TimezoneDisplayMode::Short => format!(
                 "{} {}",
-                self.timezone.get_display_name(self.use_full_city_names, self.show_all_cities_in_groups),
+                self.timezone.get_display_name(self.use_full_city_names, self.show_all_cities_in_groups, self.use_timezone_abbreviations),
                 self.timezone.offset_string()
             ),
             TimezoneDisplayMode::Full => {
                 if self.timezone.cities.is_empty() {
                     self.timezone.get_full_display_name()
                 } else {
-                    format!("{} {}", self.timezone.get_display_name(self.use_full_city_names, self.show_all_cities_in_groups), self.timezone.offset_string())
+                    format!("{} {}", self.timezone.get_display_name(self.use_full_city_names, self.show_all_cities_in_groups, self.use_timezone_abbreviations), self.timezone.offset_string())
                 }
             }
         };
@@ -434,6 +437,7 @@ mod tests {
             false,
             false,
             false,
+            false,
         );
         assert_eq!(widget.timeline_position, now);
         assert_eq!(widget.current_time, now);
@@ -459,6 +463,7 @@ mod tests {
             false,
             false,
             false,
+            false,
         );
 
         // Position should be in the middle for the timeline position itself
@@ -480,6 +485,7 @@ mod tests {
             TimezoneDisplayMode::Short,
             &config,
             ColorTheme::default(),
+            false,
             false,
             false,
             false,
@@ -519,6 +525,7 @@ mod tests {
             false,
             false,
             false,
+            false,
         );
         assert_eq!(widget_24h.display_format, TimeFormat::TwentyFourHour);
 
@@ -532,6 +539,7 @@ mod tests {
             TimezoneDisplayMode::Short,
             &config,
             ColorTheme::default(),
+            false,
             false,
             false,
             false,
@@ -559,6 +567,7 @@ mod tests {
             ColorTheme::default(),
             false,
             true,
+            false,
             false,
             false,
         );
@@ -600,6 +609,7 @@ mod tests {
             true,
             false,
             false,
+            false,
         );
         assert!(widget.show_dst);
     }
@@ -619,6 +629,7 @@ mod tests {
             TimezoneDisplayMode::Short,
             &config,
             ColorTheme::default(),
+            false,
             false,
             false,
             false,
@@ -667,6 +678,7 @@ mod tests {
             TimezoneDisplayMode::Short,
             &config,
             ColorTheme::default(),
+            false,
             false,
             false,
             false,
