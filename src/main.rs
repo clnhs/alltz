@@ -134,6 +134,13 @@ fn run_app<B: ratatui::backend::Backend>(
                 if key.kind == KeyEventKind::Press {
                     let message = if app.show_help {
                         Some(Message::ToggleHelp)
+                    } else if app.show_options {
+                        // Handle options modal input
+                        match key.code {
+                            KeyCode::Char('M') => Some(Message::ToggleMergeSameTimeCities),
+                            KeyCode::Esc => Some(Message::ToggleOptions),
+                            _ => None,
+                        }
                     } else if app.adding_zone {
                         // Special input handling for add zone modal
                         match key.code {
@@ -170,9 +177,9 @@ fn run_app<B: ratatui::backend::Backend>(
                             KeyCode::Char('q') => Some(Message::Quit),
                             KeyCode::Char('?') => Some(Message::ToggleHelp),
                             KeyCode::Char('a') => Some(Message::StartAddZone),
+                            KeyCode::Char('o') => Some(Message::ToggleOptions),
                             KeyCode::Char('r') => Some(Message::RemoveCurrentZone),
                             KeyCode::Char('m') => Some(Message::ToggleTimeFormat),
-                            KeyCode::Char('M') => Some(Message::ToggleMergeSameTimeCities),
                             KeyCode::Char('n') => Some(Message::ToggleTimezoneDisplayMode),
                             KeyCode::Char('d') => Some(Message::ToggleDate),
                             KeyCode::Char('c') => Some(Message::CycleColorTheme),

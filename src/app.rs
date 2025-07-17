@@ -49,6 +49,7 @@ pub enum Message {
     ToggleHelp,
     CycleColorTheme,
     ToggleMergeSameTimeCities,
+    ToggleOptions,
 
     // Zone management
     StartAddZone,
@@ -85,6 +86,7 @@ pub struct App {
     pub selected_search_result: usize,
     pub show_date: bool,
     pub merge_same_time_cities: bool,
+    pub show_options: bool,
 
     // App state
     pub should_quit: bool,
@@ -109,6 +111,7 @@ impl Default for App {
             selected_search_result: 0,
             show_date: false,
             merge_same_time_cities: true,
+            show_options: false,
             should_quit: false,
         }
     }
@@ -182,6 +185,7 @@ impl App {
             selected_search_result: 0,
             show_date: config.show_date,
             merge_same_time_cities: config.merge_same_time_cities,
+            show_options: false,
             should_quit: false,
         }
     }
@@ -378,6 +382,11 @@ impl App {
                 None
             }
 
+            Message::ToggleOptions => {
+                self.show_options = !self.show_options;
+                None
+            }
+
             Message::StartAddZone => {
                 self.adding_zone = true;
                 self.add_zone_input.clear();
@@ -523,6 +532,8 @@ impl App {
             self.render_help_modal(f);
         } else if self.adding_zone {
             self.render_add_zone_modal(f);
+        } else if self.show_options {
+            self.render_options_modal(f);
         }
     }
 
@@ -734,13 +745,7 @@ impl App {
     }
 
     fn render_footer(&self, f: &mut Frame, area: Rect) {
-        let merge_status = if self.merge_same_time_cities {
-            "merge: ON"
-        } else {
-            "merge: OFF"
-        };
-        
-        let footer_text = format!("?: help │ a: add │ M: {} │ q: quit", merge_status);
+        let footer_text = "?: help │ a: add │ o: options │ q: quit";
 
         let footer = Paragraph::new(footer_text)
             .style(Style::default().fg(Color::DarkGray))
@@ -821,10 +826,10 @@ impl App {
                 "DISPLAY OPTIONS",
                 vec![
                     "m              Toggle 12/24 hour format",
-                    "M              Toggle merge same-time cities",
                     "n              Toggle short/full names",
                     "d              Toggle date display",
                     "c              Cycle color themes",
+                    "o              Open options modal",
                 ],
             ),
         ];
@@ -902,6 +907,72 @@ impl App {
         f.render_widget(footer, chunks[2]);
 
         // Render border around the entire modal
+        let border = Block::default()
+            .borders(Borders::ALL)
+            .border_style(Style::default().fg(self.color_theme.get_selected_border_color()))
+            .style(Style::default().bg(Color::Black));
+        f.render_widget(border, popup_area);
+    }
+
+    fn render_options_modal(&self, f: &mut Frame) {
+        let area = f.area();
+
+        let modal_width = 60;
+        let modal_height = 12;
+
+        let popup_area = Rect {
+            x: (area.width.saturating_sub(modal_width)) / 2,
+            y: (area.height.saturating_sub(modal_height)) / 2,
+            width: modal_width,
+            height: modal_height,
+        };
+
+        // Clear the background
+        f.render_widget(Clear, popup_area);
+
+        // Split into sections
+        let inner = popup_area.inner(ratatui::layout::Margin {
+            horizontal: 1,
+            vertical: 1,
+        });
+        let chunks = Layout::default()
+            .direction(LayoutDirection::Vertical)
+            .constraints([
+                Constraint::Length(2), // Title
+                Constraint::Min(1),    // Content
+                Constraint::Length(2), // Footer
+            ])
+            .split(inner);
+
+        // Render title
+        let title = Paragraph::new("⚙️ OPTIONS")
+            .style(
+                Style::default()
+                    .fg(self.color_theme.get_selected_border_color())
+                    .add_modifier(Modifier::BOLD),
+            )
+            .alignment(Alignment::Center);
+        f.render_widget(title, chunks[0]);
+
+        // Render options content
+        let merge_status = if self.merge_same_time_cities { "ON" } else { "OFF" };
+        let options_text = format!(
+            "\n  [M]  Merge same-time cities: {}\n\n       Groups cities that show the same time\n       (e.g., NYC and Montreal during DST)\n\n\n  Press M to toggle, Esc to close",
+            merge_status
+        );
+
+        let options_content = Paragraph::new(options_text)
+            .style(Style::default().fg(Color::White))
+            .alignment(Alignment::Left);
+        f.render_widget(options_content, chunks[1]);
+
+        // Render footer
+        let footer = Paragraph::new("Press M to toggle, Esc to close")
+            .style(Style::default().fg(Color::DarkGray))
+            .alignment(Alignment::Center);
+        f.render_widget(footer, chunks[2]);
+
+        // Render border
         let border = Block::default()
             .borders(Borders::ALL)
             .border_style(Style::default().fg(self.color_theme.get_selected_border_color()))
