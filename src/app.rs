@@ -864,7 +864,7 @@ impl App {
                     "m              Toggle 12/24 hour format",
                     "g              Toggle group same-time cities",
                     "f              Toggle full city names",
-                    "s              Toggle show all cities in groups",
+                    "s              Toggle show city lists vs counts",
                     "z              Toggle timezone abbreviations",
                     "n              Toggle short/full names",
                     "d              Toggle date display",
@@ -1000,7 +1000,7 @@ impl App {
         let show_all_status = if self.show_all_cities_in_groups { "ON" } else { "OFF" };
         let timezone_abbrev_status = if self.use_timezone_abbreviations { "ON" } else { "OFF" };
         let options_text = format!(
-            "\n  [g]  Group same-time cities: {}\n       Groups cities that show the same time (e.g., NYC and Montreal)\n\n  [f]  Use full city names: {}\n       Show full names instead of abbreviations\n\n  [s]  Show all cities in groups: {}\n       Display all cities instead of 'City +N' format\n\n  [z]  Use timezone abbreviations: {}\n       Show timezone abbreviations instead of city codes\n\n\n  Press g/f/s/z to toggle, Esc to close",
+            "\n  [g]  Group same-time cities: {}\n       Groups cities that show the same time (e.g., NYC and Montreal)\n\n  [f]  Use full city names: {}\n       Show full names instead of abbreviations\n\n  [s]  Show all cities in groups: {}\n       Show city lists instead of counts (e.g., 'NYC +2' → 'NYC (NY, Boston)')\n\n  [z]  Use timezone abbreviations: {}\n       Show timezone abbreviations instead of city codes\n\n\n  Press g/f/s/z to toggle, Esc to close",
             group_status, full_names_status, show_all_status, timezone_abbrev_status
         );
 
