@@ -73,14 +73,33 @@ impl TimeZone {
         }
     }
 
-    pub fn get_display_name(&self) -> String {
+    pub fn get_display_name(&self, use_full_names: bool, show_all_in_groups: bool) -> String {
         if self.cities.is_empty() {
             self.display_name.clone()
         } else if self.cities.len() == 1 {
-            self.cities[0].clone()
+            if use_full_names {
+                self.cities[0].clone()
+            } else {
+                self.display_name.clone()
+            }
         } else {
-            // Show first city + count, or abbreviations
-            format!("{} +{}", self.cities[0], self.cities.len() - 1)
+            if show_all_in_groups {
+                // Show all cities in the group
+                if use_full_names {
+                    self.cities.join(", ")
+                } else {
+                    // Show abbreviation + all city names
+                    format!("{} ({})", self.display_name, self.cities.join(", "))
+                }
+            } else {
+                // Show first city + count
+                let first_city = if use_full_names {
+                    &self.cities[0]
+                } else {
+                    &self.display_name
+                };
+                format!("{} +{}", first_city, self.cities.len() - 1)
+            }
         }
     }
 
@@ -547,19 +566,23 @@ mod tests {
         let mut timezone = TimeZone::from_tz(chrono_tz::US::Eastern);
         
         // No cities - should use display name
-        assert_eq!(timezone.get_display_name(), timezone.display_name);
+        assert_eq!(timezone.get_display_name(false, false), timezone.display_name);
         
-        // One city - should use city name
+        // One city - should use abbreviation by default
         timezone.add_city("New York".to_string());
-        assert_eq!(timezone.get_display_name(), "New York");
+        assert_eq!(timezone.get_display_name(false, false), timezone.display_name);
+        assert_eq!(timezone.get_display_name(true, false), "New York");
         
         // Multiple cities - should show first city + count
         timezone.add_city("Toronto".to_string());
-        assert_eq!(timezone.get_display_name(), "New York +1");
+        assert_eq!(timezone.get_display_name(false, false), format!("{} +1", timezone.display_name));
+        assert_eq!(timezone.get_display_name(true, false), "New York +1");
+        assert_eq!(timezone.get_display_name(true, true), "New York, Toronto");
+        assert_eq!(timezone.get_display_name(false, true), format!("{} (New York, Toronto)", timezone.display_name));
         
         // Adding duplicate city should not change count
         timezone.add_city("New York".to_string());
-        assert_eq!(timezone.get_display_name(), "New York +1");
+        assert_eq!(timezone.get_display_name(true, false), "New York +1");
     }
 
     #[test]
@@ -573,7 +596,7 @@ mod tests {
         let zones = manager.zones();
         assert_eq!(zones.len(), 1); // Should merge into same timezone
         assert_eq!(zones[0].cities.len(), 2); // Should have both cities
-        assert_eq!(zones[0].get_display_name(), "New York +1"); // Should show merged format
+        assert_eq!(zones[0].get_display_name(true, false), "New York +1"); // Should show merged format
     }
 
     #[test]
@@ -587,7 +610,7 @@ mod tests {
         println!("Number of zones: {}", zones.len());
         
         for (i, zone) in zones.iter().enumerate() {
-            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(), zone.cities);
+            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(true, false), zone.cities);
             assert!(!zone.cities.is_empty(), "Zone {} should have cities", i);
         }
     }
@@ -610,7 +633,7 @@ mod tests {
         let zones = app.timezone_manager.zones();
         println!("Zones after adding Boston with merge enabled:");
         for (i, zone) in zones.iter().enumerate() {
-            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(), zone.cities);
+            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(true, false), zone.cities);
         }
         
         // Check that Boston was grouped into the New York zone
@@ -630,7 +653,7 @@ mod tests {
         
         println!("Before merge reorganization:");
         for (i, zone) in manager.zones().iter().enumerate() {
-            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(), zone.cities);
+            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(true, false), zone.cities);
         }
         
         // Enable merge - should combine zones with same time
@@ -638,7 +661,7 @@ mod tests {
         
         println!("After enabling merge:");
         for (i, zone) in manager.zones().iter().enumerate() {
-            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(), zone.cities);
+            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(true, false), zone.cities);
         }
         
         // Should have fewer zones now
@@ -649,7 +672,7 @@ mod tests {
         
         println!("After disabling merge:");
         for (i, zone) in manager.zones().iter().enumerate() {
-            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(), zone.cities);
+            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(true, false), zone.cities);
         }
     }
 
@@ -671,7 +694,7 @@ mod tests {
         
         println!("Initial state (merge ON):");
         for (i, zone) in app.timezone_manager.zones().iter().enumerate() {
-            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(), zone.cities);
+            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(true, false), zone.cities);
         }
         let initial_count = app.timezone_manager.zone_count();
         
@@ -681,7 +704,7 @@ mod tests {
         
         println!("After toggling merge OFF:");
         for (i, zone) in app.timezone_manager.zones().iter().enumerate() {
-            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(), zone.cities);
+            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(true, false), zone.cities);
         }
         let after_toggle_count = app.timezone_manager.zone_count();
         
@@ -694,7 +717,7 @@ mod tests {
         
         println!("After toggling merge ON:");
         for (i, zone) in app.timezone_manager.zones().iter().enumerate() {
-            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(), zone.cities);
+            println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(true, false), zone.cities);
         }
         
         // Should have fewer zones when merge is enabled again
@@ -711,7 +734,7 @@ mod tests {
         
         println!("After adding Toronto and Montreal (same timezone):");
         for (i, zone) in manager.zones().iter().enumerate() {
-            println!("Zone {}: {} - cities: {:?} - tz: {}", i, zone.get_display_name(), zone.cities, zone.tz);
+            println!("Zone {}: {} - cities: {:?} - tz: {}", i, zone.get_display_name(true, false), zone.cities, zone.tz);
         }
         
         // They should be merged because they have the same timezone
@@ -723,7 +746,7 @@ mod tests {
         
         println!("After adding New York (different timezone, same time):");
         for (i, zone) in manager.zones().iter().enumerate() {
-            println!("Zone {}: {} - cities: {:?} - tz: {}", i, zone.get_display_name(), zone.cities, zone.tz);
+            println!("Zone {}: {} - cities: {:?} - tz: {}", i, zone.get_display_name(true, false), zone.cities, zone.tz);
         }
         
         // Should be 2 zones because New York has different timezone
@@ -734,7 +757,7 @@ mod tests {
         
         println!("After enabling merge by time:");
         for (i, zone) in manager.zones().iter().enumerate() {
-            println!("Zone {}: {} - cities: {:?} - tz: {}", i, zone.get_display_name(), zone.cities, zone.tz);
+            println!("Zone {}: {} - cities: {:?} - tz: {}", i, zone.get_display_name(true, false), zone.cities, zone.tz);
         }
         
         // Should be 1 zone because all cities have the same time

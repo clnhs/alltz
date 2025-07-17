@@ -138,6 +138,8 @@ fn run_app<B: ratatui::backend::Backend>(
                         // Handle options modal input
                         match key.code {
                             KeyCode::Char('g') => Some(Message::ToggleGroupSameTimeCities),
+                            KeyCode::Char('f') => Some(Message::ToggleFullCityNames),
+                            KeyCode::Char('s') => Some(Message::ToggleShowAllCitiesInGroups),
                             KeyCode::Esc => Some(Message::ToggleOptions),
                             _ => None,
                         }
@@ -181,6 +183,8 @@ fn run_app<B: ratatui::backend::Backend>(
                             KeyCode::Char('r') => Some(Message::RemoveCurrentZone),
                             KeyCode::Char('m') => Some(Message::ToggleTimeFormat),
                             KeyCode::Char('g') => Some(Message::ToggleGroupSameTimeCities),
+                            KeyCode::Char('f') => Some(Message::ToggleFullCityNames),
+                            KeyCode::Char('s') => Some(Message::ToggleShowAllCitiesInGroups),
                             KeyCode::Char('n') => Some(Message::ToggleTimezoneDisplayMode),
                             KeyCode::Char('d') => Some(Message::ToggleDate),
                             KeyCode::Char('c') => Some(Message::CycleColorTheme),

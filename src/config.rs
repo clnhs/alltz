@@ -166,6 +166,8 @@ pub struct AppConfig {
     pub color_theme: ColorTheme,    // Color theme for UI
     pub show_date: bool,            // Date display toggle
     pub group_same_time_cities: bool, // Group cities when they have the same time
+    pub use_full_city_names: bool,  // Use full city names instead of abbreviations
+    pub show_all_cities_in_groups: bool, // Show all cities in groups instead of "City +N"
 }
 
 impl Default for AppConfig {
@@ -187,6 +189,8 @@ impl Default for AppConfig {
             color_theme: ColorTheme::default(),
             show_date: false,
             group_same_time_cities: true,
+            use_full_city_names: false,  // Default to abbreviations
+            show_all_cities_in_groups: false, // Default to "City +N" format
         }
     }
 }
