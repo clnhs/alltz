@@ -498,7 +498,7 @@ mod tests {
     }
 
     #[test]
-    fn test_merge_same_time_cities() {
+    fn test_group_same_time_cities() {
         let mut manager = TimeZoneManager::new();
         
         // Add first city
@@ -599,8 +599,8 @@ mod tests {
         
         let mut app = App::new();
         
-        // Merge functionality is now enabled by default
-        assert!(app.merge_same_time_cities);
+        // Group functionality is now enabled by default
+        assert!(app.group_same_time_cities);
         
         // Add a city to the same timezone as New York
         app.update(Message::StartAddZone);
@@ -613,7 +613,7 @@ mod tests {
             println!("Zone {}: {} - cities: {:?}", i, zone.get_display_name(), zone.cities);
         }
         
-        // Check that Boston was merged into the New York zone
+        // Check that Boston was grouped into the New York zone
         let ny_zone = zones.iter().find(|z| z.cities.contains(&"New York".to_string()));
         assert!(ny_zone.is_some());
         assert!(ny_zone.unwrap().cities.contains(&"Boston".to_string()));
@@ -676,8 +676,8 @@ mod tests {
         let initial_count = app.timezone_manager.zone_count();
         
         // Toggle merge OFF
-        app.update(Message::ToggleMergeSameTimeCities);
-        assert!(!app.merge_same_time_cities);
+        app.update(Message::ToggleGroupSameTimeCities);
+        assert!(!app.group_same_time_cities);
         
         println!("After toggling merge OFF:");
         for (i, zone) in app.timezone_manager.zones().iter().enumerate() {
@@ -689,8 +689,8 @@ mod tests {
         assert!(after_toggle_count >= initial_count);
         
         // Toggle merge back ON
-        app.update(Message::ToggleMergeSameTimeCities);
-        assert!(app.merge_same_time_cities);
+        app.update(Message::ToggleGroupSameTimeCities);
+        assert!(app.group_same_time_cities);
         
         println!("After toggling merge ON:");
         for (i, zone) in app.timezone_manager.zones().iter().enumerate() {
