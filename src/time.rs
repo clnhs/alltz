@@ -88,8 +88,8 @@ impl TimeZone {
                 if use_full_names {
                     self.cities.join(", ")
                 } else {
-                    // Show abbreviation + all city names
-                    format!("{} ({})", self.display_name, self.cities.join(", "))
+                    // Show timezone abbreviation + all city names
+                    format!("{} ({})", self.get_timezone_abbreviation(), self.cities.join(", "))
                 }
             } else {
                 // Show first city + count
@@ -578,7 +578,7 @@ mod tests {
         assert_eq!(timezone.get_display_name(false, false), format!("{} +1", timezone.display_name));
         assert_eq!(timezone.get_display_name(true, false), "New York +1");
         assert_eq!(timezone.get_display_name(true, true), "New York, Toronto");
-        assert_eq!(timezone.get_display_name(false, true), format!("{} (New York, Toronto)", timezone.display_name));
+        assert_eq!(timezone.get_display_name(false, true), format!("{} (New York, Toronto)", timezone.get_timezone_abbreviation()));
         
         // Adding duplicate city should not change count
         timezone.add_city("New York".to_string());
