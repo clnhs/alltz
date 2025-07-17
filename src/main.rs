@@ -180,6 +180,7 @@ fn run_app<B: ratatui::backend::Backend>(
                             KeyCode::Char('o') => Some(Message::ToggleOptions),
                             KeyCode::Char('r') => Some(Message::RemoveCurrentZone),
                             KeyCode::Char('m') => Some(Message::ToggleTimeFormat),
+                            KeyCode::Char('M') => Some(Message::ToggleMergeSameTimeCities),
                             KeyCode::Char('n') => Some(Message::ToggleTimezoneDisplayMode),
                             KeyCode::Char('d') => Some(Message::ToggleDate),
                             KeyCode::Char('c') => Some(Message::CycleColorTheme),

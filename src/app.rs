@@ -826,6 +826,7 @@ impl App {
                 "DISPLAY OPTIONS",
                 vec![
                     "m              Toggle 12/24 hour format",
+                    "M              Toggle merge same-time cities",
                     "n              Toggle short/full names",
                     "d              Toggle date display",
                     "c              Cycle color themes",
