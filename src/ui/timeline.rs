@@ -239,11 +239,8 @@ impl<'a> Widget for TimelineWidget<'a> {
                 self.timezone.offset_string()
             ),
             TimezoneDisplayMode::Full => {
-                if self.timezone.cities.is_empty() {
-                    self.timezone.get_full_display_name()
-                } else {
-                    format!("{} {}", self.timezone.get_display_name(self.use_full_city_names, self.show_all_cities_in_groups, self.use_timezone_abbreviations), self.timezone.offset_string())
-                }
+                // Always show full timezone information regardless of cities
+                self.timezone.get_full_display_name()
             }
         };
         let block = Block::default()
