@@ -964,7 +964,7 @@ impl App {
         let area = f.area();
 
         let modal_width = 60;
-        let modal_height = 18;
+        let modal_height = 20;
 
         let popup_area = Rect {
             x: (area.width.saturating_sub(modal_width)) / 2,
@@ -1005,9 +1005,10 @@ impl App {
         let full_names_status = if self.use_full_city_names { "ON" } else { "OFF" };
         let show_all_status = if self.show_all_cities_in_groups { "ON" } else { "OFF" };
         let timezone_abbrev_status = if self.use_timezone_abbreviations { "ON" } else { "OFF" };
+        let full_tz_mode_status = if matches!(self.timezone_display_mode, TimezoneDisplayMode::Full) { "ON" } else { "OFF" };
         let options_text = format!(
-            "\n  [g]  Group same-time cities: {}\n       Groups cities that show the same time (e.g., NYC and Montreal)\n\n  [f]  Use full city names: {}\n       Show full names instead of abbreviations\n\n  [s]  Show all cities in groups: {}\n       Show city lists instead of counts (e.g., 'NYC +2' → 'NYC (NY, Boston)')\n\n  [z]  Use timezone abbreviations: {}\n       Show timezone abbreviations instead of city codes\n\n\n  Press g/f/s/z to toggle, Esc to close",
-            group_status, full_names_status, show_all_status, timezone_abbrev_status
+            "\n  [g]  Group same-time cities: {}\n       Groups cities that show the same time (e.g., NYC and Montreal)\n\n  [f]  Use full city names: {}\n       Show full names instead of abbreviations\n\n  [s]  Show all cities in groups: {}\n       Show city lists instead of counts (e.g., 'NYC +2' → 'NYC (NY, Boston)')\n\n  [z]  Use timezone abbreviations: {}\n       Show timezone abbreviations instead of city codes\n\n  [n]  Full timezone display: {}\n       Show complete timezone info (e.g., 'New York EST UTC-5')\n\n\n  Press g/f/s/z/n to toggle, Esc to close",
+            group_status, full_names_status, show_all_status, timezone_abbrev_status, full_tz_mode_status
         );
 
         let options_content = Paragraph::new(options_text)
@@ -1016,7 +1017,7 @@ impl App {
         f.render_widget(options_content, chunks[1]);
 
         // Render footer
-        let footer = Paragraph::new("Press g/f/s/z to toggle, Esc to close")
+        let footer = Paragraph::new("Press g/f/s/z/n to toggle, Esc to close")
             .style(Style::default().fg(Color::DarkGray))
             .alignment(Alignment::Center);
         f.render_widget(footer, chunks[2]);

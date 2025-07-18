@@ -141,6 +141,7 @@ fn run_app<B: ratatui::backend::Backend>(
                             KeyCode::Char('f') => Some(Message::ToggleFullCityNames),
                             KeyCode::Char('s') => Some(Message::ToggleShowAllCitiesInGroups),
                             KeyCode::Char('z') => Some(Message::ToggleTimezoneAbbreviations),
+                            KeyCode::Char('n') => Some(Message::ToggleTimezoneDisplayMode),
                             KeyCode::Esc => Some(Message::ToggleOptions),
                             _ => None,
                         }
