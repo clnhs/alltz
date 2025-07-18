@@ -208,14 +208,20 @@ impl App {
                 .timezone_manager
                 .zones()
                 .iter()
-                .map(|zone| {
-                    // Try to find the original search name for this timezone
-                    let available = TimeZoneManager::get_all_available_timezones();
-                    available
-                        .iter()
-                        .find(|(tz, _, _, _, _)| *tz == zone.tz)
-                        .map(|(_, search_name, _, _, _)| search_name.clone())
-                        .unwrap_or_else(|| zone.tz.to_string())
+                .flat_map(|zone| {
+                    // Save all cities in this timezone
+                    if zone.cities.is_empty() {
+                        // Fallback for zones without cities
+                        let available = TimeZoneManager::get_all_available_timezones();
+                        vec![available
+                            .iter()
+                            .find(|(tz, _, _, _, _)| *tz == zone.tz)
+                            .map(|(_, search_name, _, _, _)| search_name.clone())
+                            .unwrap_or_else(|| zone.tz.to_string())]
+                    } else {
+                        // Save all cities in this timezone
+                        zone.cities.clone()
+                    }
                 })
                 .collect(),
             selected_zone_index: self.selected_zone_index,
