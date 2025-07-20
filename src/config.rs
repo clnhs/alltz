@@ -4,6 +4,10 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
 
+fn default_true() -> bool {
+    true
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TimeDisplayConfig {
     pub work_hours_start: u32,  // 8 (8 AM)
@@ -195,6 +199,8 @@ pub struct AppConfig {
     pub time_config: TimeDisplayConfig, // Work/awake/night hours
     pub color_theme: ColorTheme,      // Color theme for UI
     pub show_date: bool,              // Date display toggle
+    #[serde(default = "default_true")]
+    pub show_sun_times: bool,         // Sunrise/sunset times display toggle
 }
 
 impl Default for AppConfig {
@@ -215,6 +221,7 @@ impl Default for AppConfig {
             time_config: TimeDisplayConfig::default(),
             color_theme: ColorTheme::default(),
             show_date: false,
+            show_sun_times: true,  // Enable by default
         }
     }
 }

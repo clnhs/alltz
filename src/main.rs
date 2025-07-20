@@ -193,6 +193,7 @@ fn run_app<B: ratatui::backend::Backend>(
                             KeyCode::Char('m') => Some(Message::ToggleTimeFormat),
                             KeyCode::Char('n') => Some(Message::ToggleTimezoneDisplayMode),
                             KeyCode::Char('d') => Some(Message::ToggleDate),
+                            KeyCode::Char('s') => Some(Message::ToggleSunTimes),
                             KeyCode::Char('c') => Some(Message::CycleColorTheme),
                             KeyCode::Char('t') => Some(Message::ResetToNow),
                             KeyCode::Char('h') | KeyCode::Left => {
@@ -209,6 +210,9 @@ fn run_app<B: ratatui::backend::Backend>(
                                     Some(Message::ScrubTimeline(Direction::Right))
                                 }
                             }
+                            // Handle uppercase H and L (some terminals send these with Shift)
+                            KeyCode::Char('H') => Some(Message::ScrubTimelineWithShift(Direction::Left)),
+                            KeyCode::Char('L') => Some(Message::ScrubTimelineWithShift(Direction::Right)),
                             KeyCode::Char('j') | KeyCode::Down => {
                                 Some(Message::NavigateZone(Direction::Down))
                             }

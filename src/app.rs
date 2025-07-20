@@ -46,6 +46,7 @@ pub enum Message {
     ToggleTimeFormat,
     ToggleTimezoneDisplayMode,
     ToggleDate,
+    ToggleSunTimes,
     ToggleHelp,
     CycleColorTheme,
 
@@ -92,6 +93,7 @@ pub struct App {
     pub renaming_zone: bool,
     pub rename_zone_input: String,
     pub show_date: bool,
+    pub show_sun_times: bool,
 
     // App state
     pub should_quit: bool,
@@ -117,6 +119,7 @@ impl Default for App {
             renaming_zone: false,
             rename_zone_input: String::new(),
             show_date: false,
+            show_sun_times: true,
             should_quit: false,
         }
     }
@@ -183,6 +186,7 @@ impl App {
             renaming_zone: false,
             rename_zone_input: String::new(),
             show_date: config.show_date,
+            show_sun_times: config.show_sun_times,
             should_quit: false,
         }
     }
@@ -224,6 +228,7 @@ impl App {
             time_config: self.time_config.clone(),
             color_theme: self.color_theme,
             show_date: self.show_date,
+            show_sun_times: self.show_sun_times,
         }
     }
 
@@ -299,10 +304,10 @@ impl App {
             }
 
             Message::ScrubTimelineWithShift(direction) => {
-                // Preserve minutes when shift is held - use the old hourly increment
+                // Fine scrub by 1 minute when shift is held
                 let delta = match direction {
-                    Direction::Left => chrono::Duration::hours(-1),
-                    Direction::Right => chrono::Duration::hours(1),
+                    Direction::Left => chrono::Duration::minutes(-1),
+                    Direction::Right => chrono::Duration::minutes(1),
                     _ => chrono::Duration::zero(),
                 };
                 self.timeline_position = self.timeline_position + delta;
@@ -365,6 +370,12 @@ impl App {
 
             Message::ToggleDate => {
                 self.show_date = !self.show_date;
+                self.save_config();
+                None
+            }
+
+            Message::ToggleSunTimes => {
+                self.show_sun_times = !self.show_sun_times;
                 self.save_config();
                 None
             }
@@ -705,6 +716,7 @@ impl App {
             self.color_theme,
             self.show_date,
             true, // DST indicators always on
+            self.show_sun_times,
         );
 
         f.render_widget(timeline_widget, area);
@@ -880,6 +892,7 @@ impl App {
                     "m              Toggle 12/24 hour format",
                     "n              Toggle short/full names",
                     "d              Toggle date display",
+                    "s              Toggle sunrise/sunset times",
                     "c              Cycle color themes",
                 ],
             ),
@@ -1529,6 +1542,7 @@ mod tests {
             time_config: crate::config::TimeDisplayConfig::default(),
             color_theme: crate::config::ColorTheme::default(),
             show_date: false,
+            show_sun_times: true,
         };
 
         // Create app from config

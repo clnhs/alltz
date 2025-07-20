@@ -3,6 +3,10 @@ use chrono_tz::Tz;
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::str::FromStr;
+use std::sync::OnceLock;
+use sunrise::{SolarEvent, SolarDay, Coordinates};
+
+static CITIES_DATA: OnceLock<CitiesData> = OnceLock::new();
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CityData {
@@ -168,6 +172,74 @@ impl TimeZone {
         // Last resort: use display_name
         self.display_name.clone()
     }
+
+    pub fn get_coordinates(&self) -> Option<(f64, f64)> {
+        let cities_data = TimeZoneManager::load_cities_data();
+        
+        // First try to find by source city name
+        if let Some(source_city) = &self.source_city {
+            if let Some(city) = cities_data
+                .cities
+                .iter()
+                .find(|c| c.name == *source_city)
+            {
+                return Some((city.coordinates[0], city.coordinates[1]));
+            }
+        }
+        
+        // Fallback: lookup by airport code
+        if let Some(city) = cities_data
+            .cities
+            .iter()
+            .find(|c| c.code == self.display_name)
+        {
+            return Some((city.coordinates[0], city.coordinates[1]));
+        }
+        
+        None
+    }
+
+    pub fn get_sunrise_sunset(&self, date: DateTime<Utc>) -> Option<(DateTime<Tz>, DateTime<Tz>)> {
+        let (lat, lng) = self.get_coordinates()?;
+        let coords = Coordinates::new(lat, lng)?;
+        
+        // Convert UTC date to local date for calculation
+        let local_date = date.with_timezone(&self.tz).date_naive();
+        
+        // Create solar day for calculations
+        let solar_day = SolarDay::new(coords, local_date);
+        
+        // Calculate sunrise and sunset times (returns UTC times)
+        let sunrise_utc = solar_day.event_time(SolarEvent::Sunrise);
+        let sunset_utc = solar_day.event_time(SolarEvent::Sunset);
+        
+        // Convert UTC times to local timezone
+        let sunrise_tz = sunrise_utc.with_timezone(&self.tz);
+        let sunset_tz = sunset_utc.with_timezone(&self.tz);
+        
+        Some((sunrise_tz, sunset_tz))
+    }
+
+    pub fn format_sun_times(&self, date: DateTime<Utc>, use_12_hour: bool) -> Option<String> {
+        let (sunrise, sunset) = self.get_sunrise_sunset(date)?;
+        if use_12_hour {
+            Some(format!(
+                "☀ {}:{}{} ☽ {}:{}{}",
+                sunrise.format("%I"),
+                sunrise.format("%M"),
+                sunrise.format("%P"),
+                sunset.format("%I"),
+                sunset.format("%M"),
+                sunset.format("%P")
+            ))
+        } else {
+            Some(format!(
+                "☀ {} ☽ {}",
+                sunrise.format("%H:%M"),
+                sunset.format("%H:%M")
+            ))
+        }
+    }
 }
 
 impl fmt::Display for TimeZone {
@@ -184,21 +256,20 @@ impl fmt::Display for TimeZone {
 #[derive(Debug, Clone)]
 pub struct TimeZoneManager {
     zones: Vec<TimeZone>,
-    cities_data: CitiesData,
 }
 
 impl TimeZoneManager {
     pub fn new() -> Self {
-        let cities_data = Self::load_cities_data();
         Self {
             zones: Vec::new(),
-            cities_data,
         }
     }
 
-    fn load_cities_data() -> CitiesData {
-        let json_str = include_str!("cities.json");
-        serde_json::from_str(json_str).expect("Failed to parse cities.json")
+    fn load_cities_data() -> &'static CitiesData {
+        CITIES_DATA.get_or_init(|| {
+            let json_str = include_str!("cities.json");
+            serde_json::from_str(json_str).expect("Failed to parse cities.json")
+        })
     }
 
     pub fn get_all_available_timezones() -> Vec<(Tz, String, String, f64, f64)> {
@@ -317,15 +388,16 @@ impl TimeZoneManager {
         };
 
         // Find city, considering country if provided
+        let cities_data = Self::load_cities_data();
         let city = if let Some(country_name) = country {
             // Look for exact match with city name and country
-            self.cities_data.cities.iter().find(|c| {
+            cities_data.cities.iter().find(|c| {
                 c.name.eq_ignore_ascii_case(city_name)
                     && c.country.eq_ignore_ascii_case(country_name)
             })
         } else {
             // Fallback to just city name
-            self.cities_data
+            cities_data
                 .cities
                 .iter()
                 .find(|c| c.name.eq_ignore_ascii_case(city_name))
@@ -380,7 +452,7 @@ impl TimeZoneManager {
         // Sort by UTC offset for natural time progression
         zones.sort_by_key(|tz| tz.utc_offset_hours());
 
-        Self { zones, cities_data }
+        Self { zones }
     }
 
     pub fn add_zone(&mut self, timezone: TimeZone) {

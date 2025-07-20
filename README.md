@@ -12,6 +12,7 @@ A terminal-based timezone viewer. Track multiple timezones simultaneously with t
 
 - 🌍 **Multi-timezone display** with visual timeline scrubbing
 - 🏷️ **Custom timezone names** - personalize zones with team member names or custom labels
+- 🌅 **Sunrise/sunset times** - shows daily sun times for each timezone
 - 📅 **Date display** with timezone-aware positioning on timelines
 - 🕐 **DST transition indicators** (⇈ spring forward, ⇊ fall back)
 - 🎨 **6 color themes** (Default, Ocean, Forest, Sunset, Cyberpunk, Monochrome)
@@ -51,7 +52,7 @@ sudo cp target/release/alltz /usr/local/bin/
 1. Download the latest release from [GitHub Releases](https://github.com/abradburne/alltz/releases)
 2. Extract the binary to your PATH:
    ```bash
-   tar -xzf alltz-v0.1.0-your-platform.tar.gz
+   tar -xzf alltz-v0.1.3-your-platform.tar.gz
    sudo mv alltz /usr/local/bin/
    ```
 
@@ -98,6 +99,7 @@ alltz --timezone London --twelve-hour --theme ocean
 
 ### Display Options
 - `d` - Toggle date display on timelines
+- `s` - Toggle sunrise/sunset times
 - `c` - Cycle through color themes
 - `?` - Show/hide help
 - `q` - Quit
