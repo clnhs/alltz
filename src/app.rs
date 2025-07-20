@@ -194,13 +194,17 @@ impl App {
                 .zones()
                 .iter()
                 .map(|zone| {
-                    // Try to find the original search name for this timezone
-                    let available = TimeZoneManager::get_all_available_timezones();
-                    let city_name = available
-                        .iter()
-                        .find(|(tz, _, _, _, _)| *tz == zone.tz)
-                        .map(|(_, search_name, _, _, _)| search_name.clone())
-                        .unwrap_or_else(|| zone.tz.to_string());
+                    // Use the source_city if available, otherwise find the original search name
+                    let city_name = if let Some(source_city) = &zone.source_city {
+                        source_city.clone()
+                    } else {
+                        let available = TimeZoneManager::get_all_available_timezones();
+                        available
+                            .iter()
+                            .find(|(tz, _, _, _, _)| *tz == zone.tz)
+                            .map(|(_, search_name, _, _, _)| search_name.clone())
+                            .unwrap_or_else(|| zone.tz.to_string())
+                    };
 
                     // Save as full ZoneConfig if custom label is present, otherwise as simple string
                     match &zone.custom_label {
@@ -377,6 +381,10 @@ impl App {
             }
 
             Message::StartAddZone => {
+                // Clear other modal states
+                self.renaming_zone = false;
+                self.rename_zone_input.clear();
+                
                 self.adding_zone = true;
                 self.add_zone_input.clear();
                 self.zone_search_results.clear();
@@ -493,6 +501,11 @@ impl App {
 
             Message::StartRenameZone => {
                 if self.timezone_manager.zone_count() > 0 {
+                    // Clear other modal states
+                    self.adding_zone = false;
+                    self.add_zone_input.clear();
+                    self.zone_search_results.clear();
+                    
                     self.renaming_zone = true;
                     // Pre-fill with current custom label or empty
                     self.rename_zone_input = self.timezone_manager.zones()
@@ -606,7 +619,8 @@ impl App {
             .split(inner);
 
         // Left: App name
-        let app_name = Paragraph::new("alltz v0.1.1").alignment(Alignment::Left);
+        let app_name = Paragraph::new(format!("alltz v{}", env!("CARGO_PKG_VERSION")))
+            .alignment(Alignment::Left);
         f.render_widget(app_name, chunks[0]);
 
         // Center: Local time
@@ -1376,6 +1390,34 @@ mod tests {
     }
 
     #[test]
+    fn test_modal_state_exclusivity() {
+        let mut app = App::new();
+        
+        // Add a timezone first so we can rename it
+        app.update(Message::StartAddZone);
+        app.update(Message::UpdateAddZoneInput("London".to_string()));
+        app.update(Message::ConfirmAddZone);
+        
+        // Start add zone mode
+        app.update(Message::StartAddZone);
+        assert!(app.adding_zone);
+        assert!(!app.renaming_zone);
+        
+        // Now start rename mode - should clear add zone state
+        app.update(Message::StartRenameZone);
+        assert!(!app.adding_zone);
+        assert!(app.renaming_zone);
+        assert!(app.add_zone_input.is_empty());
+        assert!(app.zone_search_results.is_empty());
+        
+        // Start add zone mode again - should clear rename state
+        app.update(Message::StartAddZone);
+        assert!(app.adding_zone);
+        assert!(!app.renaming_zone);
+        assert!(app.rename_zone_input.is_empty());
+    }
+
+    #[test]
     fn test_cancel_rename() {
         let mut app = App::new();
         app.renaming_zone = true;
@@ -1471,5 +1513,180 @@ mod tests {
 
         // They should match (allowing for DST differences)
         assert_eq!(selected_offset_hours, local_offset_hours);
+    }
+
+    #[test]
+    fn test_manchester_london_save_load() {
+        // Create a minimal config with just London and Manchester
+        let config = AppConfig {
+            zones: vec![
+                crate::config::ZoneConfigCompat::Simple("London".to_string()),
+                crate::config::ZoneConfigCompat::Simple("Manchester".to_string()),
+            ],
+            selected_zone_index: 0,
+            display_format: TimeFormat::TwentyFourHour,
+            timezone_display_mode: TimezoneDisplayMode::Short,
+            time_config: crate::config::TimeDisplayConfig::default(),
+            color_theme: crate::config::ColorTheme::default(),
+            show_date: false,
+        };
+
+        // Create app from config
+        let app = App::from_config(config);
+
+        // Verify both cities were loaded
+        assert_eq!(app.timezone_manager.zone_count(), 2);
+
+        // Convert back to config
+        let saved_config = app.to_config();
+
+        // Verify both cities are still there with correct names
+        assert_eq!(saved_config.zones.len(), 2);
+
+        // Check that we have both London and Manchester
+        let city_names: Vec<String> = saved_config
+            .zones
+            .iter()
+            .map(|z| z.city_name().to_string())
+            .collect();
+
+        assert!(
+            city_names.contains(&"London".to_string()),
+            "London should be preserved"
+        );
+        assert!(
+            city_names.contains(&"Manchester".to_string()),
+            "Manchester should be preserved"
+        );
+    }
+
+    #[test]
+    fn test_manchester_with_default_london() {
+        // Start with default app (which includes London)
+        let mut app = App::new();
+
+        // Verify London is in defaults
+        let initial_count = app.timezone_manager.zone_count();
+        assert!(initial_count > 0, "Should have default zones");
+
+        // Add Manchester
+        let added = app.timezone_manager.add_timezone_by_name("Manchester");
+        assert!(added, "Should be able to add Manchester");
+        assert_eq!(
+            app.timezone_manager.zone_count(),
+            initial_count + 1,
+            "Should have one more zone"
+        );
+
+        // Save to config
+        let config = app.to_config();
+
+        // Reload from config
+        let reloaded_app = App::from_config(config);
+
+        // Verify both cities are present
+        let zones = reloaded_app.timezone_manager.zones();
+        let display_names: Vec<&str> = zones.iter().map(|z| z.display_name.as_str()).collect();
+        let source_cities: Vec<String> =
+            zones.iter().filter_map(|z| z.source_city.clone()).collect();
+
+        println!("Display names: {:?}", display_names);
+        println!("Source cities: {:?}", source_cities);
+
+        // Should have both LON and MAN
+        assert!(display_names.contains(&"LON"), "Should have London (LON)");
+        assert!(
+            display_names.contains(&"MAN"),
+            "Should have Manchester (MAN)"
+        );
+
+        // Source cities should include Manchester
+        assert!(
+            source_cities.contains(&"Manchester".to_string()),
+            "Manchester source city should be preserved"
+        );
+    }
+
+    #[test]
+    fn test_search_navigation() {
+        let mut app = App::new();
+        
+        // Start adding zone
+        app.update(Message::StartAddZone);
+        assert!(app.adding_zone);
+        assert_eq!(app.selected_search_result, 0);
+        
+        // Add some search input to get results
+        app.update(Message::UpdateAddZoneInput("London".to_string()));
+        assert!(!app.zone_search_results.is_empty());
+        assert_eq!(app.selected_search_result, 0);
+        
+        println!("Search results: {:?}", app.zone_search_results);
+        println!("Number of results: {}", app.zone_search_results.len());
+        
+        // Navigate down
+        app.update(Message::NavigateSearchResults(Direction::Down));
+        assert_eq!(app.selected_search_result, 1);
+        
+        // Navigate down again if possible
+        if app.zone_search_results.len() > 2 {
+            app.update(Message::NavigateSearchResults(Direction::Down));
+            assert_eq!(app.selected_search_result, 2);
+        }
+        
+        // Navigate up
+        app.update(Message::NavigateSearchResults(Direction::Up));
+        if app.zone_search_results.len() > 2 {
+            assert_eq!(app.selected_search_result, 1);
+        } else {
+            assert_eq!(app.selected_search_result, 0);
+        }
+        
+        // Navigate up again
+        app.update(Message::NavigateSearchResults(Direction::Up));
+        assert_eq!(app.selected_search_result, 0);
+        
+        // Try to navigate up when already at top (should stay at 0)
+        app.update(Message::NavigateSearchResults(Direction::Up));
+        assert_eq!(app.selected_search_result, 0);
+        
+        // Navigate to bottom
+        let max_index = app.zone_search_results.len() - 1;
+        for _ in 0..app.zone_search_results.len() {
+            app.update(Message::NavigateSearchResults(Direction::Down));
+        }
+        assert_eq!(app.selected_search_result, max_index);
+        
+        // Try to navigate down when already at bottom (should stay at max)
+        app.update(Message::NavigateSearchResults(Direction::Down));
+        assert_eq!(app.selected_search_result, max_index);
+    }
+
+    #[test]
+    fn test_search_navigation_detailed() {
+        let mut app = App::new();
+        
+        // Start adding zone
+        app.update(Message::StartAddZone);
+        println!("After StartAddZone: adding_zone={}, selected_search_result={}", app.adding_zone, app.selected_search_result);
+        
+        // Add search input
+        app.update(Message::UpdateAddZoneInput("Lon".to_string()));
+        println!("After search 'Lon': {} results, selected={}", app.zone_search_results.len(), app.selected_search_result);
+        println!("Results: {:?}", app.zone_search_results);
+        
+        // Try navigation
+        app.update(Message::NavigateSearchResults(Direction::Down));
+        println!("After Down: selected={}", app.selected_search_result);
+        
+        app.update(Message::NavigateSearchResults(Direction::Down));
+        println!("After Down again: selected={}", app.selected_search_result);
+        
+        app.update(Message::NavigateSearchResults(Direction::Up));
+        println!("After Up: selected={}", app.selected_search_result);
+        
+        // Verify basic functionality
+        assert!(app.adding_zone);
+        assert!(!app.zone_search_results.is_empty());
     }
 }

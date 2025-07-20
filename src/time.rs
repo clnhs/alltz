@@ -25,6 +25,7 @@ pub struct TimeZone {
     pub tz: Tz,
     pub display_name: String,
     pub custom_label: Option<String>,
+    pub source_city: Option<String>, // Store the original city name that was selected
 }
 
 impl TimeZone {
@@ -33,6 +34,7 @@ impl TimeZone {
             tz,
             display_name,
             custom_label: None,
+            source_city: None,
         }
     }
 
@@ -41,6 +43,21 @@ impl TimeZone {
             tz,
             display_name,
             custom_label,
+            source_city: None,
+        }
+    }
+
+    pub fn with_source_city(
+        tz: Tz,
+        display_name: String,
+        custom_label: Option<String>,
+        source_city: Option<String>,
+    ) -> Self {
+        Self {
+            tz,
+            display_name,
+            custom_label,
+            source_city,
         }
     }
 
@@ -128,6 +145,26 @@ impl TimeZone {
 
     pub fn effective_display_name(&self) -> &str {
         self.custom_label.as_deref().unwrap_or(&self.display_name)
+    }
+
+    pub fn get_city_name(&self) -> String {
+        // Use stored source city if available
+        if let Some(source_city) = &self.source_city {
+            return source_city.clone();
+        }
+
+        // Fallback: lookup by airport code
+        let cities_data = TimeZoneManager::load_cities_data();
+        if let Some(city) = cities_data
+            .cities
+            .iter()
+            .find(|c| c.code == self.display_name)
+        {
+            return city.name.clone();
+        }
+
+        // Last resort: use display_name
+        self.display_name.clone()
     }
 }
 
@@ -238,7 +275,9 @@ impl TimeZoneManager {
 
             // Only include results with some relevance
             if score > 0 {
-                results.push((city.name.clone(), score));
+                // Include country in the display name to disambiguate cities with same name
+                let display_name = format!("{}, {}", city.name, city.country);
+                results.push((display_name, score));
             }
         }
 
@@ -267,17 +306,40 @@ impl TimeZoneManager {
     }
 
     pub fn add_timezone_with_label(&mut self, name: &str, custom_label: Option<String>) -> bool {
-        if let Some(city) = self
-            .cities_data
-            .cities
-            .iter()
-            .find(|c| c.name.eq_ignore_ascii_case(name))
-        {
-            if let Ok(tz) = Tz::from_str(&city.timezone) {
-                let timezone = TimeZone::with_custom_label(tz, city.code.clone(), custom_label);
+        // Handle "City, Country" format from search results
+        let (city_name, country) = if name.contains(", ") {
+            let parts: Vec<&str> = name.splitn(2, ", ").collect();
+            (parts[0], Some(parts[1]))
+        } else {
+            (name, None)
+        };
 
-                // Check if we already have this timezone
-                if !self.zones.iter().any(|z| z.tz == tz) {
+        // Find city, considering country if provided
+        let city = if let Some(country_name) = country {
+            // Look for exact match with city name and country
+            self.cities_data.cities.iter().find(|c| {
+                c.name.eq_ignore_ascii_case(city_name)
+                    && c.country.eq_ignore_ascii_case(country_name)
+            })
+        } else {
+            // Fallback to just city name
+            self.cities_data
+                .cities
+                .iter()
+                .find(|c| c.name.eq_ignore_ascii_case(city_name))
+        };
+
+        if let Some(city) = city {
+            if let Ok(tz) = Tz::from_str(&city.timezone) {
+                let timezone = TimeZone::with_source_city(
+                    tz,
+                    city.code.clone(),
+                    custom_label,
+                    Some(city.name.clone()),
+                );
+
+                // Check if we already have this exact city (by airport code)
+                if !self.zones.iter().any(|z| z.display_name == city.code) {
                     self.add_zone(timezone);
                     return true;
                 }
@@ -483,5 +545,67 @@ mod tests {
             manager.zones()[0].custom_label.as_deref(),
             Some("NYC Office")
         );
+    }
+
+    #[test]
+    fn test_search_london_disambiguation() {
+        let results = TimeZoneManager::search_timezones("London");
+
+        println!("Search results for 'London': {:?}", results);
+
+        // Should find both London, UK and London, Canada
+        let london_uk = results.iter().find(|r| r.contains("London, UK"));
+        let london_canada = results.iter().find(|r| r.contains("London, Canada"));
+
+        assert!(london_uk.is_some(), "Should find London, UK in results");
+        assert!(
+            london_canada.is_some(),
+            "Should find London, Canada in results"
+        );
+
+        // Should not have duplicate entries
+        let london_uk_count = results.iter().filter(|r| r.contains("London, UK")).count();
+        let london_canada_count = results
+            .iter()
+            .filter(|r| r.contains("London, Canada"))
+            .count();
+
+        assert_eq!(
+            london_uk_count, 1,
+            "Should have exactly one London, UK entry"
+        );
+        assert_eq!(
+            london_canada_count, 1,
+            "Should have exactly one London, Canada entry"
+        );
+    }
+
+    #[test]
+    fn test_add_both_london_cities() {
+        let mut manager = TimeZoneManager::new();
+
+        // Add both London cities
+        let uk_added = manager.add_timezone_by_name("London, UK");
+        let canada_added = manager.add_timezone_by_name("London, Canada");
+
+        assert!(uk_added, "Should successfully add London, UK");
+        assert!(canada_added, "Should successfully add London, Canada");
+        assert_eq!(
+            manager.zone_count(),
+            2,
+            "Should have 2 zones after adding both Londons"
+        );
+
+        // Verify they have different timezones
+        let zones = manager.zones();
+        let uk_zone = zones.iter().find(|z| {
+            z.source_city.as_deref() == Some("London") && z.tz.to_string().contains("Europe")
+        });
+        let canada_zone = zones.iter().find(|z| {
+            z.source_city.as_deref() == Some("London") && z.tz.to_string().contains("Canada")
+        });
+
+        assert!(uk_zone.is_some(), "Should find London, UK zone");
+        assert!(canada_zone.is_some(), "Should find London, Canada zone");
     }
 }

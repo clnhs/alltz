@@ -233,13 +233,21 @@ impl<'a> Widget for TimelineWidget<'a> {
                 )
             }
             TimezoneDisplayMode::Full => {
-                // For full mode, show custom label with city name in parentheses
+                // For full mode, show custom label with city name, or just city name
                 match &self.timezone.custom_label {
                     Some(label) => {
-                        let city_name = self.timezone.get_full_display_name();
-                        format!("{} ({})", label, city_name)
+                        let city_name = self.timezone.get_city_name();
+                        format!(
+                            "{} ({} {})",
+                            label,
+                            city_name,
+                            self.timezone.offset_string()
+                        )
                     }
-                    None => self.timezone.get_full_display_name(),
+                    None => {
+                        let city_name = self.timezone.get_city_name();
+                        format!("{} {}", city_name, self.timezone.offset_string())
+                    }
                 }
             }
         };

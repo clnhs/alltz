@@ -815,12 +815,3244 @@
       "country": "Ethiopia",
       "coordinates": [9.1450, 38.7451],
       "aliases": []
+    },
+    {
+      "name": "Havana",
+      "code": "HAV",
+      "timezone": "America/Havana",
+      "country": "Cuba",
+      "coordinates": [23.1136, -82.3666],
+      "aliases": []
+    },
+    {
+      "name": "Santo Domingo",
+      "code": "SDQ",
+      "timezone": "America/Santo_Domingo",
+      "country": "Dominican Republic",
+      "coordinates": [18.4861, -69.9312],
+      "aliases": []
+    },
+    {
+      "name": "San Juan",
+      "code": "SJU",
+      "timezone": "America/Puerto_Rico",
+      "country": "Puerto Rico",
+      "coordinates": [18.4655, -66.1057],
+      "aliases": []
+    },
+    {
+      "name": "Kingston",
+      "code": "KIN",
+      "timezone": "America/Jamaica",
+      "country": "Jamaica",
+      "coordinates": [17.9714, -76.7927],
+      "aliases": []
+    },
+    {
+      "name": "Port-au-Prince",
+      "code": "PAP",
+      "timezone": "America/Port-au-Prince",
+      "country": "Haiti",
+      "coordinates": [18.5944, -72.3074],
+      "aliases": []
+    },
+    {
+      "name": "Panama City",
+      "code": "PTY",
+      "timezone": "America/Panama",
+      "country": "Panama",
+      "coordinates": [9.0563, -79.5347],
+      "aliases": []
+    },
+    {
+      "name": "San José",
+      "code": "SJO",
+      "timezone": "America/Costa_Rica",
+      "country": "Costa Rica",
+      "coordinates": [9.9281, -84.0907],
+      "aliases": []
+    },
+    {
+      "name": "Guatemala City",
+      "code": "GUA",
+      "timezone": "America/Guatemala",
+      "country": "Guatemala",
+      "coordinates": [14.6343, -90.5065],
+      "aliases": []
+    },
+    {
+      "name": "San Salvador",
+      "code": "SAL",
+      "timezone": "America/El_Salvador",
+      "country": "El Salvador",
+      "coordinates": [13.6929, -89.2182],
+      "aliases": []
+    },
+    {
+      "name": "Managua",
+      "code": "MGA",
+      "timezone": "America/Managua",
+      "country": "Nicaragua",
+      "coordinates": [12.1149, -86.2362],
+      "aliases": []
+    },
+    {
+      "name": "Tegucigalpa",
+      "code": "TGU",
+      "timezone": "America/Tegucigalpa",
+      "country": "Honduras",
+      "coordinates": [14.0723, -87.1921],
+      "aliases": []
+    },
+    {
+      "name": "Belize City",
+      "code": "BZE",
+      "timezone": "America/Belize",
+      "country": "Belize",
+      "coordinates": [17.5046, -88.1962],
+      "aliases": []
+    },
+    {
+      "name": "Montevideo",
+      "code": "MVD",
+      "timezone": "America/Montevideo",
+      "country": "Uruguay",
+      "coordinates": [-34.9011, -56.1645],
+      "aliases": []
+    },
+    {
+      "name": "Asunción",
+      "code": "ASU",
+      "timezone": "America/Asuncion",
+      "country": "Paraguay",
+      "coordinates": [-25.2637, -57.5759],
+      "aliases": []
+    },
+    {
+      "name": "La Paz",
+      "code": "LPB",
+      "timezone": "America/La_Paz",
+      "country": "Bolivia",
+      "coordinates": [-16.5000, -68.1500],
+      "aliases": []
+    },
+    {
+      "name": "Quito",
+      "code": "UIO",
+      "timezone": "America/Guayaquil",
+      "country": "Ecuador",
+      "coordinates": [-0.1807, -78.4678],
+      "aliases": []
+    },
+    {
+      "name": "Accra",
+      "code": "ACC",
+      "timezone": "Africa/Accra",
+      "country": "Ghana",
+      "coordinates": [5.6037, -0.1870],
+      "aliases": []
+    },
+    {
+      "name": "Dakar",
+      "code": "DKR",
+      "timezone": "Africa/Dakar",
+      "country": "Senegal",
+      "coordinates": [14.7167, -17.4677],
+      "aliases": []
+    },
+    {
+      "name": "Abidjan",
+      "code": "ABJ",
+      "timezone": "Africa/Abidjan",
+      "country": "Ivory Coast",
+      "coordinates": [5.3097, -4.0126],
+      "aliases": []
+    },
+    {
+      "name": "Dar es Salaam",
+      "code": "DAR",
+      "timezone": "Africa/Dar_es_Salaam",
+      "country": "Tanzania",
+      "coordinates": [-6.7924, 39.2083],
+      "aliases": []
+    },
+    {
+      "name": "Kampala",
+      "code": "KLA",
+      "timezone": "Africa/Kampala",
+      "country": "Uganda",
+      "coordinates": [0.3476, 32.5825],
+      "aliases": []
+    },
+    {
+      "name": "Harare",
+      "code": "HRE",
+      "timezone": "Africa/Harare",
+      "country": "Zimbabwe",
+      "coordinates": [-17.8292, 31.0522],
+      "aliases": []
+    },
+    {
+      "name": "Lusaka",
+      "code": "LUN",
+      "timezone": "Africa/Lusaka",
+      "country": "Zambia",
+      "coordinates": [-15.3875, 28.3228],
+      "aliases": []
+    },
+    {
+      "name": "Maputo",
+      "code": "MPM",
+      "timezone": "Africa/Maputo",
+      "country": "Mozambique",
+      "coordinates": [-25.9692, 32.5732],
+      "aliases": []
+    },
+    {
+      "name": "Windhoek",
+      "code": "WDH",
+      "timezone": "Africa/Windhoek",
+      "country": "Namibia",
+      "coordinates": [-22.5609, 17.0658],
+      "aliases": []
+    },
+    {
+      "name": "Gaborone",
+      "code": "GBE",
+      "timezone": "Africa/Gaborone",
+      "country": "Botswana",
+      "coordinates": [-24.6282, 25.9231],
+      "aliases": []
+    },
+    {
+      "name": "Kigali",
+      "code": "KGL",
+      "timezone": "Africa/Kigali",
+      "country": "Rwanda",
+      "coordinates": [-1.9700, 30.1044],
+      "aliases": []
+    },
+    {
+      "name": "Ankara",
+      "code": "ANK",
+      "timezone": "Europe/Istanbul",
+      "country": "Turkey",
+      "coordinates": [39.9334, 32.8597],
+      "aliases": []
+    },
+    {
+      "name": "Bucharest",
+      "code": "BUH",
+      "timezone": "Europe/Bucharest",
+      "country": "Romania",
+      "coordinates": [44.4268, 26.1025],
+      "aliases": []
+    },
+    {
+      "name": "Sofia",
+      "code": "SOF",
+      "timezone": "Europe/Sofia",
+      "country": "Bulgaria",
+      "coordinates": [42.6977, 23.3219],
+      "aliases": []
+    },
+    {
+      "name": "Belgrade",
+      "code": "BEG",
+      "timezone": "Europe/Belgrade",
+      "country": "Serbia",
+      "coordinates": [44.7866, 20.4489],
+      "aliases": []
+    },
+    {
+      "name": "Zagreb",
+      "code": "ZAG",
+      "timezone": "Europe/Zagreb",
+      "country": "Croatia",
+      "coordinates": [45.8150, 15.9819],
+      "aliases": []
+    },
+    {
+      "name": "Ljubljana",
+      "code": "LJU",
+      "timezone": "Europe/Ljubljana",
+      "country": "Slovenia",
+      "coordinates": [46.0569, 14.5058],
+      "aliases": []
+    },
+    {
+      "name": "Bratislava",
+      "code": "BTS",
+      "timezone": "Europe/Bratislava",
+      "country": "Slovakia",
+      "coordinates": [48.1486, 17.1077],
+      "aliases": []
+    },
+    {
+      "name": "Tallinn",
+      "code": "TLL",
+      "timezone": "Europe/Tallinn",
+      "country": "Estonia",
+      "coordinates": [59.4370, 24.7536],
+      "aliases": []
+    },
+    {
+      "name": "Riga",
+      "code": "RIX",
+      "timezone": "Europe/Riga",
+      "country": "Latvia",
+      "coordinates": [56.9496, 24.1052],
+      "aliases": []
+    },
+    {
+      "name": "Vilnius",
+      "code": "VNO",
+      "timezone": "Europe/Vilnius",
+      "country": "Lithuania",
+      "coordinates": [54.6872, 25.2797],
+      "aliases": []
+    },
+    {
+      "name": "Minsk",
+      "code": "MSQ",
+      "timezone": "Europe/Minsk",
+      "country": "Belarus",
+      "coordinates": [53.9006, 27.5590],
+      "aliases": []
+    },
+    {
+      "name": "Kyiv",
+      "code": "KBP",
+      "timezone": "Europe/Kyiv",
+      "country": "Ukraine",
+      "coordinates": [50.4501, 30.5234],
+      "aliases": ["Kiev"]
+    },
+    {
+      "name": "Pune",
+      "code": "PNQ",
+      "timezone": "Asia/Kolkata",
+      "country": "India",
+      "coordinates": [18.5204, 73.8567],
+      "aliases": []
+    },
+    {
+      "name": "Kolkata",
+      "code": "CCU",
+      "timezone": "Asia/Kolkata",
+      "country": "India",
+      "coordinates": [22.5726, 88.3639],
+      "aliases": ["Calcutta"]
+    },
+    {
+      "name": "Ahmedabad",
+      "code": "AMD",
+      "timezone": "Asia/Kolkata",
+      "country": "India",
+      "coordinates": [23.0225, 72.5714],
+      "aliases": []
+    },
+    {
+      "name": "Gurgaon",
+      "code": "GGN",
+      "timezone": "Asia/Kolkata",
+      "country": "India",
+      "coordinates": [28.4595, 77.0266],
+      "aliases": ["Gurugram"]
+    },
+    {
+      "name": "Noida",
+      "code": "NOI",
+      "timezone": "Asia/Kolkata",
+      "country": "India",
+      "coordinates": [28.5355, 77.3910],
+      "aliases": []
+    },
+    {
+      "name": "Colombo",
+      "code": "CMB",
+      "timezone": "Asia/Colombo",
+      "country": "Sri Lanka",
+      "coordinates": [6.9271, 79.8612],
+      "aliases": []
+    },
+    {
+      "name": "Kathmandu",
+      "code": "KTM",
+      "timezone": "Asia/Kathmandu",
+      "country": "Nepal",
+      "coordinates": [27.7172, 85.3240],
+      "aliases": []
+    },
+    {
+      "name": "Islamabad",
+      "code": "ISB",
+      "timezone": "Asia/Karachi",
+      "country": "Pakistan",
+      "coordinates": [33.7294, 73.0931],
+      "aliases": []
+    },
+    {
+      "name": "Lahore",
+      "code": "LHE",
+      "timezone": "Asia/Karachi",
+      "country": "Pakistan",
+      "coordinates": [31.5497, 74.3436],
+      "aliases": []
+    },
+    {
+      "name": "Tashkent",
+      "code": "TAS",
+      "timezone": "Asia/Tashkent",
+      "country": "Uzbekistan",
+      "coordinates": [41.2995, 69.2401],
+      "aliases": []
+    },
+    {
+      "name": "Almaty",
+      "code": "ALA",
+      "timezone": "Asia/Almaty",
+      "country": "Kazakhstan",
+      "coordinates": [43.2220, 76.8512],
+      "aliases": []
+    },
+    {
+      "name": "Bishkek",
+      "code": "FRU",
+      "timezone": "Asia/Bishkek",
+      "country": "Kyrgyzstan",
+      "coordinates": [42.8746, 74.5698],
+      "aliases": []
+    },
+    {
+      "name": "Dushanbe",
+      "code": "DYU",
+      "timezone": "Asia/Dushanbe",
+      "country": "Tajikistan",
+      "coordinates": [38.5737, 68.7738],
+      "aliases": []
+    },
+    {
+      "name": "Ashgabat",
+      "code": "ASB",
+      "timezone": "Asia/Ashgabat",
+      "country": "Turkmenistan",
+      "coordinates": [37.9601, 58.3261],
+      "aliases": []
+    },
+    {
+      "name": "Baku",
+      "code": "BAK",
+      "timezone": "Asia/Baku",
+      "country": "Azerbaijan",
+      "coordinates": [40.4093, 49.8671],
+      "aliases": []
+    },
+    {
+      "name": "Tbilisi",
+      "code": "TBS",
+      "timezone": "Asia/Tbilisi",
+      "country": "Georgia",
+      "coordinates": [41.7151, 44.8271],
+      "aliases": []
+    },
+    {
+      "name": "Yerevan",
+      "code": "EVN",
+      "timezone": "Asia/Yerevan",
+      "country": "Armenia",
+      "coordinates": [40.1792, 44.4991],
+      "aliases": []
+    },
+    {
+      "name": "Amman",
+      "code": "AMM",
+      "timezone": "Asia/Amman",
+      "country": "Jordan",
+      "coordinates": [31.9454, 35.9284],
+      "aliases": []
+    },
+    {
+      "name": "Beirut",
+      "code": "BEY",
+      "timezone": "Asia/Beirut",
+      "country": "Lebanon",
+      "coordinates": [33.8938, 35.5018],
+      "aliases": []
+    },
+    {
+      "name": "Damascus",
+      "code": "DAM",
+      "timezone": "Asia/Damascus",
+      "country": "Syria",
+      "coordinates": [33.5138, 36.2920],
+      "aliases": []
+    },
+    {
+      "name": "Baghdad",
+      "code": "BGW",
+      "timezone": "Asia/Baghdad",
+      "country": "Iraq",
+      "coordinates": [33.3152, 44.3661],
+      "aliases": []
+    },
+    {
+      "name": "Muscat",
+      "code": "MCT",
+      "timezone": "Asia/Muscat",
+      "country": "Oman",
+      "coordinates": [23.5880, 58.3829],
+      "aliases": []
+    },
+    {
+      "name": "Manama",
+      "code": "BAH",
+      "timezone": "Asia/Bahrain",
+      "country": "Bahrain",
+      "coordinates": [26.2361, 50.5831],
+      "aliases": []
+    },
+    {
+      "name": "Abu Dhabi",
+      "code": "AUH",
+      "timezone": "Asia/Dubai",
+      "country": "UAE",
+      "coordinates": [24.4539, 54.3773],
+      "aliases": []
+    },
+    {
+      "name": "Jeddah",
+      "code": "JED",
+      "timezone": "Asia/Riyadh",
+      "country": "Saudi Arabia",
+      "coordinates": [21.4858, 39.1925],
+      "aliases": []
+    },
+    {
+      "name": "Mecca",
+      "code": "MCA",
+      "timezone": "Asia/Riyadh",
+      "country": "Saudi Arabia",
+      "coordinates": [21.4225, 39.8262],
+      "aliases": ["Makkah"]
+    },
+    {
+      "name": "Medina",
+      "code": "MED",
+      "timezone": "Asia/Riyadh",
+      "country": "Saudi Arabia",
+      "coordinates": [24.4672, 39.6111],
+      "aliases": ["Madinah"]
+    },
+    {
+      "name": "Sana'a",
+      "code": "SAH",
+      "timezone": "Asia/Aden",
+      "country": "Yemen",
+      "coordinates": [15.3694, 44.1910],
+      "aliases": ["Sanaa"]
+    },
+    {
+      "name": "Kabul",
+      "code": "KBL",
+      "timezone": "Asia/Kabul",
+      "country": "Afghanistan",
+      "coordinates": [34.5289, 69.1713],
+      "aliases": []
+    },
+    {
+      "name": "Yangon",
+      "code": "RGN",
+      "timezone": "Asia/Yangon",
+      "country": "Myanmar",
+      "coordinates": [16.8661, 96.1951],
+      "aliases": ["Rangoon"]
+    },
+    {
+      "name": "Phnom Penh",
+      "code": "PNH",
+      "timezone": "Asia/Phnom_Penh",
+      "country": "Cambodia",
+      "coordinates": [11.5564, 104.9282],
+      "aliases": []
+    },
+    {
+      "name": "Vientiane",
+      "code": "VTE",
+      "timezone": "Asia/Vientiane",
+      "country": "Laos",
+      "coordinates": [17.9757, 102.6331],
+      "aliases": []
+    },
+    {
+      "name": "Hanoi",
+      "code": "HAN",
+      "timezone": "Asia/Ho_Chi_Minh",
+      "country": "Vietnam",
+      "coordinates": [21.0285, 105.8542],
+      "aliases": []
+    },
+    {
+      "name": "Guangzhou",
+      "code": "CAN",
+      "timezone": "Asia/Shanghai",
+      "country": "China",
+      "coordinates": [23.1291, 113.2644],
+      "aliases": ["Canton"]
+    },
+    {
+      "name": "Chengdu",
+      "code": "CTU",
+      "timezone": "Asia/Shanghai",
+      "country": "China",
+      "coordinates": [30.5728, 104.0668],
+      "aliases": []
+    },
+    {
+      "name": "Xi'an",
+      "code": "XIY",
+      "timezone": "Asia/Shanghai",
+      "country": "China",
+      "coordinates": [34.3416, 108.9398],
+      "aliases": ["Xian"]
+    },
+    {
+      "name": "Hangzhou",
+      "code": "HGH",
+      "timezone": "Asia/Shanghai",
+      "country": "China",
+      "coordinates": [30.2741, 120.1551],
+      "aliases": []
+    },
+    {
+      "name": "Wuhan",
+      "code": "WUH",
+      "timezone": "Asia/Shanghai",
+      "country": "China",
+      "coordinates": [30.5928, 114.3055],
+      "aliases": []
+    },
+    {
+      "name": "Nanjing",
+      "code": "NKG",
+      "timezone": "Asia/Shanghai",
+      "country": "China",
+      "coordinates": [32.0603, 118.7969],
+      "aliases": []
+    },
+    {
+      "name": "Suzhou",
+      "code": "SZH",
+      "timezone": "Asia/Shanghai",
+      "country": "China",
+      "coordinates": [31.2989, 120.5853],
+      "aliases": []
+    },
+    {
+      "name": "Osaka",
+      "code": "OSA",
+      "timezone": "Asia/Tokyo",
+      "country": "Japan",
+      "coordinates": [34.6937, 135.5023],
+      "aliases": []
+    },
+    {
+      "name": "Nagoya",
+      "code": "NGO",
+      "timezone": "Asia/Tokyo",
+      "country": "Japan",
+      "coordinates": [35.1815, 136.9066],
+      "aliases": []
+    },
+    {
+      "name": "Kyoto",
+      "code": "KTO",
+      "timezone": "Asia/Tokyo",
+      "country": "Japan",
+      "coordinates": [35.0116, 135.7681],
+      "aliases": []
+    },
+    {
+      "name": "Fukuoka",
+      "code": "FUK",
+      "timezone": "Asia/Tokyo",
+      "country": "Japan",
+      "coordinates": [33.5904, 130.4017],
+      "aliases": []
+    },
+    {
+      "name": "Sapporo",
+      "code": "SPK",
+      "timezone": "Asia/Tokyo",
+      "country": "Japan",
+      "coordinates": [43.0642, 141.3469],
+      "aliases": []
+    },
+    {
+      "name": "Busan",
+      "code": "PUS",
+      "timezone": "Asia/Seoul",
+      "country": "South Korea",
+      "coordinates": [35.1796, 129.0756],
+      "aliases": []
+    },
+    {
+      "name": "Daegu",
+      "code": "TAE",
+      "timezone": "Asia/Seoul",
+      "country": "South Korea",
+      "coordinates": [35.8714, 128.6014],
+      "aliases": []
+    },
+    {
+      "name": "Incheon",
+      "code": "INC",
+      "timezone": "Asia/Seoul",
+      "country": "South Korea",
+      "coordinates": [37.4563, 126.7052],
+      "aliases": []
+    },
+    {
+      "name": "Daejeon",
+      "code": "DJN",
+      "timezone": "Asia/Seoul",
+      "country": "South Korea",
+      "coordinates": [36.3504, 127.3845],
+      "aliases": []
+    },
+    {
+      "name": "Gwangju",
+      "code": "KWJ",
+      "timezone": "Asia/Seoul",
+      "country": "South Korea",
+      "coordinates": [35.1595, 126.8526],
+      "aliases": []
+    },
+    {
+      "name": "Kaohsiung",
+      "code": "KHH",
+      "timezone": "Asia/Taipei",
+      "country": "Taiwan",
+      "coordinates": [22.6273, 120.3014],
+      "aliases": []
+    },
+    {
+      "name": "Taichung",
+      "code": "TXG",
+      "timezone": "Asia/Taipei",
+      "country": "Taiwan",
+      "coordinates": [24.1477, 120.6736],
+      "aliases": []
+    },
+    {
+      "name": "Macau",
+      "code": "MFM",
+      "timezone": "Asia/Macau",
+      "country": "Macau",
+      "coordinates": [22.1987, 113.5439],
+      "aliases": ["Macao"]
+    },
+    {
+      "name": "Bandar Seri Begawan",
+      "code": "BWN",
+      "timezone": "Asia/Brunei",
+      "country": "Brunei",
+      "coordinates": [4.9031, 114.9398],
+      "aliases": []
+    },
+    {
+      "name": "Cebu",
+      "code": "CEB",
+      "timezone": "Asia/Manila",
+      "country": "Philippines",
+      "coordinates": [10.3157, 123.8854],
+      "aliases": []
+    },
+    {
+      "name": "Davao",
+      "code": "DVO",
+      "timezone": "Asia/Manila",
+      "country": "Philippines",
+      "coordinates": [7.1907, 125.4553],
+      "aliases": []
+    },
+    {
+      "name": "Penang",
+      "code": "PEN",
+      "timezone": "Asia/Kuala_Lumpur",
+      "country": "Malaysia",
+      "coordinates": [5.4141, 100.3288],
+      "aliases": ["George Town"]
+    },
+    {
+      "name": "Johor Bahru",
+      "code": "JHB",
+      "timezone": "Asia/Kuala_Lumpur",
+      "country": "Malaysia",
+      "coordinates": [1.4927, 103.7414],
+      "aliases": ["JB"]
+    },
+    {
+      "name": "Surabaya",
+      "code": "SUB",
+      "timezone": "Asia/Jakarta",
+      "country": "Indonesia",
+      "coordinates": [-7.2575, 112.7521],
+      "aliases": []
+    },
+    {
+      "name": "Bandung",
+      "code": "BDO",
+      "timezone": "Asia/Jakarta",
+      "country": "Indonesia",
+      "coordinates": [-6.9175, 107.6191],
+      "aliases": []
+    },
+    {
+      "name": "Medan",
+      "code": "MES",
+      "timezone": "Asia/Jakarta",
+      "country": "Indonesia",
+      "coordinates": [3.5952, 98.6722],
+      "aliases": []
+    },
+    {
+      "name": "Bali",
+      "code": "DPS",
+      "timezone": "Asia/Makassar",
+      "country": "Indonesia",
+      "coordinates": [-8.4095, 115.1889],
+      "aliases": ["Denpasar"]
+    },
+    {
+      "name": "Makassar",
+      "code": "UPG",
+      "timezone": "Asia/Makassar",
+      "country": "Indonesia",
+      "coordinates": [-5.1477, 119.4327],
+      "aliases": []
+    },
+    {
+      "name": "Port Moresby",
+      "code": "POM",
+      "timezone": "Pacific/Port_Moresby",
+      "country": "Papua New Guinea",
+      "coordinates": [-9.4438, 147.1802],
+      "aliases": []
+    },
+    {
+      "name": "Hobart",
+      "code": "HBA",
+      "timezone": "Australia/Hobart",
+      "country": "Australia",
+      "coordinates": [-42.8821, 147.3272],
+      "aliases": []
+    },
+    {
+      "name": "Darwin",
+      "code": "DRW",
+      "timezone": "Australia/Darwin",
+      "country": "Australia",
+      "coordinates": [-12.4634, 130.8456],
+      "aliases": []
+    },
+    {
+      "name": "Canberra",
+      "code": "CBR",
+      "timezone": "Australia/Sydney",
+      "country": "Australia",
+      "coordinates": [-35.2809, 149.1300],
+      "aliases": []
+    },
+    {
+      "name": "Wellington",
+      "code": "WLG",
+      "timezone": "Pacific/Auckland",
+      "country": "New Zealand",
+      "coordinates": [-41.2865, 174.7762],
+      "aliases": []
+    },
+    {
+      "name": "Christchurch",
+      "code": "CHC",
+      "timezone": "Pacific/Auckland",
+      "country": "New Zealand",
+      "coordinates": [-43.5321, 172.6362],
+      "aliases": []
+    },
+    {
+      "name": "Nouméa",
+      "code": "NOU",
+      "timezone": "Pacific/Noumea",
+      "country": "New Caledonia",
+      "coordinates": [-22.2758, 166.4581],
+      "aliases": ["Noumea"]
+    },
+    {
+      "name": "Port Vila",
+      "code": "VLI",
+      "timezone": "Pacific/Efate",
+      "country": "Vanuatu",
+      "coordinates": [-17.7333, 168.3273],
+      "aliases": []
+    },
+    {
+      "name": "Honiara",
+      "code": "HIR",
+      "timezone": "Pacific/Guadalcanal",
+      "country": "Solomon Islands",
+      "coordinates": [-9.4280, 159.9556],
+      "aliases": []
+    },
+    {
+      "name": "Apia",
+      "code": "APW",
+      "timezone": "Pacific/Apia",
+      "country": "Samoa",
+      "coordinates": [-13.8507, -171.7514],
+      "aliases": []
+    },
+    {
+      "name": "Nuku'alofa",
+      "code": "TBU",
+      "timezone": "Pacific/Tongatapu",
+      "country": "Tonga",
+      "coordinates": [-21.1789, -175.1982],
+      "aliases": ["Nukualofa"]
+    },
+    {
+      "name": "Papeete",
+      "code": "PPT",
+      "timezone": "Pacific/Tahiti",
+      "country": "French Polynesia",
+      "coordinates": [-17.5516, -149.5585],
+      "aliases": []
+    },
+    {
+      "name": "Honolulu",
+      "code": "HNL",
+      "timezone": "Pacific/Honolulu",
+      "country": "USA",
+      "coordinates": [21.3099, -157.8581],
+      "aliases": []
+    },
+    {
+      "name": "Anchorage",
+      "code": "ANC",
+      "timezone": "US/Alaska",
+      "country": "USA",
+      "coordinates": [61.2181, -149.9003],
+      "aliases": []
+    },
+    {
+      "name": "Juneau",
+      "code": "JNU",
+      "timezone": "US/Alaska",
+      "country": "USA",
+      "coordinates": [58.3019, -134.4197],
+      "aliases": []
+    },
+    {
+      "name": "Fairbanks",
+      "code": "FAI",
+      "timezone": "US/Alaska",
+      "country": "USA",
+      "coordinates": [64.8378, -147.7164],
+      "aliases": []
+    },
+    {
+      "name": "Reykjavik",
+      "code": "REK",
+      "timezone": "Atlantic/Reykjavik",
+      "country": "Iceland",
+      "coordinates": [64.1466, -21.9426],
+      "aliases": []
+    },
+    {
+      "name": "Edinburgh",
+      "code": "EDI",
+      "timezone": "Europe/London",
+      "country": "UK",
+      "coordinates": [55.9533, -3.1883],
+      "aliases": []
+    },
+    {
+      "name": "Glasgow",
+      "code": "GLA",
+      "timezone": "Europe/London",
+      "country": "UK",
+      "coordinates": [55.8642, -4.2518],
+      "aliases": []
+    },
+    {
+      "name": "Manchester",
+      "code": "MAN",
+      "timezone": "Europe/London",
+      "country": "UK",
+      "coordinates": [53.4808, -2.2426],
+      "aliases": []
+    },
+    {
+      "name": "Birmingham",
+      "code": "BHM",
+      "timezone": "Europe/London",
+      "country": "UK",
+      "coordinates": [52.4862, -1.8904],
+      "aliases": []
+    },
+    {
+      "name": "Cardiff",
+      "code": "CWL",
+      "timezone": "Europe/London",
+      "country": "UK",
+      "coordinates": [51.4816, -3.1791],
+      "aliases": []
+    },
+    {
+      "name": "Belfast",
+      "code": "BFS",
+      "timezone": "Europe/London",
+      "country": "UK",
+      "coordinates": [54.5973, -5.9301],
+      "aliases": []
+    },
+    {
+      "name": "Cork",
+      "code": "ORK",
+      "timezone": "Europe/Dublin",
+      "country": "Ireland",
+      "coordinates": [51.8985, -8.4756],
+      "aliases": []
+    },
+    {
+      "name": "Lyon",
+      "code": "LYS",
+      "timezone": "Europe/Paris",
+      "country": "France",
+      "coordinates": [45.7640, 4.8357],
+      "aliases": []
+    },
+    {
+      "name": "Marseille",
+      "code": "MRS",
+      "timezone": "Europe/Paris",
+      "country": "France",
+      "coordinates": [43.2965, 5.3698],
+      "aliases": []
+    },
+    {
+      "name": "Nice",
+      "code": "NCE",
+      "timezone": "Europe/Paris",
+      "country": "France",
+      "coordinates": [43.7102, 7.2620],
+      "aliases": []
+    },
+    {
+      "name": "Toulouse",
+      "code": "TLS",
+      "timezone": "Europe/Paris",
+      "country": "France",
+      "coordinates": [43.6047, 1.4442],
+      "aliases": []
+    },
+    {
+      "name": "Hamburg",
+      "code": "HAM",
+      "timezone": "Europe/Berlin",
+      "country": "Germany",
+      "coordinates": [53.5511, 9.9937],
+      "aliases": []
+    },
+    {
+      "name": "Cologne",
+      "code": "CGN",
+      "timezone": "Europe/Berlin",
+      "country": "Germany",
+      "coordinates": [50.9375, 6.9603],
+      "aliases": ["Köln"]
+    },
+    {
+      "name": "Stuttgart",
+      "code": "STR",
+      "timezone": "Europe/Berlin",
+      "country": "Germany",
+      "coordinates": [48.7758, 9.1829],
+      "aliases": []
+    },
+    {
+      "name": "Düsseldorf",
+      "code": "DUS",
+      "timezone": "Europe/Berlin",
+      "country": "Germany",
+      "coordinates": [51.2277, 6.7735],
+      "aliases": ["Dusseldorf"]
+    },
+    {
+      "name": "Naples",
+      "code": "NAP",
+      "timezone": "Europe/Rome",
+      "country": "Italy",
+      "coordinates": [40.8518, 14.2681],
+      "aliases": ["Napoli"]
+    },
+    {
+      "name": "Turin",
+      "code": "TRN",
+      "timezone": "Europe/Rome",
+      "country": "Italy",
+      "coordinates": [45.0703, 7.6869],
+      "aliases": ["Torino"]
+    },
+    {
+      "name": "Florence",
+      "code": "FLR",
+      "timezone": "Europe/Rome",
+      "country": "Italy",
+      "coordinates": [43.7696, 11.2558],
+      "aliases": ["Firenze"]
+    },
+    {
+      "name": "Bologna",
+      "code": "BLQ",
+      "timezone": "Europe/Rome",
+      "country": "Italy",
+      "coordinates": [44.4949, 11.3426],
+      "aliases": []
+    },
+    {
+      "name": "Valencia",
+      "code": "VLC",
+      "timezone": "Europe/Madrid",
+      "country": "Spain",
+      "coordinates": [39.4699, -0.3763],
+      "aliases": []
+    },
+    {
+      "name": "Seville",
+      "code": "SVQ",
+      "timezone": "Europe/Madrid",
+      "country": "Spain",
+      "coordinates": [37.3891, -5.9845],
+      "aliases": ["Sevilla"]
+    },
+    {
+      "name": "Málaga",
+      "code": "AGP",
+      "timezone": "Europe/Madrid",
+      "country": "Spain",
+      "coordinates": [36.7213, -4.4214],
+      "aliases": ["Malaga"]
+    },
+    {
+      "name": "Bilbao",
+      "code": "BIO",
+      "timezone": "Europe/Madrid",
+      "country": "Spain",
+      "coordinates": [43.2630, -2.9350],
+      "aliases": []
+    },
+    {
+      "name": "Rotterdam",
+      "code": "RTM",
+      "timezone": "Europe/Amsterdam",
+      "country": "Netherlands",
+      "coordinates": [51.9244, 4.4777],
+      "aliases": []
+    },
+    {
+      "name": "The Hague",
+      "code": "HAG",
+      "timezone": "Europe/Amsterdam",
+      "country": "Netherlands",
+      "coordinates": [52.0705, 4.3007],
+      "aliases": ["Den Haag"]
+    },
+    {
+      "name": "Utrecht",
+      "code": "UTC",
+      "timezone": "Europe/Amsterdam",
+      "country": "Netherlands",
+      "coordinates": [52.0907, 5.1214],
+      "aliases": []
+    },
+    {
+      "name": "Eindhoven",
+      "code": "EIN",
+      "timezone": "Europe/Amsterdam",
+      "country": "Netherlands",
+      "coordinates": [51.4416, 5.4697],
+      "aliases": []
+    },
+    {
+      "name": "Geneva",
+      "code": "GVA",
+      "timezone": "Europe/Zurich",
+      "country": "Switzerland",
+      "coordinates": [46.2044, 6.1432],
+      "aliases": []
+    },
+    {
+      "name": "Basel",
+      "code": "BSL",
+      "timezone": "Europe/Zurich",
+      "country": "Switzerland",
+      "coordinates": [47.5596, 7.5886],
+      "aliases": []
+    },
+    {
+      "name": "Bern",
+      "code": "BRN",
+      "timezone": "Europe/Zurich",
+      "country": "Switzerland",
+      "coordinates": [46.9480, 7.4474],
+      "aliases": []
+    },
+    {
+      "name": "Lausanne",
+      "code": "LAU",
+      "timezone": "Europe/Zurich",
+      "country": "Switzerland",
+      "coordinates": [46.5197, 6.6323],
+      "aliases": []
+    },
+    {
+      "name": "Antwerp",
+      "code": "ANR",
+      "timezone": "Europe/Brussels",
+      "country": "Belgium",
+      "coordinates": [51.2194, 4.4025],
+      "aliases": []
+    },
+    {
+      "name": "Ghent",
+      "code": "GNE",
+      "timezone": "Europe/Brussels",
+      "country": "Belgium",
+      "coordinates": [51.0543, 3.7174],
+      "aliases": []
+    },
+    {
+      "name": "Bruges",
+      "code": "BGS",
+      "timezone": "Europe/Brussels",
+      "country": "Belgium",
+      "coordinates": [51.2093, 3.2247],
+      "aliases": []
+    },
+    {
+      "name": "Liège",
+      "code": "LGG",
+      "timezone": "Europe/Brussels",
+      "country": "Belgium",
+      "coordinates": [50.6326, 5.5797],
+      "aliases": ["Liege"]
+    },
+    {
+      "name": "Graz",
+      "code": "GRZ",
+      "timezone": "Europe/Vienna",
+      "country": "Austria",
+      "coordinates": [47.0707, 15.4395],
+      "aliases": []
+    },
+    {
+      "name": "Salzburg",
+      "code": "SZG",
+      "timezone": "Europe/Vienna",
+      "country": "Austria",
+      "coordinates": [47.8095, 13.0550],
+      "aliases": []
+    },
+    {
+      "name": "Innsbruck",
+      "code": "INN",
+      "timezone": "Europe/Vienna",
+      "country": "Austria",
+      "coordinates": [47.2692, 11.4041],
+      "aliases": []
+    },
+    {
+      "name": "Linz",
+      "code": "LNZ",
+      "timezone": "Europe/Vienna",
+      "country": "Austria",
+      "coordinates": [48.3069, 14.2858],
+      "aliases": []
+    },
+    {
+      "name": "Brno",
+      "code": "BRQ",
+      "timezone": "Europe/Prague",
+      "country": "Czech Republic",
+      "coordinates": [49.1951, 16.6068],
+      "aliases": []
+    },
+    {
+      "name": "Ostrava",
+      "code": "OSR",
+      "timezone": "Europe/Prague",
+      "country": "Czech Republic",
+      "coordinates": [49.8209, 18.2625],
+      "aliases": []
+    },
+    {
+      "name": "Plzeň",
+      "code": "PLZ",
+      "timezone": "Europe/Prague",
+      "country": "Czech Republic",
+      "coordinates": [49.7475, 13.3776],
+      "aliases": ["Pilsen"]
+    },
+    {
+      "name": "České Budějovice",
+      "code": "CBO",
+      "timezone": "Europe/Prague",
+      "country": "Czech Republic",
+      "coordinates": [48.9747, 14.4747],
+      "aliases": ["Ceske Budejovice"]
+    },
+    {
+      "name": "Kraków",
+      "code": "KRK",
+      "timezone": "Europe/Warsaw",
+      "country": "Poland",
+      "coordinates": [50.0647, 19.9450],
+      "aliases": ["Krakow", "Cracow"]
+    },
+    {
+      "name": "Wrocław",
+      "code": "WRO",
+      "timezone": "Europe/Warsaw",
+      "country": "Poland",
+      "coordinates": [51.1079, 17.0385],
+      "aliases": ["Wroclaw"]
+    },
+    {
+      "name": "Poznań",
+      "code": "POZ",
+      "timezone": "Europe/Warsaw",
+      "country": "Poland",
+      "coordinates": [52.4064, 16.9252],
+      "aliases": ["Poznan"]
+    },
+    {
+      "name": "Gdańsk",
+      "code": "GDN",
+      "timezone": "Europe/Warsaw",
+      "country": "Poland",
+      "coordinates": [54.3520, 18.6466],
+      "aliases": ["Gdansk", "Danzig"]
+    },
+    {
+      "name": "Debrecen",
+      "code": "DEB",
+      "timezone": "Europe/Budapest",
+      "country": "Hungary",
+      "coordinates": [47.5316, 21.6273],
+      "aliases": []
+    },
+    {
+      "name": "Szeged",
+      "code": "SZE",
+      "timezone": "Europe/Budapest",
+      "country": "Hungary",
+      "coordinates": [46.2530, 20.1414],
+      "aliases": []
+    },
+    {
+      "name": "Pécs",
+      "code": "PEC",
+      "timezone": "Europe/Budapest",
+      "country": "Hungary",
+      "coordinates": [46.0727, 18.2323],
+      "aliases": ["Pecs"]
+    },
+    {
+      "name": "Győr",
+      "code": "GYO",
+      "timezone": "Europe/Budapest",
+      "country": "Hungary",
+      "coordinates": [47.6875, 17.6351],
+      "aliases": ["Gyor"]
+    },
+    {
+      "name": "Aarhus",
+      "code": "AAR",
+      "timezone": "Europe/Copenhagen",
+      "country": "Denmark",
+      "coordinates": [56.1629, 10.2039],
+      "aliases": []
+    },
+    {
+      "name": "Odense",
+      "code": "ODE",
+      "timezone": "Europe/Copenhagen",
+      "country": "Denmark",
+      "coordinates": [55.4038, 10.4024],
+      "aliases": []
+    },
+    {
+      "name": "Aalborg",
+      "code": "AAL",
+      "timezone": "Europe/Copenhagen",
+      "country": "Denmark",
+      "coordinates": [57.0488, 9.9217],
+      "aliases": []
+    },
+    {
+      "name": "Esbjerg",
+      "code": "EBJ",
+      "timezone": "Europe/Copenhagen",
+      "country": "Denmark",
+      "coordinates": [55.4761, 8.4593],
+      "aliases": []
+    },
+    {
+      "name": "Gothenburg",
+      "code": "GOT",
+      "timezone": "Europe/Stockholm",
+      "country": "Sweden",
+      "coordinates": [57.7089, 11.9746],
+      "aliases": ["Göteborg"]
+    },
+    {
+      "name": "Malmö",
+      "code": "MMA",
+      "timezone": "Europe/Stockholm",
+      "country": "Sweden",
+      "coordinates": [55.6059, 13.0007],
+      "aliases": ["Malmo"]
+    },
+    {
+      "name": "Uppsala",
+      "code": "UPP",
+      "timezone": "Europe/Stockholm",
+      "country": "Sweden",
+      "coordinates": [59.8586, 17.6389],
+      "aliases": []
+    },
+    {
+      "name": "Linköping",
+      "code": "LKP",
+      "timezone": "Europe/Stockholm",
+      "country": "Sweden",
+      "coordinates": [58.4108, 15.6214],
+      "aliases": ["Linkoping"]
+    },
+    {
+      "name": "Bergen",
+      "code": "BGO",
+      "timezone": "Europe/Oslo",
+      "country": "Norway",
+      "coordinates": [60.3913, 5.3221],
+      "aliases": []
+    },
+    {
+      "name": "Stavanger",
+      "code": "SVG",
+      "timezone": "Europe/Oslo",
+      "country": "Norway",
+      "coordinates": [58.9700, 5.7331],
+      "aliases": []
+    },
+    {
+      "name": "Trondheim",
+      "code": "TRD",
+      "timezone": "Europe/Oslo",
+      "country": "Norway",
+      "coordinates": [63.4305, 10.3951],
+      "aliases": []
+    },
+    {
+      "name": "Tromsø",
+      "code": "TOS",
+      "timezone": "Europe/Oslo",
+      "country": "Norway",
+      "coordinates": [69.6492, 18.9560],
+      "aliases": ["Tromso"]
+    },
+    {
+      "name": "Turku",
+      "code": "TKU",
+      "timezone": "Europe/Helsinki",
+      "country": "Finland",
+      "coordinates": [60.4518, 22.2666],
+      "aliases": []
+    },
+    {
+      "name": "Tampere",
+      "code": "TMP",
+      "timezone": "Europe/Helsinki",
+      "country": "Finland",
+      "coordinates": [61.4978, 23.7610],
+      "aliases": []
+    },
+    {
+      "name": "Oulu",
+      "code": "OUL",
+      "timezone": "Europe/Helsinki",
+      "country": "Finland",
+      "coordinates": [65.0121, 25.4651],
+      "aliases": []
+    },
+    {
+      "name": "Espoo",
+      "code": "ESP",
+      "timezone": "Europe/Helsinki",
+      "country": "Finland",
+      "coordinates": [60.2055, 24.6559],
+      "aliases": []
+    },
+    {
+      "name": "Porto",
+      "code": "OPO",
+      "timezone": "Europe/Lisbon",
+      "country": "Portugal",
+      "coordinates": [41.1579, -8.6291],
+      "aliases": []
+    },
+    {
+      "name": "Faro",
+      "code": "FAO",
+      "timezone": "Europe/Lisbon",
+      "country": "Portugal",
+      "coordinates": [37.0194, -7.9322],
+      "aliases": []
+    },
+    {
+      "name": "Coimbra",
+      "code": "CBP",
+      "timezone": "Europe/Lisbon",
+      "country": "Portugal",
+      "coordinates": [40.2033, -8.4103],
+      "aliases": []
+    },
+    {
+      "name": "Braga",
+      "code": "BRG",
+      "timezone": "Europe/Lisbon",
+      "country": "Portugal",
+      "coordinates": [41.5518, -8.4207],
+      "aliases": []
+    },
+    {
+      "name": "St. Petersburg",
+      "code": "LED",
+      "timezone": "Europe/Moscow",
+      "country": "Russia",
+      "coordinates": [59.9311, 30.3609],
+      "aliases": ["Saint Petersburg"]
+    },
+    {
+      "name": "Yekaterinburg",
+      "code": "SVX",
+      "timezone": "Asia/Yekaterinburg",
+      "country": "Russia",
+      "coordinates": [56.8389, 60.6057],
+      "aliases": ["Ekaterinburg"]
+    },
+    {
+      "name": "Novosibirsk",
+      "code": "OVB",
+      "timezone": "Asia/Novosibirsk",
+      "country": "Russia",
+      "coordinates": [55.0084, 82.9357],
+      "aliases": []
+    },
+    {
+      "name": "Vladivostok",
+      "code": "VVO",
+      "timezone": "Asia/Vladivostok",
+      "country": "Russia",
+      "coordinates": [43.1156, 131.8855],
+      "aliases": []
+    },
+    {
+      "name": "Sochi",
+      "code": "AER",
+      "timezone": "Europe/Moscow",
+      "country": "Russia",
+      "coordinates": [43.6028, 39.7342],
+      "aliases": []
+    },
+    {
+      "name": "Kazan",
+      "code": "KZN",
+      "timezone": "Europe/Moscow",
+      "country": "Russia",
+      "coordinates": [55.7887, 49.1221],
+      "aliases": []
+    },
+    {
+      "name": "Nizhny Novgorod",
+      "code": "GOJ",
+      "timezone": "Europe/Moscow",
+      "country": "Russia",
+      "coordinates": [56.2965, 43.9361],
+      "aliases": []
+    },
+    {
+      "name": "Samara",
+      "code": "KUF",
+      "timezone": "Europe/Samara",
+      "country": "Russia",
+      "coordinates": [53.2415, 50.2212],
+      "aliases": []
+    },
+    {
+      "name": "Omsk",
+      "code": "OMS",
+      "timezone": "Asia/Omsk",
+      "country": "Russia",
+      "coordinates": [54.9885, 73.3242],
+      "aliases": []
+    },
+    {
+      "name": "Krasnoyarsk",
+      "code": "KJA",
+      "timezone": "Asia/Krasnoyarsk",
+      "country": "Russia",
+      "coordinates": [56.0153, 92.8932],
+      "aliases": []
+    },
+    {
+      "name": "Irkutsk",
+      "code": "IKT",
+      "timezone": "Asia/Irkutsk",
+      "country": "Russia",
+      "coordinates": [52.2870, 104.3050],
+      "aliases": []
+    },
+    {
+      "name": "Khabarovsk",
+      "code": "KHV",
+      "timezone": "Asia/Vladivostok",
+      "country": "Russia",
+      "coordinates": [48.5028, 135.0661],
+      "aliases": []
+    },
+    {
+      "name": "Ulan Bator",
+      "code": "ULN",
+      "timezone": "Asia/Ulaanbaatar",
+      "country": "Mongolia",
+      "coordinates": [47.8864, 106.9057],
+      "aliases": ["Ulaanbaatar"]
+    },
+    {
+      "name": "Nur-Sultan",
+      "code": "NQZ",
+      "timezone": "Asia/Almaty",
+      "country": "Kazakhstan",
+      "coordinates": [51.1694, 71.4491],
+      "aliases": ["Astana"]
+    },
+    {
+      "name": "Male",
+      "code": "MLE",
+      "timezone": "Indian/Maldives",
+      "country": "Maldives",
+      "coordinates": [4.1755, 73.5093],
+      "aliases": []
+    },
+    {
+      "name": "Thimphu",
+      "code": "PBH",
+      "timezone": "Asia/Thimphu",
+      "country": "Bhutan",
+      "coordinates": [27.4728, 89.6393],
+      "aliases": []
+    },
+    {
+      "name": "Mauritius",
+      "code": "MRU",
+      "timezone": "Indian/Mauritius",
+      "country": "Mauritius",
+      "coordinates": [-20.1619, 57.4989],
+      "aliases": ["Port Louis"]
+    },
+    {
+      "name": "Seychelles",
+      "code": "SEZ",
+      "timezone": "Indian/Mahe",
+      "country": "Seychelles",
+      "coordinates": [-4.6796, 55.4920],
+      "aliases": ["Victoria"]
+    },
+    {
+      "name": "Antananarivo",
+      "code": "TNR",
+      "timezone": "Indian/Antananarivo",
+      "country": "Madagascar",
+      "coordinates": [-18.8792, 47.5079],
+      "aliases": []
+    },
+    {
+      "name": "Djibouti",
+      "code": "JIB",
+      "timezone": "Africa/Djibouti",
+      "country": "Djibouti",
+      "coordinates": [11.5720, 43.1456],
+      "aliases": []
+    },
+    {
+      "name": "Asmara",
+      "code": "ASM",
+      "timezone": "Africa/Asmara",
+      "country": "Eritrea",
+      "coordinates": [15.3229, 38.9251],
+      "aliases": []
+    },
+    {
+      "name": "Mogadishu",
+      "code": "MGQ",
+      "timezone": "Africa/Mogadishu",
+      "country": "Somalia",
+      "coordinates": [2.0469, 45.3182],
+      "aliases": []
+    },
+    {
+      "name": "Khartoum",
+      "code": "KRT",
+      "timezone": "Africa/Khartoum",
+      "country": "Sudan",
+      "coordinates": [15.5007, 32.5599],
+      "aliases": []
+    },
+    {
+      "name": "Juba",
+      "code": "JUB",
+      "timezone": "Africa/Juba",
+      "country": "South Sudan",
+      "coordinates": [4.8517, 31.5825],
+      "aliases": []
+    },
+    {
+      "name": "Kinshasa",
+      "code": "FIH",
+      "timezone": "Africa/Kinshasa",
+      "country": "Democratic Republic of Congo",
+      "coordinates": [-4.4419, 15.2663],
+      "aliases": []
+    },
+    {
+      "name": "Lubumbashi",
+      "code": "FBM",
+      "timezone": "Africa/Lubumbashi",
+      "country": "Democratic Republic of Congo",
+      "coordinates": [-11.6876, 27.4793],
+      "aliases": []
+    },
+    {
+      "name": "Brazzaville",
+      "code": "BZV",
+      "timezone": "Africa/Brazzaville",
+      "country": "Republic of Congo",
+      "coordinates": [-4.2634, 15.2429],
+      "aliases": []
+    },
+    {
+      "name": "Bangui",
+      "code": "BGF",
+      "timezone": "Africa/Bangui",
+      "country": "Central African Republic",
+      "coordinates": [4.3947, 18.5582],
+      "aliases": []
+    },
+    {
+      "name": "N'Djamena",
+      "code": "NDJ",
+      "timezone": "Africa/Ndjamena",
+      "country": "Chad",
+      "coordinates": [12.1348, 15.0557],
+      "aliases": ["Ndjamena"]
+    },
+    {
+      "name": "Niamey",
+      "code": "NIM",
+      "timezone": "Africa/Niamey",
+      "country": "Niger",
+      "coordinates": [13.5127, 2.1098],
+      "aliases": []
+    },
+    {
+      "name": "Bamako",
+      "code": "BKO",
+      "timezone": "Africa/Bamako",
+      "country": "Mali",
+      "coordinates": [12.6392, -8.0029],
+      "aliases": []
+    },
+    {
+      "name": "Ouagadougou",
+      "code": "OUA",
+      "timezone": "Africa/Ouagadougou",
+      "country": "Burkina Faso",
+      "coordinates": [12.3714, -1.5197],
+      "aliases": []
+    },
+    {
+      "name": "Conakry",
+      "code": "CKY",
+      "timezone": "Africa/Conakry",
+      "country": "Guinea",
+      "coordinates": [9.6412, -13.5784],
+      "aliases": []
+    },
+    {
+      "name": "Freetown",
+      "code": "FNA",
+      "timezone": "Africa/Freetown",
+      "country": "Sierra Leone",
+      "coordinates": [8.4657, -13.2317],
+      "aliases": []
+    },
+    {
+      "name": "Monrovia",
+      "code": "MLW",
+      "timezone": "Africa/Monrovia",
+      "country": "Liberia",
+      "coordinates": [6.2907, -10.7605],
+      "aliases": []
+    },
+    {
+      "name": "Yamoussoukro",
+      "code": "YAM",
+      "timezone": "Africa/Abidjan",
+      "country": "Ivory Coast",
+      "coordinates": [6.8270, -5.2893],
+      "aliases": []
+    },
+    {
+      "name": "Lomé",
+      "code": "LFW",
+      "timezone": "Africa/Lome",
+      "country": "Togo",
+      "coordinates": [6.1319, 1.2221],
+      "aliases": ["Lome"]
+    },
+    {
+      "name": "Cotonou",
+      "code": "COO",
+      "timezone": "Africa/Porto-Novo",
+      "country": "Benin",
+      "coordinates": [6.3703, 2.3912],
+      "aliases": []
+    },
+    {
+      "name": "Abuja",
+      "code": "ABV",
+      "timezone": "Africa/Lagos",
+      "country": "Nigeria",
+      "coordinates": [9.0765, 7.3986],
+      "aliases": []
+    },
+    {
+      "name": "Yaoundé",
+      "code": "NSI",
+      "timezone": "Africa/Douala",
+      "country": "Cameroon",
+      "coordinates": [3.8480, 11.5021],
+      "aliases": ["Yaounde"]
+    },
+    {
+      "name": "Douala",
+      "code": "DLA",
+      "timezone": "Africa/Douala",
+      "country": "Cameroon",
+      "coordinates": [4.0483, 9.7043],
+      "aliases": []
+    },
+    {
+      "name": "Libreville",
+      "code": "LBV",
+      "timezone": "Africa/Libreville",
+      "country": "Gabon",
+      "coordinates": [0.4162, 9.4673],
+      "aliases": []
+    },
+    {
+      "name": "Malabo",
+      "code": "SSG",
+      "timezone": "Africa/Malabo",
+      "country": "Equatorial Guinea",
+      "coordinates": [3.7504, 8.7371],
+      "aliases": []
+    },
+    {
+      "name": "São Tomé",
+      "code": "TMS",
+      "timezone": "Africa/Sao_Tome",
+      "country": "São Tomé and Príncipe",
+      "coordinates": [0.3302, 6.7273],
+      "aliases": ["Sao Tome"]
+    },
+    {
+      "name": "Luanda",
+      "code": "LAD",
+      "timezone": "Africa/Luanda",
+      "country": "Angola",
+      "coordinates": [-8.8390, 13.2343],
+      "aliases": []
+    },
+    {
+      "name": "Lilongwe",
+      "code": "LLW",
+      "timezone": "Africa/Blantyre",
+      "country": "Malawi",
+      "coordinates": [-13.9626, 33.7741],
+      "aliases": []
+    },
+    {
+      "name": "Blantyre",
+      "code": "BLZ",
+      "timezone": "Africa/Blantyre",
+      "country": "Malawi",
+      "coordinates": [-15.7667, 35.0168],
+      "aliases": []
+    },
+    {
+      "name": "Durban",
+      "code": "DUR",
+      "timezone": "Africa/Johannesburg",
+      "country": "South Africa",
+      "coordinates": [-29.8587, 31.0218],
+      "aliases": []
+    },
+    {
+      "name": "Pretoria",
+      "code": "PRY",
+      "timezone": "Africa/Johannesburg",
+      "country": "South Africa",
+      "coordinates": [-25.7479, 28.2293],
+      "aliases": []
+    },
+    {
+      "name": "Maseru",
+      "code": "MSU",
+      "timezone": "Africa/Maseru",
+      "country": "Lesotho",
+      "coordinates": [-29.3151, 27.4869],
+      "aliases": []
+    },
+    {
+      "name": "Mbabane",
+      "code": "MTS",
+      "timezone": "Africa/Mbabane",
+      "country": "Eswatini",
+      "coordinates": [-26.3054, 31.1367],
+      "aliases": []
+    },
+    {
+      "name": "Tripoli",
+      "code": "TIP",
+      "timezone": "Africa/Tripoli",
+      "country": "Libya",
+      "coordinates": [32.8872, 13.1913],
+      "aliases": []
+    },
+    {
+      "name": "Benghazi",
+      "code": "BEN",
+      "timezone": "Africa/Tripoli",
+      "country": "Libya",
+      "coordinates": [32.1194, 20.0868],
+      "aliases": []
+    },
+    {
+      "name": "Alexandria",
+      "code": "ALY",
+      "timezone": "Africa/Cairo",
+      "country": "Egypt",
+      "coordinates": [31.2001, 29.9187],
+      "aliases": []
+    },
+    {
+      "name": "Luxor",
+      "code": "LXR",
+      "timezone": "Africa/Cairo",
+      "country": "Egypt",
+      "coordinates": [25.6872, 32.6396],
+      "aliases": []
+    },
+    {
+      "name": "Aswan",
+      "code": "ASW",
+      "timezone": "Africa/Cairo",
+      "country": "Egypt",
+      "coordinates": [24.0889, 32.8998],
+      "aliases": []
+    },
+    {
+      "name": "Sharm El Sheikh",
+      "code": "SSH",
+      "timezone": "Africa/Cairo",
+      "country": "Egypt",
+      "coordinates": [27.9158, 34.3300],
+      "aliases": []
+    },
+    {
+      "name": "Marrakech",
+      "code": "RAK",
+      "timezone": "Africa/Casablanca",
+      "country": "Morocco",
+      "coordinates": [31.6295, -7.9811],
+      "aliases": []
+    },
+    {
+      "name": "Rabat",
+      "code": "RBA",
+      "timezone": "Africa/Casablanca",
+      "country": "Morocco",
+      "coordinates": [33.9716, -6.8498],
+      "aliases": []
+    },
+    {
+      "name": "Fez",
+      "code": "FEZ",
+      "timezone": "Africa/Casablanca",
+      "country": "Morocco",
+      "coordinates": [34.0181, -5.0078],
+      "aliases": ["Fes"]
+    },
+    {
+      "name": "Tangier",
+      "code": "TNG",
+      "timezone": "Africa/Casablanca",
+      "country": "Morocco",
+      "coordinates": [35.7595, -5.8340],
+      "aliases": []
+    },
+    {
+      "name": "Nouakchott",
+      "code": "NKC",
+      "timezone": "Africa/Nouakchott",
+      "country": "Mauritania",
+      "coordinates": [18.0735, -15.9582],
+      "aliases": []
+    },
+    {
+      "name": "Las Palmas",
+      "code": "LPA",
+      "timezone": "Atlantic/Canary",
+      "country": "Spain",
+      "coordinates": [28.1235, -15.4363],
+      "aliases": []
+    },
+    {
+      "name": "Santa Cruz de Tenerife",
+      "code": "TFS",
+      "timezone": "Atlantic/Canary",
+      "country": "Spain",
+      "coordinates": [28.4636, -16.2518],
+      "aliases": ["Tenerife"]
+    },
+    {
+      "name": "Praia",
+      "code": "RAI",
+      "timezone": "Atlantic/Cape_Verde",
+      "country": "Cape Verde",
+      "coordinates": [14.9177, -23.5087],
+      "aliases": []
+    },
+    {
+      "name": "Sal",
+      "code": "SID",
+      "timezone": "Atlantic/Cape_Verde",
+      "country": "Cape Verde",
+      "coordinates": [16.7324, -22.9494],
+      "aliases": ["Sal Island"]
+    },
+    {
+      "name": "Ponta Delgada",
+      "code": "PDL",
+      "timezone": "Atlantic/Azores",
+      "country": "Portugal",
+      "coordinates": [37.7412, -25.6977],
+      "aliases": ["Azores"]
+    },
+    {
+      "name": "Funchal",
+      "code": "FNC",
+      "timezone": "Atlantic/Madeira",
+      "country": "Portugal",
+      "coordinates": [32.6669, -16.9241],
+      "aliases": ["Madeira"]
+    },
+    {
+      "name": "Basseterre",
+      "code": "SKB",
+      "timezone": "America/St_Kitts",
+      "country": "Saint Kitts and Nevis",
+      "coordinates": [17.3026, -62.7177],
+      "aliases": []
+    },
+    {
+      "name": "St. John's",
+      "code": "ANU",
+      "timezone": "America/Antigua",
+      "country": "Antigua and Barbuda",
+      "coordinates": [17.1175, -61.8456],
+      "aliases": ["Saint John's"]
+    },
+    {
+      "name": "Roseau",
+      "code": "DOM",
+      "timezone": "America/Dominica",
+      "country": "Dominica",
+      "coordinates": [15.3092, -61.3794],
+      "aliases": []
+    },
+    {
+      "name": "Castries",
+      "code": "SLU",
+      "timezone": "America/St_Lucia",
+      "country": "Saint Lucia",
+      "coordinates": [14.0101, -60.9875],
+      "aliases": []
+    },
+    {
+      "name": "Bridgetown",
+      "code": "BGI",
+      "timezone": "America/Barbados",
+      "country": "Barbados",
+      "coordinates": [13.1132, -59.5988],
+      "aliases": []
+    },
+    {
+      "name": "St. Vincent",
+      "code": "SVD",
+      "timezone": "America/St_Vincent",
+      "country": "Saint Vincent and the Grenadines",
+      "coordinates": [13.1584, -61.2248],
+      "aliases": ["Kingstown"]
+    },
+    {
+      "name": "St. George's",
+      "code": "GND",
+      "timezone": "America/Grenada",
+      "country": "Grenada",
+      "coordinates": [12.0564, -61.7485],
+      "aliases": ["Saint George's"]
+    },
+    {
+      "name": "Port of Spain",
+      "code": "POS",
+      "timezone": "America/Port_of_Spain",
+      "country": "Trinidad and Tobago",
+      "coordinates": [10.6596, -61.5086],
+      "aliases": []
+    },
+    {
+      "name": "Georgetown",
+      "code": "GEO",
+      "timezone": "America/Guyana",
+      "country": "Guyana",
+      "coordinates": [6.8013, -58.1551],
+      "aliases": []
+    },
+    {
+      "name": "Paramaribo",
+      "code": "PBM",
+      "timezone": "America/Paramaribo",
+      "country": "Suriname",
+      "coordinates": [5.8520, -55.2038],
+      "aliases": []
+    },
+    {
+      "name": "Cayenne",
+      "code": "CAY",
+      "timezone": "America/Cayenne",
+      "country": "French Guiana",
+      "coordinates": [4.9227, -52.3135],
+      "aliases": []
+    },
+    {
+      "name": "Fortaleza",
+      "code": "FOR",
+      "timezone": "America/Fortaleza",
+      "country": "Brazil",
+      "coordinates": [-3.7319, -38.5267],
+      "aliases": []
+    },
+    {
+      "name": "Recife",
+      "code": "REC",
+      "timezone": "America/Recife",
+      "country": "Brazil",
+      "coordinates": [-8.0476, -34.8770],
+      "aliases": []
+    },
+    {
+      "name": "Salvador",
+      "code": "SSA",
+      "timezone": "America/Bahia",
+      "country": "Brazil",
+      "coordinates": [-12.9714, -38.5014],
+      "aliases": []
+    },
+    {
+      "name": "Brasília",
+      "code": "BSB",
+      "timezone": "America/Sao_Paulo",
+      "country": "Brazil",
+      "coordinates": [-15.7801, -47.9292],
+      "aliases": ["Brasilia"]
+    },
+    {
+      "name": "Belo Horizonte",
+      "code": "BHZ",
+      "timezone": "America/Sao_Paulo",
+      "country": "Brazil",
+      "coordinates": [-19.8157, -43.9542],
+      "aliases": []
+    },
+    {
+      "name": "Curitiba",
+      "code": "CWB",
+      "timezone": "America/Sao_Paulo",
+      "country": "Brazil",
+      "coordinates": [-25.4244, -49.2654],
+      "aliases": []
+    },
+    {
+      "name": "Porto Alegre",
+      "code": "POA",
+      "timezone": "America/Sao_Paulo",
+      "country": "Brazil",
+      "coordinates": [-30.0346, -51.2177],
+      "aliases": []
+    },
+    {
+      "name": "Manaus",
+      "code": "MAO",
+      "timezone": "America/Manaus",
+      "country": "Brazil",
+      "coordinates": [-3.1190, -60.0217],
+      "aliases": []
+    },
+    {
+      "name": "Belém",
+      "code": "BEL",
+      "timezone": "America/Belem",
+      "country": "Brazil",
+      "coordinates": [-1.4558, -48.5044],
+      "aliases": ["Belem"]
+    },
+    {
+      "name": "Campo Grande",
+      "code": "CGR",
+      "timezone": "America/Campo_Grande",
+      "country": "Brazil",
+      "coordinates": [-20.4697, -54.6201],
+      "aliases": []
+    },
+    {
+      "name": "Cuiabá",
+      "code": "CGB",
+      "timezone": "America/Cuiaba",
+      "country": "Brazil",
+      "coordinates": [-15.5989, -56.0949],
+      "aliases": ["Cuiaba"]
+    },
+    {
+      "name": "Córdoba",
+      "code": "COR",
+      "timezone": "America/Argentina/Cordoba",
+      "country": "Argentina",
+      "coordinates": [-31.4201, -64.1888],
+      "aliases": ["Cordoba"]
+    },
+    {
+      "name": "Rosario",
+      "code": "ROS",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "country": "Argentina",
+      "coordinates": [-32.9442, -60.6505],
+      "aliases": []
+    },
+    {
+      "name": "Mendoza",
+      "code": "MDZ",
+      "timezone": "America/Argentina/Mendoza",
+      "country": "Argentina",
+      "coordinates": [-32.8895, -68.8458],
+      "aliases": []
+    },
+    {
+      "name": "Mar del Plata",
+      "code": "MDQ",
+      "timezone": "America/Argentina/Buenos_Aires",
+      "country": "Argentina",
+      "coordinates": [-38.0055, -57.5426],
+      "aliases": []
+    },
+    {
+      "name": "Ushuaia",
+      "code": "USH",
+      "timezone": "America/Argentina/Ushuaia",
+      "country": "Argentina",
+      "coordinates": [-54.8000, -68.3000],
+      "aliases": []
+    },
+    {
+      "name": "Punta Arenas",
+      "code": "PUQ",
+      "timezone": "America/Punta_Arenas",
+      "country": "Chile",
+      "coordinates": [-53.1625, -70.9118],
+      "aliases": []
+    },
+    {
+      "name": "Valparaíso",
+      "code": "VAP",
+      "timezone": "America/Santiago",
+      "country": "Chile",
+      "coordinates": [-33.0458, -71.6197],
+      "aliases": ["Valparaiso"]
+    },
+    {
+      "name": "Concepción",
+      "code": "CCP",
+      "timezone": "America/Santiago",
+      "country": "Chile",
+      "coordinates": [-36.8201, -73.0444],
+      "aliases": ["Concepcion"]
+    },
+    {
+      "name": "Antofagasta",
+      "code": "ANF",
+      "timezone": "America/Santiago",
+      "country": "Chile",
+      "coordinates": [-23.6500, -70.4000],
+      "aliases": []
+    },
+    {
+      "name": "La Serena",
+      "code": "LSC",
+      "timezone": "America/Santiago",
+      "country": "Chile",
+      "coordinates": [-29.9027, -71.2519],
+      "aliases": []
+    },
+    {
+      "name": "Santa Cruz",
+      "code": "VVI",
+      "timezone": "America/La_Paz",
+      "country": "Bolivia",
+      "coordinates": [-17.8146, -63.1561],
+      "aliases": []
+    },
+    {
+      "name": "Cochabamba",
+      "code": "CBB",
+      "timezone": "America/La_Paz",
+      "country": "Bolivia",
+      "coordinates": [-17.3895, -66.1568],
+      "aliases": []
+    },
+    {
+      "name": "Sucre",
+      "code": "SRE",
+      "timezone": "America/La_Paz",
+      "country": "Bolivia",
+      "coordinates": [-19.0358, -65.2621],
+      "aliases": []
+    },
+    {
+      "name": "Tarija",
+      "code": "TJA",
+      "timezone": "America/La_Paz",
+      "country": "Bolivia",
+      "coordinates": [-21.5355, -64.7296],
+      "aliases": []
+    },
+    {
+      "name": "Arequipa",
+      "code": "AQP",
+      "timezone": "America/Lima",
+      "country": "Peru",
+      "coordinates": [-16.3989, -71.5350],
+      "aliases": []
+    },
+    {
+      "name": "Cusco",
+      "code": "CUZ",
+      "timezone": "America/Lima",
+      "country": "Peru",
+      "coordinates": [-13.5319, -71.9675],
+      "aliases": ["Cuzco"]
+    },
+    {
+      "name": "Trujillo",
+      "code": "TRU",
+      "timezone": "America/Lima",
+      "country": "Peru",
+      "coordinates": [-8.1116, -79.0288],
+      "aliases": []
+    },
+    {
+      "name": "Iquitos",
+      "code": "IQT",
+      "timezone": "America/Lima",
+      "country": "Peru",
+      "coordinates": [-3.7481, -73.2508],
+      "aliases": []
+    },
+    {
+      "name": "Guayaquil",
+      "code": "GYE",
+      "timezone": "America/Guayaquil",
+      "country": "Ecuador",
+      "coordinates": [-2.1710, -79.9224],
+      "aliases": []
+    },
+    {
+      "name": "Cuenca",
+      "code": "CUE",
+      "timezone": "America/Guayaquil",
+      "country": "Ecuador",
+      "coordinates": [-2.9001, -79.0059],
+      "aliases": []
+    },
+    {
+      "name": "Galápagos",
+      "code": "GPS",
+      "timezone": "Pacific/Galapagos",
+      "country": "Ecuador",
+      "coordinates": [-0.9538, -90.9656],
+      "aliases": ["Galapagos"]
+    },
+    {
+      "name": "Manta",
+      "code": "MEC",
+      "timezone": "America/Guayaquil",
+      "country": "Ecuador",
+      "coordinates": [-0.9677, -80.7089],
+      "aliases": []
+    },
+    {
+      "name": "Medellín",
+      "code": "MDE",
+      "timezone": "America/Bogota",
+      "country": "Colombia",
+      "coordinates": [6.2476, -75.5658],
+      "aliases": ["Medellin"]
+    },
+    {
+      "name": "Cali",
+      "code": "CLO",
+      "timezone": "America/Bogota",
+      "country": "Colombia",
+      "coordinates": [3.4516, -76.5320],
+      "aliases": []
+    },
+    {
+      "name": "Barranquilla",
+      "code": "BAQ",
+      "timezone": "America/Bogota",
+      "country": "Colombia",
+      "coordinates": [10.9639, -74.7964],
+      "aliases": []
+    },
+    {
+      "name": "Cartagena",
+      "code": "CTG",
+      "timezone": "America/Bogota",
+      "country": "Colombia",
+      "coordinates": [10.3910, -75.4794],
+      "aliases": []
+    },
+    {
+      "name": "Maracaibo",
+      "code": "MAR",
+      "timezone": "America/Caracas",
+      "country": "Venezuela",
+      "coordinates": [10.6544, -71.6147],
+      "aliases": []
+    },
+    {
+      "name": "Valencia",
+      "code": "VLN",
+      "timezone": "America/Caracas",
+      "country": "Venezuela",
+      "coordinates": [10.1620, -68.0077],
+      "aliases": []
+    },
+    {
+      "name": "Barquisimeto",
+      "code": "BRM",
+      "timezone": "America/Caracas",
+      "country": "Venezuela",
+      "coordinates": [10.0739, -69.3228],
+      "aliases": []
+    },
+    {
+      "name": "Ciudad Guayana",
+      "code": "CGU",
+      "timezone": "America/Caracas",
+      "country": "Venezuela",
+      "coordinates": [8.3533, -62.6411],
+      "aliases": []
+    },
+    {
+      "name": "Nassau",
+      "code": "NAS",
+      "timezone": "America/Nassau",
+      "country": "Bahamas",
+      "coordinates": [25.0480, -77.3554],
+      "aliases": []
+    },
+    {
+      "name": "Freeport",
+      "code": "FPO",
+      "timezone": "America/Nassau",
+      "country": "Bahamas",
+      "coordinates": [26.5333, -78.7000],
+      "aliases": []
+    },
+    {
+      "name": "George Town",
+      "code": "GCM",
+      "timezone": "America/Cayman",
+      "country": "Cayman Islands",
+      "coordinates": [19.3133, -81.2546],
+      "aliases": []
+    },
+    {
+      "name": "Hamilton",
+      "code": "BDA",
+      "timezone": "Atlantic/Bermuda",
+      "country": "Bermuda",
+      "coordinates": [32.2949, -64.7781],
+      "aliases": []
+    },
+    {
+      "name": "St. George",
+      "code": "SGE",
+      "timezone": "Atlantic/Bermuda",
+      "country": "Bermuda",
+      "coordinates": [32.3824, -64.6781],
+      "aliases": ["Saint George"]
+    },
+    {
+      "name": "Halifax",
+      "code": "YHZ",
+      "timezone": "Canada/Atlantic",
+      "country": "Canada",
+      "coordinates": [44.6488, -63.5752],
+      "aliases": []
+    },
+    {
+      "name": "St. John's",
+      "code": "YYT",
+      "timezone": "Canada/Newfoundland",
+      "country": "Canada",
+      "coordinates": [47.5615, -52.7126],
+      "aliases": ["St Johns"]
+    },
+    {
+      "name": "Charlottetown",
+      "code": "YYG",
+      "timezone": "Canada/Atlantic",
+      "country": "Canada",
+      "coordinates": [46.2382, -63.1311],
+      "aliases": []
+    },
+    {
+      "name": "Fredericton",
+      "code": "YFC",
+      "timezone": "Canada/Atlantic",
+      "country": "Canada",
+      "coordinates": [45.9636, -66.6431],
+      "aliases": []
+    },
+    {
+      "name": "Quebec City",
+      "code": "YQB",
+      "timezone": "Canada/Eastern",
+      "country": "Canada",
+      "coordinates": [46.8139, -71.2080],
+      "aliases": []
+    },
+    {
+      "name": "Sherbrooke",
+      "code": "YSC",
+      "timezone": "Canada/Eastern",
+      "country": "Canada",
+      "coordinates": [45.4042, -71.8929],
+      "aliases": []
+    },
+    {
+      "name": "Trois-Rivières",
+      "code": "YRQ",
+      "timezone": "Canada/Eastern",
+      "country": "Canada",
+      "coordinates": [46.3497, -72.5703],
+      "aliases": ["Trois-Rivieres"]
+    },
+    {
+      "name": "Kingston",
+      "code": "YGK",
+      "timezone": "Canada/Eastern",
+      "country": "Canada",
+      "coordinates": [44.2312, -76.4860],
+      "aliases": []
+    },
+    {
+      "name": "Hamilton",
+      "code": "YHM",
+      "timezone": "Canada/Eastern",
+      "country": "Canada",
+      "coordinates": [43.2557, -79.8711],
+      "aliases": []
+    },
+    {
+      "name": "London",
+      "code": "YXU",
+      "timezone": "Canada/Eastern",
+      "country": "Canada",
+      "coordinates": [42.9849, -81.2497],
+      "aliases": []
+    },
+    {
+      "name": "Windsor",
+      "code": "YQG",
+      "timezone": "Canada/Eastern",
+      "country": "Canada",
+      "coordinates": [42.3149, -83.0364],
+      "aliases": []
+    },
+    {
+      "name": "Thunder Bay",
+      "code": "YQT",
+      "timezone": "Canada/Eastern",
+      "country": "Canada",
+      "coordinates": [48.3809, -89.2477],
+      "aliases": []
+    },
+    {
+      "name": "Sudbury",
+      "code": "YSB",
+      "timezone": "Canada/Eastern",
+      "country": "Canada",
+      "coordinates": [46.4917, -80.9930],
+      "aliases": []
+    },
+    {
+      "name": "Regina",
+      "code": "YQR",
+      "timezone": "Canada/Central",
+      "country": "Canada",
+      "coordinates": [50.4452, -104.6189],
+      "aliases": []
+    },
+    {
+      "name": "Saskatoon",
+      "code": "YXE",
+      "timezone": "Canada/Central",
+      "country": "Canada",
+      "coordinates": [52.1579, -106.6702],
+      "aliases": []
+    },
+    {
+      "name": "Edmonton",
+      "code": "YEG",
+      "timezone": "Canada/Mountain",
+      "country": "Canada",
+      "coordinates": [53.5461, -113.4938],
+      "aliases": []
+    },
+    {
+      "name": "Red Deer",
+      "code": "YQF",
+      "timezone": "Canada/Mountain",
+      "country": "Canada",
+      "coordinates": [52.2681, -113.8112],
+      "aliases": []
+    },
+    {
+      "name": "Lethbridge",
+      "code": "YQL",
+      "timezone": "Canada/Mountain",
+      "country": "Canada",
+      "coordinates": [49.6956, -112.8451],
+      "aliases": []
+    },
+    {
+      "name": "Kelowna",
+      "code": "YLW",
+      "timezone": "Canada/Pacific",
+      "country": "Canada",
+      "coordinates": [49.8880, -119.4960],
+      "aliases": []
+    },
+    {
+      "name": "Victoria",
+      "code": "YYJ",
+      "timezone": "Canada/Pacific",
+      "country": "Canada",
+      "coordinates": [48.4284, -123.3656],
+      "aliases": []
+    },
+    {
+      "name": "Kamloops",
+      "code": "YKA",
+      "timezone": "Canada/Pacific",
+      "country": "Canada",
+      "coordinates": [50.6745, -120.3273],
+      "aliases": []
+    },
+    {
+      "name": "Prince George",
+      "code": "YXS",
+      "timezone": "Canada/Pacific",
+      "country": "Canada",
+      "coordinates": [53.9171, -122.7497],
+      "aliases": []
+    },
+    {
+      "name": "Whitehorse",
+      "code": "YXY",
+      "timezone": "Canada/Yukon",
+      "country": "Canada",
+      "coordinates": [60.7212, -135.0568],
+      "aliases": []
+    },
+    {
+      "name": "Yellowknife",
+      "code": "YZF",
+      "timezone": "Canada/Mountain",
+      "country": "Canada",
+      "coordinates": [62.4540, -114.3718],
+      "aliases": []
+    },
+    {
+      "name": "Iqaluit",
+      "code": "YFB",
+      "timezone": "Canada/Eastern",
+      "country": "Canada",
+      "coordinates": [63.7467, -68.7160],
+      "aliases": []
+    },
+    {
+      "name": "Pittsburgh",
+      "code": "PIT",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [40.4406, -79.9959],
+      "aliases": []
+    },
+    {
+      "name": "Cleveland",
+      "code": "CLE",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [41.4993, -81.6944],
+      "aliases": []
+    },
+    {
+      "name": "Detroit",
+      "code": "DTW",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [42.3314, -83.0458],
+      "aliases": []
+    },
+    {
+      "name": "Columbus",
+      "code": "CMH",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [39.9612, -82.9988],
+      "aliases": []
+    },
+    {
+      "name": "Cincinnati",
+      "code": "CVG",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [39.1031, -84.5120],
+      "aliases": []
+    },
+    {
+      "name": "Indianapolis",
+      "code": "IND",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [39.7684, -86.1581],
+      "aliases": []
+    },
+    {
+      "name": "Louisville",
+      "code": "SDF",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [38.2527, -85.7585],
+      "aliases": []
+    },
+    {
+      "name": "Nashville",
+      "code": "BNA",
+      "timezone": "US/Central",
+      "country": "USA",
+      "coordinates": [36.1627, -86.7816],
+      "aliases": []
+    },
+    {
+      "name": "Memphis",
+      "code": "MEM",
+      "timezone": "US/Central",
+      "country": "USA",
+      "coordinates": [35.1495, -90.0490],
+      "aliases": []
+    },
+    {
+      "name": "New Orleans",
+      "code": "MSY",
+      "timezone": "US/Central",
+      "country": "USA",
+      "coordinates": [29.9511, -90.0715],
+      "aliases": []
+    },
+    {
+      "name": "Birmingham",
+      "code": "BHM",
+      "timezone": "US/Central",
+      "country": "USA",
+      "coordinates": [33.5186, -86.8104],
+      "aliases": []
+    },
+    {
+      "name": "Charlotte",
+      "code": "CLT",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [35.2271, -80.8431],
+      "aliases": []
+    },
+    {
+      "name": "Raleigh",
+      "code": "RDU",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [35.7796, -78.6382],
+      "aliases": []
+    },
+    {
+      "name": "Richmond",
+      "code": "RIC",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [37.5407, -77.4360],
+      "aliases": []
+    },
+    {
+      "name": "Norfolk",
+      "code": "ORF",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [36.8508, -76.2859],
+      "aliases": []
+    },
+    {
+      "name": "Jacksonville",
+      "code": "JAX",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [30.3322, -81.6557],
+      "aliases": []
+    },
+    {
+      "name": "Tampa",
+      "code": "TPA",
+      "timezone": "US/Eastern",
+      "country": "USA",
+      "coordinates": [27.9506, -82.4572],
+      "aliases": []
+    },
+    {
+      "name": "St. Louis",
+      "code": "STL",
+      "timezone": "US/Central",
+      "country": "USA",
+      "coordinates": [38.6270, -90.1994],
+      "aliases": ["Saint Louis"]
+    },
+    {
+      "name": "Kansas City",
+      "code": "MCI",
+      "timezone": "US/Central",
+      "country": "USA",
+      "coordinates": [39.0997, -94.5786],
+      "aliases": []
+    },
+    {
+      "name": "Milwaukee",
+      "code": "MKE",
+      "timezone": "US/Central",
+      "country": "USA",
+      "coordinates": [43.0389, -87.9065],
+      "aliases": []
+    },
+    {
+      "name": "Omaha",
+      "code": "OMA",
+      "timezone": "US/Central",
+      "country": "USA",
+      "coordinates": [41.2565, -95.9345],
+      "aliases": []
+    },
+    {
+      "name": "Des Moines",
+      "code": "DSM",
+      "timezone": "US/Central",
+      "country": "USA",
+      "coordinates": [41.5868, -93.6250],
+      "aliases": []
+    },
+    {
+      "name": "Oklahoma City",
+      "code": "OKC",
+      "timezone": "US/Central",
+      "country": "USA",
+      "coordinates": [35.4676, -97.5164],
+      "aliases": []
+    },
+    {
+      "name": "Tulsa",
+      "code": "TUL",
+      "timezone": "US/Central",
+      "country": "USA",
+      "coordinates": [36.1540, -95.9928],
+      "aliases": []
+    },
+    {
+      "name": "San Antonio",
+      "code": "SAT",
+      "timezone": "US/Central",
+      "country": "USA",
+      "coordinates": [29.4241, -98.4936],
+      "aliases": []
+    },
+    {
+      "name": "El Paso",
+      "code": "ELP",
+      "timezone": "US/Mountain",
+      "country": "USA",
+      "coordinates": [31.7619, -106.4850],
+      "aliases": []
+    },
+    {
+      "name": "Albuquerque",
+      "code": "ABQ",
+      "timezone": "US/Mountain",
+      "country": "USA",
+      "coordinates": [35.0853, -106.6056],
+      "aliases": []
+    },
+    {
+      "name": "Santa Fe",
+      "code": "SAF",
+      "timezone": "US/Mountain",
+      "country": "USA",
+      "coordinates": [35.6870, -105.9378],
+      "aliases": []
+    },
+    {
+      "name": "Las Vegas",
+      "code": "LAS",
+      "timezone": "US/Pacific",
+      "country": "USA",
+      "coordinates": [36.1699, -115.1398],
+      "aliases": []
+    },
+    {
+      "name": "Reno",
+      "code": "RNO",
+      "timezone": "US/Pacific",
+      "country": "USA",
+      "coordinates": [39.5296, -119.8138],
+      "aliases": []
+    },
+    {
+      "name": "Sacramento",
+      "code": "SMF",
+      "timezone": "US/Pacific",
+      "country": "USA",
+      "coordinates": [38.5816, -121.4944],
+      "aliases": []
+    },
+    {
+      "name": "San Jose",
+      "code": "SJC",
+      "timezone": "US/Pacific",
+      "country": "USA",
+      "coordinates": [37.3382, -121.8863],
+      "aliases": []
+    },
+    {
+      "name": "Oakland",
+      "code": "OAK",
+      "timezone": "US/Pacific",
+      "country": "USA",
+      "coordinates": [37.8044, -122.2712],
+      "aliases": []
+    },
+    {
+      "name": "Fresno",
+      "code": "FAT",
+      "timezone": "US/Pacific",
+      "country": "USA",
+      "coordinates": [36.7378, -119.7871],
+      "aliases": []
+    },
+    {
+      "name": "San Diego",
+      "code": "SAN",
+      "timezone": "US/Pacific",
+      "country": "USA",
+      "coordinates": [32.7157, -117.1611],
+      "aliases": []
+    },
+    {
+      "name": "Tijuana",
+      "code": "TIJ",
+      "timezone": "America/Tijuana",
+      "country": "Mexico",
+      "coordinates": [32.5149, -117.0382],
+      "aliases": []
+    },
+    {
+      "name": "Mexicali",
+      "code": "MXL",
+      "timezone": "America/Tijuana",
+      "country": "Mexico",
+      "coordinates": [32.6245, -115.4523],
+      "aliases": []
+    },
+    {
+      "name": "Guadalajara",
+      "code": "GDL",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [20.6597, -103.3496],
+      "aliases": []
+    },
+    {
+      "name": "Monterrey",
+      "code": "MTY",
+      "timezone": "America/Monterrey",
+      "country": "Mexico",
+      "coordinates": [25.6866, -100.3161],
+      "aliases": []
+    },
+    {
+      "name": "Cancún",
+      "code": "CUN",
+      "timezone": "America/Cancun",
+      "country": "Mexico",
+      "coordinates": [21.1619, -86.8515],
+      "aliases": ["Cancun"]
+    },
+    {
+      "name": "Mérida",
+      "code": "MID",
+      "timezone": "America/Merida",
+      "country": "Mexico",
+      "coordinates": [20.9674, -89.5926],
+      "aliases": ["Merida"]
+    },
+    {
+      "name": "Puebla",
+      "code": "PBC",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [19.0414, -98.2063],
+      "aliases": []
+    },
+    {
+      "name": "Querétaro",
+      "code": "QRO",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [20.5888, -100.3899],
+      "aliases": ["Queretaro"]
+    },
+    {
+      "name": "León",
+      "code": "BJX",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [21.1236, -101.6821],
+      "aliases": ["Leon"]
+    },
+    {
+      "name": "Toluca",
+      "code": "TLC",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [19.2826, -99.6557],
+      "aliases": []
+    },
+    {
+      "name": "Ciudad Juárez",
+      "code": "CJS",
+      "timezone": "America/Ojinaga",
+      "country": "Mexico",
+      "coordinates": [31.6904, -106.4245],
+      "aliases": ["Juarez"]
+    },
+    {
+      "name": "Hermosillo",
+      "code": "HMO",
+      "timezone": "America/Hermosillo",
+      "country": "Mexico",
+      "coordinates": [29.0729, -110.9559],
+      "aliases": []
+    },
+    {
+      "name": "Mazatlán",
+      "code": "MZT",
+      "timezone": "America/Mazatlan",
+      "country": "Mexico",
+      "coordinates": [23.2329, -106.4062],
+      "aliases": ["Mazatlan"]
+    },
+    {
+      "name": "Puerto Vallarta",
+      "code": "PVR",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [20.6534, -105.2253],
+      "aliases": []
+    },
+    {
+      "name": "Acapulco",
+      "code": "ACA",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [16.8531, -99.8237],
+      "aliases": []
+    },
+    {
+      "name": "Veracruz",
+      "code": "VER",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [19.1738, -96.1342],
+      "aliases": []
+    },
+    {
+      "name": "Oaxaca",
+      "code": "OAX",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [17.0732, -96.7266],
+      "aliases": []
+    },
+    {
+      "name": "Chihuahua",
+      "code": "CUU",
+      "timezone": "America/Chihuahua",
+      "country": "Mexico",
+      "coordinates": [28.6353, -106.0889],
+      "aliases": []
+    },
+    {
+      "name": "San Luis Potosí",
+      "code": "SLP",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [22.1565, -100.9855],
+      "aliases": ["San Luis Potosi"]
+    },
+    {
+      "name": "Aguascalientes",
+      "code": "AGU",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [21.8853, -102.2916],
+      "aliases": []
+    },
+    {
+      "name": "Morelia",
+      "code": "MLM",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [19.7059, -101.1950],
+      "aliases": []
+    },
+    {
+      "name": "Durango",
+      "code": "DGO",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [24.0277, -104.6532],
+      "aliases": []
+    },
+    {
+      "name": "Culiacán",
+      "code": "CUL",
+      "timezone": "America/Mazatlan",
+      "country": "Mexico",
+      "coordinates": [24.8090, -107.3940],
+      "aliases": ["Culiacan"]
+    },
+    {
+      "name": "Tampico",
+      "code": "TAM",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [22.2331, -97.8612],
+      "aliases": []
+    },
+    {
+      "name": "Saltillo",
+      "code": "SLW",
+      "timezone": "America/Monterrey",
+      "country": "Mexico",
+      "coordinates": [25.4267, -100.9954],
+      "aliases": []
+    },
+    {
+      "name": "Villahermosa",
+      "code": "VSA",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [17.9892, -92.9475],
+      "aliases": []
+    },
+    {
+      "name": "Tuxtla Gutiérrez",
+      "code": "TGZ",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [16.7516, -93.1130],
+      "aliases": ["Tuxtla Gutierrez"]
+    },
+    {
+      "name": "Campeche",
+      "code": "CPE",
+      "timezone": "America/Mexico_City",
+      "country": "Mexico",
+      "coordinates": [19.8301, -90.5349],
+      "aliases": []
     }
   ],
   "major_cities": [
     "New York", "London", "Tokyo", "Singapore", "Hong Kong", "San Francisco",
     "Sydney", "Dubai", "Shanghai", "Beijing", "Seoul", "Mumbai", "Delhi",
     "Toronto", "Frankfurt", "Zurich", "Los Angeles", "Boston", "Chicago",
-    "Paris", "Berlin", "Amsterdam", "Stockholm"
+    "Paris", "Berlin", "Amsterdam", "Stockholm", "São Paulo", "Mexico City",
+    "Buenos Aires", "Bangkok", "Jakarta", "Cairo", "Lagos", "Tel Aviv",
+    "Istanbul", "Moscow", "St. Petersburg", "Kyiv", "Warsaw", "Prague",
+    "Vienna", "Copenhagen", "Oslo", "Helsinki", "Madrid", "Barcelona",
+    "Rome", "Milan", "Bangalore", "Kolkata", "Pune", "Jakarta", "Manila",
+    "Ho Chi Minh City", "Kuala Lumpur", "Osaka", "Busan", "Taipei", "Perth",
+    "Melbourne", "Wellington", "Honolulu", "Anchorage", "Vancouver", "Montreal",
+    "Guadalajara", "Monterrey", "Havana", "Lima", "Santiago", "Bogotá",
+    "Caracas", "Nairobi", "Johannesburg", "Casablanca", "Algiers", "Tunis"
   ]
 }
