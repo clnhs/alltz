@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::str::FromStr;
 use std::sync::OnceLock;
-use sunrise::{SolarEvent, SolarDay, Coordinates};
+use sunrise::{Coordinates, SolarDay, SolarEvent};
 
 static CITIES_DATA: OnceLock<CitiesData> = OnceLock::new();
 
@@ -175,18 +175,14 @@ impl TimeZone {
 
     pub fn get_coordinates(&self) -> Option<(f64, f64)> {
         let cities_data = TimeZoneManager::load_cities_data();
-        
+
         // First try to find by source city name
         if let Some(source_city) = &self.source_city {
-            if let Some(city) = cities_data
-                .cities
-                .iter()
-                .find(|c| c.name == *source_city)
-            {
+            if let Some(city) = cities_data.cities.iter().find(|c| c.name == *source_city) {
                 return Some((city.coordinates[0], city.coordinates[1]));
             }
         }
-        
+
         // Fallback: lookup by airport code
         if let Some(city) = cities_data
             .cities
@@ -195,28 +191,28 @@ impl TimeZone {
         {
             return Some((city.coordinates[0], city.coordinates[1]));
         }
-        
+
         None
     }
 
     pub fn get_sunrise_sunset(&self, date: DateTime<Utc>) -> Option<(DateTime<Tz>, DateTime<Tz>)> {
         let (lat, lng) = self.get_coordinates()?;
         let coords = Coordinates::new(lat, lng)?;
-        
+
         // Convert UTC date to local date for calculation
         let local_date = date.with_timezone(&self.tz).date_naive();
-        
+
         // Create solar day for calculations
         let solar_day = SolarDay::new(coords, local_date);
-        
+
         // Calculate sunrise and sunset times (returns UTC times)
         let sunrise_utc = solar_day.event_time(SolarEvent::Sunrise);
         let sunset_utc = solar_day.event_time(SolarEvent::Sunset);
-        
+
         // Convert UTC times to local timezone
         let sunrise_tz = sunrise_utc.with_timezone(&self.tz);
         let sunset_tz = sunset_utc.with_timezone(&self.tz);
-        
+
         Some((sunrise_tz, sunset_tz))
     }
 
@@ -260,9 +256,7 @@ pub struct TimeZoneManager {
 
 impl TimeZoneManager {
     pub fn new() -> Self {
-        Self {
-            zones: Vec::new(),
-        }
+        Self { zones: Vec::new() }
     }
 
     fn load_cities_data() -> &'static CitiesData {

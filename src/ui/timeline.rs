@@ -255,16 +255,19 @@ impl<'a> Widget for TimelineWidget<'a> {
                 }
             }
         };
-        
+
         let mut block = Block::default()
             .borders(Borders::ALL)
             .title(title)
             .style(border_style);
-        
+
         // Add sunrise/sunset times to bottom right if enabled
         if self.show_sun_times {
             let use_12_hour = matches!(self.display_format, TimeFormat::TwelveHour);
-            if let Some(sun_times) = self.timezone.format_sun_times(self.current_time, use_12_hour) {
+            if let Some(sun_times) = self
+                .timezone
+                .format_sun_times(self.current_time, use_12_hour)
+            {
                 let sun_color = if self.selected {
                     self.color_theme.get_selected_border_color()
                 } else {
@@ -272,12 +275,13 @@ impl<'a> Widget for TimelineWidget<'a> {
                 };
                 let sun_line = Line::from(vec![Span::styled(
                     sun_times,
-                    Style::default().fg(sun_color)
-                )]).alignment(Alignment::Right);
+                    Style::default().fg(sun_color),
+                )])
+                .alignment(Alignment::Right);
                 block = block.title_top(sun_line);
             }
         }
-        
+
         block.render(area, buf);
 
         // Generate timeline display

@@ -211,8 +211,12 @@ fn run_app<B: ratatui::backend::Backend>(
                                 }
                             }
                             // Handle uppercase H and L (some terminals send these with Shift)
-                            KeyCode::Char('H') => Some(Message::ScrubTimelineWithShift(Direction::Left)),
-                            KeyCode::Char('L') => Some(Message::ScrubTimelineWithShift(Direction::Right)),
+                            KeyCode::Char('H') => {
+                                Some(Message::ScrubTimelineWithShift(Direction::Left))
+                            }
+                            KeyCode::Char('L') => {
+                                Some(Message::ScrubTimelineWithShift(Direction::Right))
+                            }
                             KeyCode::Char('j') | KeyCode::Down => {
                                 Some(Message::NavigateZone(Direction::Down))
                             }

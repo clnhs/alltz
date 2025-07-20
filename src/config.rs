@@ -200,7 +200,7 @@ pub struct AppConfig {
     pub color_theme: ColorTheme,      // Color theme for UI
     pub show_date: bool,              // Date display toggle
     #[serde(default = "default_true")]
-    pub show_sun_times: bool,         // Sunrise/sunset times display toggle
+    pub show_sun_times: bool, // Sunrise/sunset times display toggle
 }
 
 impl Default for AppConfig {
@@ -221,7 +221,7 @@ impl Default for AppConfig {
             time_config: TimeDisplayConfig::default(),
             color_theme: ColorTheme::default(),
             show_date: false,
-            show_sun_times: true,  // Enable by default
+            show_sun_times: true, // Enable by default
         }
     }
 }

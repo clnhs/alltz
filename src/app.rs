@@ -395,7 +395,7 @@ impl App {
                 // Clear other modal states
                 self.renaming_zone = false;
                 self.rename_zone_input.clear();
-                
+
                 self.adding_zone = true;
                 self.add_zone_input.clear();
                 self.zone_search_results.clear();
@@ -516,7 +516,7 @@ impl App {
                     self.adding_zone = false;
                     self.add_zone_input.clear();
                     self.zone_search_results.clear();
-                    
+
                     self.renaming_zone = true;
                     // Pre-fill with current custom label or empty
                     self.rename_zone_input = self.timezone_manager.zones()
@@ -1405,24 +1405,24 @@ mod tests {
     #[test]
     fn test_modal_state_exclusivity() {
         let mut app = App::new();
-        
+
         // Add a timezone first so we can rename it
         app.update(Message::StartAddZone);
         app.update(Message::UpdateAddZoneInput("London".to_string()));
         app.update(Message::ConfirmAddZone);
-        
+
         // Start add zone mode
         app.update(Message::StartAddZone);
         assert!(app.adding_zone);
         assert!(!app.renaming_zone);
-        
+
         // Now start rename mode - should clear add zone state
         app.update(Message::StartRenameZone);
         assert!(!app.adding_zone);
         assert!(app.renaming_zone);
         assert!(app.add_zone_input.is_empty());
         assert!(app.zone_search_results.is_empty());
-        
+
         // Start add zone mode again - should clear rename state
         app.update(Message::StartAddZone);
         assert!(app.adding_zone);
@@ -1624,30 +1624,30 @@ mod tests {
     #[test]
     fn test_search_navigation() {
         let mut app = App::new();
-        
+
         // Start adding zone
         app.update(Message::StartAddZone);
         assert!(app.adding_zone);
         assert_eq!(app.selected_search_result, 0);
-        
+
         // Add some search input to get results
         app.update(Message::UpdateAddZoneInput("London".to_string()));
         assert!(!app.zone_search_results.is_empty());
         assert_eq!(app.selected_search_result, 0);
-        
+
         println!("Search results: {:?}", app.zone_search_results);
         println!("Number of results: {}", app.zone_search_results.len());
-        
+
         // Navigate down
         app.update(Message::NavigateSearchResults(Direction::Down));
         assert_eq!(app.selected_search_result, 1);
-        
+
         // Navigate down again if possible
         if app.zone_search_results.len() > 2 {
             app.update(Message::NavigateSearchResults(Direction::Down));
             assert_eq!(app.selected_search_result, 2);
         }
-        
+
         // Navigate up
         app.update(Message::NavigateSearchResults(Direction::Up));
         if app.zone_search_results.len() > 2 {
@@ -1655,22 +1655,22 @@ mod tests {
         } else {
             assert_eq!(app.selected_search_result, 0);
         }
-        
+
         // Navigate up again
         app.update(Message::NavigateSearchResults(Direction::Up));
         assert_eq!(app.selected_search_result, 0);
-        
+
         // Try to navigate up when already at top (should stay at 0)
         app.update(Message::NavigateSearchResults(Direction::Up));
         assert_eq!(app.selected_search_result, 0);
-        
+
         // Navigate to bottom
         let max_index = app.zone_search_results.len() - 1;
         for _ in 0..app.zone_search_results.len() {
             app.update(Message::NavigateSearchResults(Direction::Down));
         }
         assert_eq!(app.selected_search_result, max_index);
-        
+
         // Try to navigate down when already at bottom (should stay at max)
         app.update(Message::NavigateSearchResults(Direction::Down));
         assert_eq!(app.selected_search_result, max_index);
@@ -1679,26 +1679,33 @@ mod tests {
     #[test]
     fn test_search_navigation_detailed() {
         let mut app = App::new();
-        
+
         // Start adding zone
         app.update(Message::StartAddZone);
-        println!("After StartAddZone: adding_zone={}, selected_search_result={}", app.adding_zone, app.selected_search_result);
-        
+        println!(
+            "After StartAddZone: adding_zone={}, selected_search_result={}",
+            app.adding_zone, app.selected_search_result
+        );
+
         // Add search input
         app.update(Message::UpdateAddZoneInput("Lon".to_string()));
-        println!("After search 'Lon': {} results, selected={}", app.zone_search_results.len(), app.selected_search_result);
+        println!(
+            "After search 'Lon': {} results, selected={}",
+            app.zone_search_results.len(),
+            app.selected_search_result
+        );
         println!("Results: {:?}", app.zone_search_results);
-        
+
         // Try navigation
         app.update(Message::NavigateSearchResults(Direction::Down));
         println!("After Down: selected={}", app.selected_search_result);
-        
+
         app.update(Message::NavigateSearchResults(Direction::Down));
         println!("After Down again: selected={}", app.selected_search_result);
-        
+
         app.update(Message::NavigateSearchResults(Direction::Up));
         println!("After Up: selected={}", app.selected_search_result);
-        
+
         // Verify basic functionality
         assert!(app.adding_zone);
         assert!(!app.zone_search_results.is_empty());
