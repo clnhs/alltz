@@ -267,10 +267,7 @@ fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
                 writeln!(handle)?;
                 let timezones = TimeZoneManager::get_all_available_timezones();
                 for (_, city, code, lat, lon) in timezones {
-                    writeln!(
-                        handle,
-                        "  {city:<15} {code:<4} ({lat:>7.2}, {lon:>8.2})"
-                    )?;
+                    writeln!(handle, "  {city:<15} {code:<4} ({lat:>7.2}, {lon:>8.2})")?;
                 }
                 writeln!(handle)?;
                 writeln!(

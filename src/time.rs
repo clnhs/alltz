@@ -490,7 +490,6 @@ impl Default for TimeZoneManager {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
 
     #[test]
     fn test_timezone_creation() {

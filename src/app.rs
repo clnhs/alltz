@@ -866,7 +866,8 @@ impl App {
             .split(chunks[1]);
 
         // Left column content
-        let left_sections = [(
+        let left_sections = [
+            (
                 "TIME NAVIGATION",
                 vec![
                     "h/← or l/→     Scrub timeline (1 hour)",
@@ -892,10 +893,12 @@ impl App {
                     "s              Toggle sunrise/sunset times",
                     "c              Cycle color themes",
                 ],
-            )];
+            ),
+        ];
 
         // Right column content
-        let right_sections = [(
+        let right_sections = [
+            (
                 "ZONE MANAGEMENT",
                 vec![
                     "a              Add new timezone",
@@ -922,7 +925,8 @@ impl App {
                     "q              Quit",
                     "Esc            Cancel operation",
                 ],
-            )];
+            ),
+        ];
 
         // Render left column
         let left_text = left_sections

@@ -35,8 +35,7 @@ pub enum TimeActivity {
     Work,  // 8 AM - 6 PM
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
-#[derive(Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Default)]
 pub enum ColorTheme {
     #[default]
     Default,
@@ -125,7 +124,6 @@ impl ColorTheme {
         Color::Red // Keep consistent across all themes for clarity
     }
 }
-
 
 impl TimeDisplayConfig {
     pub fn get_time_activity(&self, hour: u32) -> TimeActivity {
