@@ -28,7 +28,9 @@
       "Bash(rustup target:*)",
       "Bash(rustup:*)",
       "Bash(gh release view:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(git tag:*)",
+      "Bash(git push:*)"
     ],
     "deny": []
   }

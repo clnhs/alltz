@@ -231,17 +231,17 @@ impl<'a> Widget for TimelineWidget<'a> {
                     self.timezone.effective_display_name(),
                     self.timezone.offset_string()
                 )
-            },
+            }
             TimezoneDisplayMode::Full => {
                 // For full mode, show custom label with city name in parentheses
                 match &self.timezone.custom_label {
                     Some(label) => {
                         let city_name = self.timezone.get_full_display_name();
                         format!("{} ({})", label, city_name)
-                    },
+                    }
                     None => self.timezone.get_full_display_name(),
                 }
-            },
+            }
         };
         let block = Block::default()
             .borders(Borders::ALL)

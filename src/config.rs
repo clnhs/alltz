@@ -177,25 +177,24 @@ impl ZoneConfigCompat {
             ZoneConfigCompat::Full(config) => &config.city_name,
         }
     }
-    
+
     pub fn custom_label(&self) -> Option<&str> {
         match self {
             ZoneConfigCompat::Simple(_) => None,
             ZoneConfigCompat::Full(config) => config.custom_label.as_deref(),
         }
     }
-    
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AppConfig {
     pub zones: Vec<ZoneConfigCompat>, // List of timezone configurations
-    pub selected_zone_index: usize,    // Currently selected timezone
-    pub display_format: TimeFormat,    // 12/24 hour format
+    pub selected_zone_index: usize,   // Currently selected timezone
+    pub display_format: TimeFormat,   // 12/24 hour format
     pub timezone_display_mode: TimezoneDisplayMode, // Short/Full names
     pub time_config: TimeDisplayConfig, // Work/awake/night hours
-    pub color_theme: ColorTheme,       // Color theme for UI
-    pub show_date: bool,               // Date display toggle
+    pub color_theme: ColorTheme,      // Color theme for UI
+    pub show_date: bool,              // Date display toggle
 }
 
 impl Default for AppConfig {
@@ -340,13 +339,13 @@ work_hours_end = 18
 awake_hours_start = 6
 awake_hours_end = 22
 "#;
-        
+
         let config: AppConfig = toml::from_str(old_config_str).unwrap();
         assert_eq!(config.zones.len(), 3);
         assert_eq!(config.zones[0].city_name(), "Los Angeles");
         assert_eq!(config.zones[1].city_name(), "New York");
         assert_eq!(config.zones[2].city_name(), "Tokyo");
-        
+
         // All should have no custom labels
         for zone in &config.zones {
             assert_eq!(zone.custom_label(), None);
@@ -374,18 +373,18 @@ work_hours_end = 18
 awake_hours_start = 6
 awake_hours_end = 22
 "#;
-        
+
         let config: AppConfig = toml::from_str(new_config_str).unwrap();
         assert_eq!(config.zones.len(), 3);
-        
+
         // First zone is simple string
         assert_eq!(config.zones[0].city_name(), "Los Angeles");
         assert_eq!(config.zones[0].custom_label(), None);
-        
+
         // Second zone has custom label
         assert_eq!(config.zones[1].city_name(), "Tokyo");
         assert_eq!(config.zones[1].custom_label(), Some("Alice (Engineering)"));
-        
+
         // Third zone has custom label
         assert_eq!(config.zones[2].city_name(), "London");
         assert_eq!(config.zones[2].custom_label(), Some("Bob (Sales)"));
