@@ -60,9 +60,24 @@ cargo clippy
 
 ### Release Process
 ```bash
+# Pre-release checks
+- ensure you're on main branch with clean working directory
+- ensure CHANGELOG.md is up to date with new version
+- review README.md and update if necessary
+- update version in Cargo.toml if needed
+- ensure all tests pass: `cargo test`
+- ensure code passes formatting: `cargo fmt -- --check`  
+- ensure code passes linting: `cargo clippy -- -D warnings`
+- test key functionality: `cargo run -- --help` and `cargo run`
+
 # Create release (triggers GitHub Actions)
-git tag v0.1.0
-git push origin v0.1.0
+git tag v0.X.Y
+git push origin v0.X.Y
+
+# Verify release
+- check GitHub Actions completed successfully
+- verify release artifacts are created
+- test download and installation works
 
 # Local testing only
 ./release-local.sh
