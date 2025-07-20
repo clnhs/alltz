@@ -24,7 +24,7 @@ const TICK_RATE: Duration = Duration::from_millis(1000);
 
 #[derive(Parser)]
 #[command(name = "alltz")]
-#[command(version = "0.1.2")]
+#[command(version = "0.1.3")]
 #[command(about = "🌍 Terminal-based timezone viewer for developers and remote teams")]
 #[command(
     long_about = "alltz is a terminal application for tracking multiple timezones simultaneously. Features include DST indicators, color themes, and intuitive timeline scrubbing."

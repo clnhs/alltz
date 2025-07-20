@@ -3,7 +3,7 @@
 
 set -e
 
-VERSION="0.1.2"
+VERSION=$(grep '^version =' Cargo.toml | sed 's/version = "\(.*\)"/\1/')
 TARGETS=("x86_64-apple-darwin" "aarch64-apple-darwin" "x86_64-unknown-linux-gnu")
 
 echo "🚀 Building alltz v${VERSION} for multiple targets..."
