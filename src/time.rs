@@ -143,9 +143,9 @@ impl TimeZone {
     pub fn offset_string(&self) -> String {
         let offset_hours = self.utc_offset_hours();
         if offset_hours >= 0 {
-            format!("UTC+{}", offset_hours)
+            format!("UTC+{offset_hours}")
         } else {
-            format!("UTC{}", offset_hours)
+            format!("UTC{offset_hours}")
         }
     }
 
@@ -490,7 +490,7 @@ impl Default for TimeZoneManager {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use chrono_tz;
+    
 
     #[test]
     fn test_timezone_creation() {
@@ -513,8 +513,7 @@ mod tests {
         let offset = la.offset_string();
         assert!(
             offset == "UTC-8" || offset == "UTC-7",
-            "Expected UTC-8 or UTC-7, got {}",
-            offset
+            "Expected UTC-8 or UTC-7, got {offset}"
         );
     }
 
@@ -619,7 +618,7 @@ mod tests {
     fn test_search_london_disambiguation() {
         let results = TimeZoneManager::search_timezones("London");
 
-        println!("Search results for 'London': {:?}", results);
+        println!("Search results for 'London': {results:?}");
 
         // Should find both London, UK and London, Canada
         let london_uk = results.iter().find(|r| r.contains("London, UK"));

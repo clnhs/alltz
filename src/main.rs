@@ -76,7 +76,7 @@ fn parse_theme(s: &str) -> Result<config::ColorTheme, String> {
         "sunset" => Ok(config::ColorTheme::Sunset),
         "cyberpunk" => Ok(config::ColorTheme::Cyberpunk),
         "monochrome" => Ok(config::ColorTheme::Monochrome),
-        _ => Err(format!("Unknown theme: {}. Available themes: default, ocean, forest, sunset, cyberpunk, monochrome", s)),
+        _ => Err(format!("Unknown theme: {s}. Available themes: default, ocean, forest, sunset, cyberpunk, monochrome")),
     }
 }
 
@@ -107,7 +107,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     terminal.show_cursor()?;
 
     if let Err(err) = result {
-        println!("Error: {}", err);
+        println!("Error: {err}");
     }
 
     Ok(())
@@ -269,8 +269,7 @@ fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
                 for (_, city, code, lat, lon) in timezones {
                     writeln!(
                         handle,
-                        "  {:<15} {:<4} ({:>7.2}, {:>8.2})",
-                        city, code, lat, lon
+                        "  {city:<15} {code:<4} ({lat:>7.2}, {lon:>8.2})"
                     )?;
                 }
                 writeln!(handle)?;
@@ -299,15 +298,14 @@ fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
                 let local_time = now.with_timezone(tz);
                 let local_system = now.with_timezone(&Local);
 
-                println!("🕐 Current time in {}:", city_name);
+                println!("🕐 Current time in {city_name}:");
                 println!("   {}", local_time.format("%H:%M:%S %Z (%a, %b %d)"));
                 println!();
                 println!("🏠 Your local time:");
                 println!("   {}", local_system.format("%H:%M:%S %Z (%a, %b %d)"));
             } else {
                 eprintln!(
-                    "❌ City '{}' not found. Use 'alltz list' to see available timezones.",
-                    city
+                    "❌ City '{city}' not found. Use 'alltz list' to see available timezones."
                 );
                 std::process::exit(1);
             }
@@ -324,10 +322,10 @@ fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
                 let offset_seconds = local_time.offset().fix().local_minus_utc();
                 let offset_hours = offset_seconds / 3600;
 
-                println!("🌍 Timezone Information for {}:", city_name);
-                println!("   Code:         {}", code);
-                println!("   Timezone:     {}", tz);
-                println!("   UTC Offset:   UTC{:+}", offset_hours);
+                println!("🌍 Timezone Information for {city_name}:");
+                println!("   Code:         {code}");
+                println!("   Timezone:     {tz}");
+                println!("   UTC Offset:   UTC{offset_hours:+}");
                 println!("   Coordinates:  {:.2}°N, {:.2}°W", lat, lon.abs());
                 println!(
                     "   Current Time: {}",
@@ -335,11 +333,10 @@ fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
                 );
 
                 // Simple DST status (just show current offset)
-                println!("   DST Status:   Current offset UTC{:+}", offset_hours);
+                println!("   DST Status:   Current offset UTC{offset_hours:+}");
             } else {
                 eprintln!(
-                    "❌ City '{}' not found. Use 'alltz list' to see available timezones.",
-                    city
+                    "❌ City '{city}' not found. Use 'alltz list' to see available timezones."
                 );
                 std::process::exit(1);
             }
@@ -355,9 +352,9 @@ fn create_app_with_options(cli: Cli) -> Result<App, Box<dyn Error>> {
 
     if let Some(timezone_name) = cli.timezone {
         let timezones = time::TimeZoneManager::get_all_available_timezones();
-        if let Some(_) = timezones
+        if timezones
             .iter()
-            .position(|(_, name, _, _, _)| name.eq_ignore_ascii_case(&timezone_name))
+            .any(|(_, name, _, _, _)| name.eq_ignore_ascii_case(&timezone_name))
         {
             app.timezone_manager.add_timezone_by_name(&timezone_name);
 
@@ -371,8 +368,7 @@ fn create_app_with_options(cli: Cli) -> Result<App, Box<dyn Error>> {
             }
         } else {
             eprintln!(
-                "⚠️  Warning: Timezone '{}' not found. Use 'alltz list' to see available options.",
-                timezone_name
+                "⚠️  Warning: Timezone '{timezone_name}' not found. Use 'alltz list' to see available options."
             );
         }
     }

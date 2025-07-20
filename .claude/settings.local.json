@@ -34,7 +34,10 @@
       "Bash(grep:*)",
       "Bash(git log:*)",
       "WebFetch(domain:docs.rs)",
-      "Bash(timeout 5s cargo run)"
+      "Bash(timeout 5s cargo run)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(timeout 3s cargo run)"
     ],
     "deny": []
   }

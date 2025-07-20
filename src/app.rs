@@ -133,7 +133,7 @@ impl App {
         if let Some(config_path) = AppConfig::config_path() {
             if !config_path.exists() {
                 // Only create if we successfully loaded default config
-                if let Err(_) = config.save() {
+                if config.save().is_err() {
                     // Don't fail if we can't save config, just continue with defaults
                     eprintln!(
                         "Warning: Could not create default config file at {}",
@@ -236,7 +236,7 @@ impl App {
         let config = self.to_config();
         if let Err(e) = config.save() {
             // In a real app, you might want to show an error message to the user
-            eprintln!("Failed to save config: {}", e);
+            eprintln!("Failed to save config: {e}");
         }
     }
 
@@ -286,16 +286,14 @@ impl App {
                     }
                     Direction::Right => {
                         // Go to the start of the next hour
-                        let next_hour_start = self
-                            .timeline_position
+                        self.timeline_position
                             .with_minute(0)
                             .unwrap_or(self.timeline_position)
                             .with_second(0)
                             .unwrap_or(self.timeline_position)
                             .with_nanosecond(0)
                             .unwrap_or(self.timeline_position)
-                            + chrono::Duration::hours(1);
-                        next_hour_start
+                            + chrono::Duration::hours(1)
                     }
                     _ => self.timeline_position,
                 };
@@ -310,7 +308,7 @@ impl App {
                     Direction::Right => chrono::Duration::minutes(1),
                     _ => chrono::Duration::zero(),
                 };
-                self.timeline_position = self.timeline_position + delta;
+                self.timeline_position += delta;
                 None
             }
 
@@ -321,7 +319,7 @@ impl App {
 
             Message::FineAdjust(minutes) => {
                 let delta = chrono::Duration::minutes(minutes as i64);
-                self.timeline_position = self.timeline_position + delta;
+                self.timeline_position += delta;
                 None
             }
 
@@ -636,12 +634,12 @@ impl App {
 
         // Center: Local time
         let local_display =
-            Paragraph::new(format!("Local: {}", local_time_str)).alignment(Alignment::Center);
+            Paragraph::new(format!("Local: {local_time_str}")).alignment(Alignment::Center);
         f.render_widget(local_display, chunks[1]);
 
         // Right: Timeline time
         let timeline_display =
-            Paragraph::new(format!("Timeline: {}", timeline_time_str)).alignment(Alignment::Right);
+            Paragraph::new(format!("Timeline: {timeline_time_str}")).alignment(Alignment::Right);
         f.render_widget(timeline_display, chunks[2]);
 
         let border = Block::default().borders(Borders::ALL);
@@ -667,7 +665,7 @@ impl App {
             format!(
                 "UTC{}",
                 if local_offset_hours >= 0 {
-                    format!("+{}", local_offset_hours)
+                    format!("+{local_offset_hours}")
                 } else {
                     local_offset_hours.to_string()
                 }
@@ -730,9 +728,9 @@ impl App {
         let local_offset_seconds = local_time.offset().fix().local_minus_utc();
         let local_offset_hours = local_offset_seconds / 3600;
         let utc_offset_str = if local_offset_hours >= 0 {
-            format!("UTC+{}", local_offset_hours)
+            format!("UTC+{local_offset_hours}")
         } else {
-            format!("UTC{}", local_offset_hours)
+            format!("UTC{local_offset_hours}")
         };
         let timezone_line = format!("{} ({})", self.get_local_timezone_name(), utc_offset_str);
 
@@ -741,7 +739,7 @@ impl App {
             TimeFormat::TwelveHour => local_time.format("%I:%M %p %a").to_string(),
         };
 
-        let display_text = format!("{}\n{}", timezone_line, time_line);
+        let display_text = format!("{timezone_line}\n{time_line}");
 
         // Calculate the width needed for the longest line plus borders and padding
         let max_line_width = timezone_line.len().max(time_line.len());
@@ -784,11 +782,11 @@ impl App {
         let work_color = self.color_theme.get_work_color();
 
         let legend_line = Line::from(vec![
-            Span::styled(format!("{} ", night_char), Style::default().fg(night_color)),
+            Span::styled(format!("{night_char} "), Style::default().fg(night_color)),
             Span::raw("Night  "),
-            Span::styled(format!("{} ", awake_char), Style::default().fg(awake_color)),
+            Span::styled(format!("{awake_char} "), Style::default().fg(awake_color)),
             Span::raw("Awake  "),
-            Span::styled(format!("{} ", work_char), Style::default().fg(work_color)),
+            Span::styled(format!("{work_char} "), Style::default().fg(work_color)),
             Span::raw("Work  "),
             Span::styled("┊ ", Style::default().fg(night_color)),
             Span::raw("Midnight  "),
@@ -868,8 +866,7 @@ impl App {
             .split(chunks[1]);
 
         // Left column content
-        let left_sections = vec![
-            (
+        let left_sections = [(
                 "TIME NAVIGATION",
                 vec![
                     "h/← or l/→     Scrub timeline (1 hour)",
@@ -895,12 +892,10 @@ impl App {
                     "s              Toggle sunrise/sunset times",
                     "c              Cycle color themes",
                 ],
-            ),
-        ];
+            )];
 
         // Right column content
-        let right_sections = vec![
-            (
+        let right_sections = [(
                 "ZONE MANAGEMENT",
                 vec![
                     "a              Add new timezone",
@@ -927,16 +922,15 @@ impl App {
                     "q              Quit",
                     "Esc            Cancel operation",
                 ],
-            ),
-        ];
+            )];
 
         // Render left column
         let left_text = left_sections
             .iter()
             .map(|(section, items)| {
-                let mut section_text = format!("\n{}\n", section);
+                let mut section_text = format!("\n{section}\n");
                 for item in items {
-                    section_text.push_str(&format!("  {}\n", item));
+                    section_text.push_str(&format!("  {item}\n"));
                 }
                 section_text
             })
@@ -952,9 +946,9 @@ impl App {
         let right_text = right_sections
             .iter()
             .map(|(section, items)| {
-                let mut section_text = format!("\n{}\n", section);
+                let mut section_text = format!("\n{section}\n");
                 for item in items {
-                    section_text.push_str(&format!("  {}\n", item));
+                    section_text.push_str(&format!("  {item}\n"));
                 }
                 section_text
             })
@@ -1193,7 +1187,7 @@ impl App {
             .split(inner);
 
         // Render zone info
-        let zone_info = format!("Renaming: {}", city_name);
+        let zone_info = format!("Renaming: {city_name}");
         let zone_paragraph = Paragraph::new(zone_info)
             .style(ratatui::style::Style::default().fg(ratatui::style::Color::Gray));
         f.render_widget(zone_paragraph, chunks[0]);
@@ -1241,7 +1235,7 @@ impl App {
             };
 
             let country = crate::time::TimeZoneManager::get_country_for_city(city_name);
-            let city_country = format!("{}, {}", city_name, country);
+            let city_country = format!("{city_name}, {country}");
 
             Some((
                 city_country,
@@ -1604,8 +1598,8 @@ mod tests {
         let source_cities: Vec<String> =
             zones.iter().filter_map(|z| z.source_city.clone()).collect();
 
-        println!("Display names: {:?}", display_names);
-        println!("Source cities: {:?}", source_cities);
+        println!("Display names: {display_names:?}");
+        println!("Source cities: {source_cities:?}");
 
         // Should have both LON and MAN
         assert!(display_names.contains(&"LON"), "Should have London (LON)");

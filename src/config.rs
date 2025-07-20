@@ -36,7 +36,9 @@ pub enum TimeActivity {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum ColorTheme {
+    #[default]
     Default,
     Ocean,
     Forest,
@@ -124,11 +126,6 @@ impl ColorTheme {
     }
 }
 
-impl Default for ColorTheme {
-    fn default() -> Self {
-        ColorTheme::Default
-    }
-}
 
 impl TimeDisplayConfig {
     pub fn get_time_activity(&self, hour: u32) -> TimeActivity {

@@ -32,6 +32,7 @@ pub enum DstTransition {
 }
 
 impl<'a> TimelineWidget<'a> {
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         timeline_position: DateTime<Utc>,
         current_time: DateTime<Utc>,
@@ -71,7 +72,7 @@ impl<'a> TimelineWidget<'a> {
         let optimal_hours = (width as f64) / OPTIMAL_CHARS_PER_HOUR;
 
         // Clamp between minimum and maximum
-        optimal_hours.max(MIN_HOURS).min(MAX_HOURS)
+        optimal_hours.clamp(MIN_HOURS, MAX_HOURS)
     }
 
     fn get_timeline_start(&self, width: u16) -> DateTime<Utc> {
@@ -142,7 +143,7 @@ impl<'a> TimelineWidget<'a> {
             if let Some(transition) = self.detect_dst_transition(current) {
                 transitions.push((current, transition));
             }
-            current = current + Duration::hours(1);
+            current += Duration::hours(1);
         }
 
         transitions
