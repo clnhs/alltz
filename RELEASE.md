@@ -2,6 +2,22 @@
 
 alltz uses GitHub Actions for automated cross-platform releases.
 
+## Pre-Release Checklist
+
+Before creating a release, ensure:
+
+```bash
+# Pre-release checks
+- ensure you're on main branch with clean working directory
+- ensure CHANGELOG.md is up to date with new version
+- review README.md and update if necessary
+- update version in Cargo.toml if needed
+- ensure all tests pass: `cargo test`
+- ensure code passes formatting: `cargo fmt -- --check`  
+- ensure code passes linting: `cargo clippy -- -D warnings`
+- test key functionality: `cargo run -- --help` and `cargo run`
+```
+
 ## Automated Release Process
 
 ### 1. Create a Release
@@ -9,13 +25,9 @@ alltz uses GitHub Actions for automated cross-platform releases.
 To create a new release:
 
 ```bash
-# Update version in Cargo.toml if needed
-git add -A
-git commit -m "chore: bump version to v0.2.0"
-
-# Create and push tag
-git tag v0.2.0
-git push origin v0.2.0
+# Create and push tag (triggers GitHub Actions)
+git tag v0.X.Y
+git push origin v0.X.Y
 ```
 
 ### 2. GitHub Actions Workflow
@@ -38,7 +50,18 @@ The release workflow (`.github/workflows/release.yml`) automatically:
    - Updates SHA256 hashes for macOS binaries
    - Creates **DRAFT** pull request for review
 
-### 3. Manual Steps
+### 3. Verify Release
+
+After tag is pushed, verify the automated release:
+
+```bash
+# Verify release
+- check GitHub Actions completed successfully: `gh run list`
+- verify release artifacts are created
+- test download and installation works
+```
+
+### 4. Manual Steps
 
 After the automated release:
 
