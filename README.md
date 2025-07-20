@@ -244,6 +244,10 @@ cargo test
 cargo test time
 ```
 
+## 🙏 Acknowledgments
+
+This project was inspired by [everytimezone.com](https://everytimezone.com), an excellent web-based timezone tool. Thank you to the everytimezone team for creating such a useful and well-designed timezone reference that inspired alltz's timeline visualization approach.
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
