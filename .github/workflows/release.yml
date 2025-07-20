@@ -99,11 +99,12 @@ jobs:
             ## 🌍 alltz ${{ steps.version.outputs.VERSION }}
 
             ### Features
+            - 🏷️ **Custom Timezone Names** - Personalize zones with team member names or custom labels (e/E keys)
             - 🎨 **6 Color Themes** - Default, Ocean, Forest, Sunset, Cyberpunk, Monochrome
             - 🕐 **DST Indicators** - Visual spring forward (⇈) and fall back (⇊) arrows
             - 📍 **Local Time Display** - Shows scrubbed time in your timezone with day and UTC offset
             - 💻 **CLI Commands** - `list`, `time <city>`, `zone <city>`
-            - 💾 **Persistent Config** - Saves your timezone list and preferences
+            - 💾 **Persistent Config** - Saves your timezone list and preferences with backward compatibility
 
             ### Installation
 

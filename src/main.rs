@@ -24,7 +24,7 @@ const TICK_RATE: Duration = Duration::from_millis(1000);
 
 #[derive(Parser)]
 #[command(name = "alltz")]
-#[command(version = "0.1.1")]
+#[command(version = "0.1.2")]
 #[command(about = "🌍 Terminal-based timezone viewer for developers and remote teams")]
 #[command(
     long_about = "alltz is a terminal application for tracking multiple timezones simultaneously. Features include DST indicators, color themes, and intuitive timeline scrubbing."
@@ -134,6 +134,23 @@ fn run_app<B: ratatui::backend::Backend>(
                 if key.kind == KeyEventKind::Press {
                     let message = if app.show_help {
                         Some(Message::ToggleHelp)
+                    } else if app.renaming_zone {
+                        // Special input handling for rename zone modal
+                        match key.code {
+                            KeyCode::Char(c) => {
+                                let mut input = app.rename_zone_input.clone();
+                                input.push(c);
+                                Some(Message::UpdateRenameInput(input))
+                            }
+                            KeyCode::Backspace => {
+                                let mut input = app.rename_zone_input.clone();
+                                input.pop();
+                                Some(Message::UpdateRenameInput(input))
+                            }
+                            KeyCode::Enter => Some(Message::ConfirmRename),
+                            KeyCode::Esc => Some(Message::CancelRename),
+                            _ => None,
+                        }
                     } else if app.adding_zone {
                         // Special input handling for add zone modal
                         match key.code {
@@ -171,6 +188,8 @@ fn run_app<B: ratatui::backend::Backend>(
                             KeyCode::Char('?') => Some(Message::ToggleHelp),
                             KeyCode::Char('a') => Some(Message::StartAddZone),
                             KeyCode::Char('r') => Some(Message::RemoveCurrentZone),
+                            KeyCode::Char('e') => Some(Message::StartRenameZone),
+                            KeyCode::Char('E') => Some(Message::ClearCustomName),
                             KeyCode::Char('m') => Some(Message::ToggleTimeFormat),
                             KeyCode::Char('n') => Some(Message::ToggleTimezoneDisplayMode),
                             KeyCode::Char('d') => Some(Message::ToggleDate),

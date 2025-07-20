@@ -71,10 +71,11 @@ git push origin v0.1.0
 ## Current Features
 
 - ✅ **Multi-timezone display** with UTC offset ordering
+- ✅ **Custom timezone names** - personalize with team member names or labels (e/E keys)
 - ✅ **Timeline scrubbing** with visual indicators
 - ✅ **6 color themes** (Default, Ocean, Forest, Sunset, Cyberpunk, Monochrome)
 - ✅ **DST indicators** (⇈ spring forward, ⇊ fall back)
-- ✅ **Persistent configuration** (~/.config/alltz/config.toml)
+- ✅ **Persistent configuration** (~/.config/alltz/config.toml) with backward compatibility
 - ✅ **CLI commands** (list, time <city>, zone <city>)
 - ✅ **Date display** toggle
 - ✅ **12/24 hour format** toggle

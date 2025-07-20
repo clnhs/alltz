@@ -24,11 +24,24 @@ pub struct CitiesData {
 pub struct TimeZone {
     pub tz: Tz,
     pub display_name: String,
+    pub custom_label: Option<String>,
 }
 
 impl TimeZone {
     pub fn new(tz: Tz, _name: String, display_name: String) -> Self {
-        Self { tz, display_name }
+        Self {
+            tz,
+            display_name,
+            custom_label: None,
+        }
+    }
+    
+    pub fn with_custom_label(tz: Tz, display_name: String, custom_label: Option<String>) -> Self {
+        Self {
+            tz,
+            display_name,
+            custom_label,
+        }
     }
 
     pub fn from_tz(tz: Tz) -> Self {
@@ -113,14 +126,14 @@ impl TimeZone {
         }
     }
 
-    pub fn display_name(&self) -> &str {
-        &self.display_name
+    pub fn effective_display_name(&self) -> &str {
+        self.custom_label.as_deref().unwrap_or(&self.display_name)
     }
 }
 
 impl fmt::Display for TimeZone {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{} ({})", self.display_name, self.offset_string())
+        write!(f, "{} ({})", self.effective_display_name(), self.offset_string())
     }
 }
 
@@ -245,6 +258,10 @@ impl TimeZoneManager {
     }
 
     pub fn add_timezone_by_name(&mut self, name: &str) -> bool {
+        self.add_timezone_with_label(name, None)
+    }
+    
+    pub fn add_timezone_with_label(&mut self, name: &str, custom_label: Option<String>) -> bool {
         if let Some(city) = self
             .cities_data
             .cities
@@ -252,7 +269,7 @@ impl TimeZoneManager {
             .find(|c| c.name.eq_ignore_ascii_case(name))
         {
             if let Ok(tz) = Tz::from_str(&city.timezone) {
-                let timezone = TimeZone::new(tz, tz.to_string(), city.code.clone());
+                let timezone = TimeZone::with_custom_label(tz, city.code.clone(), custom_label);
 
                 // Check if we already have this timezone
                 if !self.zones.iter().any(|z| z.tz == tz) {
@@ -317,6 +334,15 @@ impl TimeZoneManager {
 
     pub fn zone_count(&self) -> usize {
         self.zones.len()
+    }
+    
+    pub fn update_zone_label(&mut self, index: usize, custom_label: Option<String>) -> bool {
+        if index < self.zones.len() {
+            self.zones[index].custom_label = custom_label;
+            true
+        } else {
+            false
+        }
     }
 }
 
@@ -391,5 +417,53 @@ mod tests {
 
         // Tokyo should be ahead of UTC
         assert!(tokyo_time.naive_local() >= utc_time.naive_utc());
+    }
+
+    #[test]
+    fn test_custom_label() {
+        let tz = chrono_tz::Asia::Tokyo;
+        let timezone = TimeZone::with_custom_label(tz, "TYO".to_string(), Some("Alice (Engineering)".to_string()));
+        
+        assert_eq!(timezone.display_name, "TYO");
+        assert_eq!(timezone.custom_label.as_deref(), Some("Alice (Engineering)"));
+        assert_eq!(timezone.effective_display_name(), "Alice (Engineering)");
+    }
+
+    #[test]
+    fn test_custom_label_none() {
+        let tz = chrono_tz::Asia::Tokyo;
+        let timezone = TimeZone::with_custom_label(tz, "TYO".to_string(), None);
+        
+        assert_eq!(timezone.display_name, "TYO");
+        assert_eq!(timezone.custom_label, None);
+        assert_eq!(timezone.effective_display_name(), "TYO");
+    }
+
+    #[test]
+    fn test_timezone_manager_update_label() {
+        let mut manager = TimeZoneManager::new();
+        manager.add_timezone_by_name("Tokyo");
+        
+        // Initially no custom label
+        assert_eq!(manager.zones()[0].custom_label, None);
+        
+        // Update with custom label
+        manager.update_zone_label(0, Some("Team Lead".to_string()));
+        assert_eq!(manager.zones()[0].custom_label.as_deref(), Some("Team Lead"));
+        
+        // Clear custom label
+        manager.update_zone_label(0, None);
+        assert_eq!(manager.zones()[0].custom_label, None);
+    }
+
+    #[test]
+    fn test_add_timezone_with_label() {
+        let mut manager = TimeZoneManager::new();
+        
+        // Add timezone with custom label
+        manager.add_timezone_with_label("New York", Some("NYC Office".to_string()));
+        
+        assert_eq!(manager.zone_count(), 1);
+        assert_eq!(manager.zones()[0].custom_label.as_deref(), Some("NYC Office"));
     }
 }

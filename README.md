@@ -11,6 +11,7 @@ A terminal-based timezone viewer. Track multiple timezones simultaneously with t
 ## ✨ Features
 
 - 🌍 **Multi-timezone display** with visual timeline scrubbing
+- 🏷️ **Custom timezone names** - personalize zones with team member names or custom labels
 - 📅 **Date display** with timezone-aware positioning on timelines
 - 🕐 **DST transition indicators** (⇈ spring forward, ⇊ fall back)
 - 🎨 **6 color themes** (Default, Ocean, Forest, Sunset, Cyberpunk, Monochrome)
@@ -91,6 +92,8 @@ alltz --timezone London --twelve-hour --theme ocean
 ### Zone Management
 - `a` - Add new timezone (with search)
 - `r` - Remove current timezone
+- `e` - Rename/customize current timezone with personal labels
+- `E` - Clear custom name and restore original timezone name
 - `1-9` - Quick select search results when adding zones
 
 ### Display Options

@@ -26,7 +26,9 @@
       "Bash(find:*)",
       "Bash(./release.sh)",
       "Bash(rustup target:*)",
-      "Bash(rustup:*)"
+      "Bash(rustup:*)",
+      "Bash(gh release view:*)",
+      "Bash(cat:*)"
     ],
     "deny": []
   }

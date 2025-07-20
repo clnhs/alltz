@@ -58,6 +58,13 @@ pub enum Message {
     CancelAddZone,
     RemoveCurrentZone,
 
+    // Zone renaming
+    StartRenameZone,
+    UpdateRenameInput(String),
+    ConfirmRename,
+    CancelRename,
+    ClearCustomName,
+
     // App lifecycle
     Quit,
 }
@@ -82,6 +89,8 @@ pub struct App {
     pub add_zone_input: String,
     pub zone_search_results: Vec<String>,
     pub selected_search_result: usize,
+    pub renaming_zone: bool,
+    pub rename_zone_input: String,
     pub show_date: bool,
 
     // App state
@@ -105,6 +114,8 @@ impl Default for App {
             add_zone_input: String::new(),
             zone_search_results: Vec::new(),
             selected_search_result: 0,
+            renaming_zone: false,
+            rename_zone_input: String::new(),
             show_date: false,
             should_quit: false,
         }
@@ -137,9 +148,12 @@ impl App {
     pub fn from_config(config: AppConfig) -> Self {
         let mut timezone_manager = TimeZoneManager::new();
 
-        // Load timezones from config
-        for zone_name in &config.zones {
-            timezone_manager.add_timezone_by_name(zone_name);
+        // Load timezones from config with custom labels
+        for zone_config in &config.zones {
+            timezone_manager.add_timezone_with_label(
+                zone_config.city_name(),
+                zone_config.custom_label().map(|s| s.to_string()),
+            );
         }
 
         // If no zones were loaded, use defaults
@@ -166,6 +180,8 @@ impl App {
             add_zone_input: String::new(),
             zone_search_results: Vec::new(),
             selected_search_result: 0,
+            renaming_zone: false,
+            rename_zone_input: String::new(),
             show_date: config.show_date,
             should_quit: false,
         }
@@ -180,11 +196,20 @@ impl App {
                 .map(|zone| {
                     // Try to find the original search name for this timezone
                     let available = TimeZoneManager::get_all_available_timezones();
-                    available
+                    let city_name = available
                         .iter()
                         .find(|(tz, _, _, _, _)| *tz == zone.tz)
                         .map(|(_, search_name, _, _, _)| search_name.clone())
-                        .unwrap_or_else(|| zone.tz.to_string())
+                        .unwrap_or_else(|| zone.tz.to_string());
+                    
+                    // Save as full ZoneConfig if custom label is present, otherwise as simple string
+                    match &zone.custom_label {
+                        Some(label) => crate::config::ZoneConfigCompat::Full(crate::config::ZoneConfig {
+                            city_name,
+                            custom_label: Some(label.clone()),
+                        }),
+                        None => crate::config::ZoneConfigCompat::Simple(city_name),
+                    }
                 })
                 .collect(),
             selected_zone_index: self.selected_zone_index,
@@ -464,6 +489,52 @@ impl App {
                 None
             }
 
+            Message::StartRenameZone => {
+                if self.timezone_manager.zone_count() > 0 {
+                    self.renaming_zone = true;
+                    // Pre-fill with current custom label or empty
+                    self.rename_zone_input = self.timezone_manager.zones()[self.selected_zone_index]
+                        .custom_label
+                        .clone()
+                        .unwrap_or_default();
+                }
+                None
+            }
+
+            Message::UpdateRenameInput(input) => {
+                self.rename_zone_input = input;
+                None
+            }
+
+            Message::ConfirmRename => {
+                if self.timezone_manager.zone_count() > 0 {
+                    let custom_label = if self.rename_zone_input.trim().is_empty() {
+                        None
+                    } else {
+                        Some(self.rename_zone_input.trim().to_string())
+                    };
+                    self.timezone_manager.update_zone_label(self.selected_zone_index, custom_label);
+                    self.save_config();
+                }
+                self.renaming_zone = false;
+                self.rename_zone_input.clear();
+                None
+            }
+
+            Message::CancelRename => {
+                self.renaming_zone = false;
+                self.rename_zone_input.clear();
+                None
+            }
+
+            Message::ClearCustomName => {
+                if self.timezone_manager.zone_count() > 0 {
+                    self.timezone_manager.update_zone_label(self.selected_zone_index, None);
+                    self.save_config();
+                }
+                None
+            }
+
             Message::Quit => {
                 self.should_quit = true;
                 None
@@ -494,6 +565,8 @@ impl App {
             self.render_help_modal(f);
         } else if self.adding_zone {
             self.render_add_zone_modal(f);
+        } else if self.renaming_zone {
+            self.render_rename_zone_modal(f);
         }
     }
 
@@ -800,6 +873,8 @@ impl App {
                 vec![
                     "a              Add new timezone",
                     "r              Remove selected timezone",
+                    "e              Rename selected timezone",
+                    "E              Clear custom name",
                     "1-8            Quick-select search results",
                 ],
             ),
@@ -1037,6 +1112,86 @@ impl App {
         f.render_widget(help_paragraph, area);
     }
 
+    fn render_rename_zone_modal(&self, f: &mut Frame) {
+        let area = f.area();
+        
+        let modal_height = 9; // Smaller modal for rename
+        let modal_width = area.width.saturating_sub(area.width / 3).min(60);
+        
+        let popup_area = Rect {
+            x: (area.width.saturating_sub(modal_width)) / 2,
+            y: (area.height.saturating_sub(modal_height)) / 2,
+            width: modal_width,
+            height: modal_height,
+        };
+        
+        // Clear the background
+        f.render_widget(Clear, popup_area);
+        
+        // Get current zone info
+        let current_zone = &self.timezone_manager.zones()[self.selected_zone_index];
+        let city_name = self.timezone_manager
+            .zones()
+            .iter()
+            .enumerate()
+            .find(|(idx, zone)| *idx == self.selected_zone_index && zone.tz == current_zone.tz)
+            .and_then(|(_, zone)| {
+                let available = crate::time::TimeZoneManager::get_all_available_timezones();
+                available
+                    .iter()
+                    .find(|(tz, _, _, _, _)| *tz == zone.tz)
+                    .map(|(_, name, _, _, _)| name.clone())
+            })
+            .unwrap_or_else(|| current_zone.tz.to_string());
+        
+        // Split the modal into sections
+        let inner = popup_area.inner(ratatui::layout::Margin {
+            horizontal: 1,
+            vertical: 1,
+        });
+        let chunks = Layout::default()
+            .direction(LayoutDirection::Vertical)
+            .constraints([
+                Constraint::Length(2), // Zone info
+                Constraint::Length(2), // Input field
+                Constraint::Length(1), // Spacer
+                Constraint::Length(2), // Controls help
+            ])
+            .split(inner);
+        
+        // Render zone info
+        let zone_info = format!("Renaming: {}", city_name);
+        let zone_paragraph = Paragraph::new(zone_info)
+            .style(ratatui::style::Style::default().fg(ratatui::style::Color::Gray));
+        f.render_widget(zone_paragraph, chunks[0]);
+        
+        // Render input field
+        let input_text = format!("Custom name: {}", self.rename_zone_input);
+        let input_paragraph = Paragraph::new(input_text)
+            .style(ratatui::style::Style::default().fg(ratatui::style::Color::White));
+        f.render_widget(input_paragraph, chunks[1]);
+        
+        // Render controls help
+        let controls = "Enter: Save | Esc: Cancel | Empty to remove custom name";
+        let controls_paragraph = Paragraph::new(controls)
+            .style(ratatui::style::Style::default().fg(ratatui::style::Color::DarkGray))
+            .alignment(Alignment::Center);
+        f.render_widget(controls_paragraph, chunks[3]);
+        
+        // Render the modal border
+        let border = Block::default()
+            .borders(Borders::ALL)
+            .title(" Rename Timezone ")
+            .title_style(
+                ratatui::style::Style::default()
+                    .fg(ratatui::style::Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            )
+            .border_style(ratatui::style::Style::default().fg(ratatui::style::Color::Blue))
+            .style(ratatui::style::Style::default().bg(ratatui::style::Color::Black));
+        f.render_widget(border, popup_area);
+    }
+
     fn get_search_result_parts(&self, city_name: &str) -> Option<(String, String, String, String)> {
         let available = crate::time::TimeZoneManager::get_all_available_timezones();
 
@@ -1141,6 +1296,124 @@ mod tests {
 
         app.update(Message::ToggleTimeFormat);
         assert_eq!(app.display_format, TimeFormat::TwentyFourHour);
+    }
+
+    #[test]
+    fn test_start_rename_zone() {
+        let mut app = App::default(); // Use default instead of new() to avoid loading config
+        assert!(!app.renaming_zone);
+        assert!(app.rename_zone_input.is_empty());
+
+        app.update(Message::StartRenameZone);
+        assert!(app.renaming_zone);
+        // Should be pre-filled with current custom label (from default zones)
+        let current_label = app.timezone_manager.zones()[app.selected_zone_index]
+            .custom_label
+            .clone()
+            .unwrap_or_default();
+        assert_eq!(app.rename_zone_input, current_label);
+    }
+
+    #[test]
+    fn test_update_rename_input() {
+        let mut app = App::new();
+        app.renaming_zone = true;
+
+        app.update(Message::UpdateRenameInput("Alice".to_string()));
+        assert_eq!(app.rename_zone_input, "Alice");
+
+        app.update(Message::UpdateRenameInput("Alice (Engineering)".to_string()));
+        assert_eq!(app.rename_zone_input, "Alice (Engineering)");
+    }
+
+    #[test]
+    fn test_confirm_rename() {
+        let mut app = App::default(); // Use default to avoid loading config
+        app.renaming_zone = true;
+        app.rename_zone_input = "Bob (Sales)".to_string();
+
+        // Store initial state (may or may not have custom label)
+        let _initial_label = app.timezone_manager.zones()[app.selected_zone_index].custom_label.clone();
+
+        app.update(Message::ConfirmRename);
+        
+        // Should have the new custom label
+        assert_eq!(
+            app.timezone_manager.zones()[app.selected_zone_index].custom_label.as_deref(),
+            Some("Bob (Sales)")
+        );
+        assert!(!app.renaming_zone);
+        assert!(app.rename_zone_input.is_empty());
+    }
+
+    #[test]
+    fn test_confirm_rename_empty_input() {
+        let mut app = App::new();
+        app.renaming_zone = true;
+        app.rename_zone_input = "  ".to_string(); // Whitespace only
+
+        app.update(Message::ConfirmRename);
+        
+        // Empty/whitespace input should clear custom label
+        assert_eq!(app.timezone_manager.zones()[app.selected_zone_index].custom_label, None);
+        assert!(!app.renaming_zone);
+        assert!(app.rename_zone_input.is_empty());
+    }
+
+    #[test]
+    fn test_cancel_rename() {
+        let mut app = App::new();
+        app.renaming_zone = true;
+        app.rename_zone_input = "Some input".to_string();
+
+        app.update(Message::CancelRename);
+        
+        assert!(!app.renaming_zone);
+        assert!(app.rename_zone_input.is_empty());
+    }
+
+    #[test]
+    fn test_clear_custom_name() {
+        let mut app = App::new();
+        
+        // First set a custom label
+        app.timezone_manager.update_zone_label(app.selected_zone_index, Some("Test Label".to_string()));
+        assert_eq!(
+            app.timezone_manager.zones()[app.selected_zone_index].custom_label.as_deref(),
+            Some("Test Label")
+        );
+
+        // Clear it
+        app.update(Message::ClearCustomName);
+        assert_eq!(app.timezone_manager.zones()[app.selected_zone_index].custom_label, None);
+    }
+
+    #[test]
+    fn test_config_with_custom_labels() {
+        let mut app = App::default(); // Use default to avoid loading config
+        
+        // Clear any existing labels first
+        for i in 0..app.timezone_manager.zone_count() {
+            app.timezone_manager.update_zone_label(i, None);
+        }
+        
+        // Add custom labels to first two zones
+        app.timezone_manager.update_zone_label(0, Some("Alice".to_string()));
+        if app.timezone_manager.zone_count() > 1 {
+            app.timezone_manager.update_zone_label(1, Some("Bob".to_string()));
+        }
+        
+        // Convert to config
+        let config = app.to_config();
+        
+        // Check that custom labels are preserved in config
+        assert_eq!(config.zones[0].custom_label(), Some("Alice"));
+        if config.zones.len() > 1 {
+            assert_eq!(config.zones[1].custom_label(), Some("Bob"));
+        }
+        if config.zones.len() > 2 {
+            assert_eq!(config.zones[2].custom_label(), None); // Third zone should have no label
+        }
     }
 
     #[test]

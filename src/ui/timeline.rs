@@ -224,12 +224,24 @@ impl<'a> Widget for TimelineWidget<'a> {
         };
 
         let title = match self.timezone_display_mode {
-            TimezoneDisplayMode::Short => format!(
-                "{} {}",
-                self.timezone.display_name(),
-                self.timezone.offset_string()
-            ),
-            TimezoneDisplayMode::Full => self.timezone.get_full_display_name(),
+            TimezoneDisplayMode::Short => {
+                // Use custom label if available, otherwise default display name
+                format!(
+                    "{} {}",
+                    self.timezone.effective_display_name(),
+                    self.timezone.offset_string()
+                )
+            },
+            TimezoneDisplayMode::Full => {
+                // For full mode, show custom label with city name in parentheses
+                match &self.timezone.custom_label {
+                    Some(label) => {
+                        let city_name = self.timezone.get_full_display_name();
+                        format!("{} ({})", label, city_name)
+                    },
+                    None => self.timezone.get_full_display_name(),
+                }
+            },
         };
         let block = Block::default()
             .borders(Borders::ALL)
@@ -655,5 +667,84 @@ mod tests {
             assert!(marker >= widget.get_timeline_start(TEST_WIDTH));
             assert!(marker <= widget.get_timeline_end(TEST_WIDTH));
         }
+    }
+
+    #[test]
+    fn test_custom_label_display_short_mode() {
+        let tz = crate::time::TimeZone::with_custom_label(
+            chrono_tz::Asia::Tokyo,
+            "TYO".to_string(),
+            Some("Alice (Engineering)".to_string()),
+        );
+        let config = crate::config::TimeDisplayConfig::default();
+        let now = Utc::now();
+
+        let _widget = TimelineWidget::new(
+            now,
+            now,
+            &tz,
+            false,
+            TimeFormat::TwentyFourHour,
+            TimezoneDisplayMode::Short,
+            &config,
+            ColorTheme::default(),
+            false,
+            false,
+        );
+
+        // Test that effective_display_name is used in short mode
+        assert_eq!(tz.effective_display_name(), "Alice (Engineering)");
+    }
+
+    #[test]
+    fn test_custom_label_display_full_mode() {
+        let tz = crate::time::TimeZone::with_custom_label(
+            chrono_tz::Asia::Tokyo,
+            "TYO".to_string(),
+            Some("Bob (Sales)".to_string()),
+        );
+        let config = crate::config::TimeDisplayConfig::default();
+        let now = Utc::now();
+
+        let _widget = TimelineWidget::new(
+            now,
+            now,
+            &tz,
+            false,
+            TimeFormat::TwentyFourHour,
+            TimezoneDisplayMode::Full,
+            &config,
+            ColorTheme::default(),
+            false,
+            false,
+        );
+
+        // In full mode, custom label should be used with original info in parentheses
+        assert_eq!(tz.custom_label.as_deref(), Some("Bob (Sales)"));
+        assert!(!tz.get_full_display_name().is_empty());
+    }
+
+    #[test]
+    fn test_no_custom_label_display() {
+        let tz = crate::time::TimeZone::from_tz(chrono_tz::Asia::Tokyo);
+        let config = crate::config::TimeDisplayConfig::default();
+        let now = Utc::now();
+
+        let _widget = TimelineWidget::new(
+            now,
+            now,
+            &tz,
+            false,
+            TimeFormat::TwentyFourHour,
+            TimezoneDisplayMode::Short,
+            &config,
+            ColorTheme::default(),
+            false,
+            false,
+        );
+
+        // Without custom label, should use default display name
+        assert_eq!(tz.custom_label, None);
+        assert_eq!(tz.effective_display_name(), &tz.display_name);
     }
 }

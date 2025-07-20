@@ -157,27 +157,58 @@ impl TimeDisplayConfig {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ZoneConfig {
+    pub city_name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_label: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ZoneConfigCompat {
+    Simple(String),
+    Full(ZoneConfig),
+}
+
+impl ZoneConfigCompat {
+    pub fn city_name(&self) -> &str {
+        match self {
+            ZoneConfigCompat::Simple(name) => name,
+            ZoneConfigCompat::Full(config) => &config.city_name,
+        }
+    }
+    
+    pub fn custom_label(&self) -> Option<&str> {
+        match self {
+            ZoneConfigCompat::Simple(_) => None,
+            ZoneConfigCompat::Full(config) => config.custom_label.as_deref(),
+        }
+    }
+    
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AppConfig {
-    pub zones: Vec<String>,         // List of timezone names to load
-    pub selected_zone_index: usize, // Currently selected timezone
-    pub display_format: TimeFormat, // 12/24 hour format
+    pub zones: Vec<ZoneConfigCompat>, // List of timezone configurations
+    pub selected_zone_index: usize,    // Currently selected timezone
+    pub display_format: TimeFormat,    // 12/24 hour format
     pub timezone_display_mode: TimezoneDisplayMode, // Short/Full names
     pub time_config: TimeDisplayConfig, // Work/awake/night hours
-    pub color_theme: ColorTheme,    // Color theme for UI
-    pub show_date: bool,            // Date display toggle
+    pub color_theme: ColorTheme,       // Color theme for UI
+    pub show_date: bool,               // Date display toggle
 }
 
 impl Default for AppConfig {
     fn default() -> Self {
         Self {
             zones: vec![
-                "Los Angeles".to_string(),
-                "New York".to_string(),
-                "UTC".to_string(),
-                "London".to_string(),
-                "Berlin".to_string(),
-                "Tokyo".to_string(),
-                "Sydney".to_string(),
+                ZoneConfigCompat::Simple("Los Angeles".to_string()),
+                ZoneConfigCompat::Simple("New York".to_string()),
+                ZoneConfigCompat::Simple("UTC".to_string()),
+                ZoneConfigCompat::Simple("London".to_string()),
+                ZoneConfigCompat::Simple("Berlin".to_string()),
+                ZoneConfigCompat::Simple("Tokyo".to_string()),
+                ZoneConfigCompat::Simple("Sydney".to_string()),
             ],
             selected_zone_index: 0,
             display_format: TimeFormat::TwentyFourHour,
@@ -283,8 +314,80 @@ mod tests {
         let toml_str = toml::to_string(&config).unwrap();
         let parsed: AppConfig = toml::from_str(&toml_str).unwrap();
 
-        assert_eq!(config.zones, parsed.zones);
+        assert_eq!(config.zones.len(), parsed.zones.len());
+        for (orig, parsed) in config.zones.iter().zip(parsed.zones.iter()) {
+            assert_eq!(orig.city_name(), parsed.city_name());
+            assert_eq!(orig.custom_label(), parsed.custom_label());
+        }
         assert_eq!(config.display_format, parsed.display_format);
         assert_eq!(config.timezone_display_mode, parsed.timezone_display_mode);
+    }
+
+    #[test]
+    fn test_backward_compatibility() {
+        // Test that old config format still works
+        let old_config_str = r#"
+zones = ["Los Angeles", "New York", "Tokyo"]
+selected_zone_index = 0
+display_format = "TwentyFourHour"
+timezone_display_mode = "Short"
+color_theme = "Default"
+show_date = false
+
+[time_config]
+work_hours_start = 8
+work_hours_end = 18
+awake_hours_start = 6
+awake_hours_end = 22
+"#;
+        
+        let config: AppConfig = toml::from_str(old_config_str).unwrap();
+        assert_eq!(config.zones.len(), 3);
+        assert_eq!(config.zones[0].city_name(), "Los Angeles");
+        assert_eq!(config.zones[1].city_name(), "New York");
+        assert_eq!(config.zones[2].city_name(), "Tokyo");
+        
+        // All should have no custom labels
+        for zone in &config.zones {
+            assert_eq!(zone.custom_label(), None);
+        }
+    }
+
+    #[test]
+    fn test_new_config_format() {
+        // Test that new config format with custom labels works
+        let new_config_str = r#"
+zones = [
+    "Los Angeles",
+    { city_name = "Tokyo", custom_label = "Alice (Engineering)" },
+    { city_name = "London", custom_label = "Bob (Sales)" }
+]
+selected_zone_index = 1
+display_format = "TwentyFourHour"
+timezone_display_mode = "Short"
+color_theme = "Default"
+show_date = false
+
+[time_config]
+work_hours_start = 8
+work_hours_end = 18
+awake_hours_start = 6
+awake_hours_end = 22
+"#;
+        
+        let config: AppConfig = toml::from_str(new_config_str).unwrap();
+        assert_eq!(config.zones.len(), 3);
+        
+        // First zone is simple string
+        assert_eq!(config.zones[0].city_name(), "Los Angeles");
+        assert_eq!(config.zones[0].custom_label(), None);
+        
+        // Second zone has custom label
+        assert_eq!(config.zones[1].city_name(), "Tokyo");
+        assert_eq!(config.zones[1].custom_label(), Some("Alice (Engineering)"));
+        
+        // Third zone has custom label
+        assert_eq!(config.zones[2].city_name(), "London");
+        assert_eq!(config.zones[2].custom_label(), Some("Bob (Sales)"));
     }
 }

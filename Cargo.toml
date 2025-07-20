@@ -1,6 +1,6 @@
 [package]
 name = "alltz"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["Alan Bradburne <alan@xenocode.co.jp>", "Claude Code <noreply@anthropic.com>"]
 description = "Terminal-based time zone viewer"
