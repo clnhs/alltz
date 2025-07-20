@@ -38,6 +38,7 @@ impl TimeZone {
         }
     }
 
+    #[cfg(test)]
     pub fn with_custom_label(tz: Tz, display_name: String, custom_label: Option<String>) -> Self {
         Self {
             tz,
@@ -104,6 +105,7 @@ impl TimeZone {
         local_time.format("%Z").to_string()
     }
 
+    #[cfg(test)]
     pub fn get_full_display_name(&self) -> String {
         // Create full display name using timezone string, abbreviation and offset
         let tz_string = self.tz.to_string();
