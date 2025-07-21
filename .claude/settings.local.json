@@ -37,7 +37,14 @@
       "Bash(timeout 5s cargo run)",
       "Bash(gh run list:*)",
       "Bash(gh run view:*)",
-      "Bash(timeout 3s cargo run)"
+      "Bash(timeout 3s cargo run)",
+      "Bash(./release-with-sha.sh)",
+      "Bash(gh api:*)",
+      "Bash(curl:*)",
+      "Bash(git clone:*)",
+      "Bash(brew:*)",
+      "Bash(brew upgrade:*)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ],
     "deny": []
   }
