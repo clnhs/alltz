@@ -232,8 +232,9 @@ impl<'a> Widget for TimelineWidget<'a> {
             TimezoneDisplayMode::Short => {
                 // Use custom label if available, otherwise default display name
                 format!(
-                    "{} {}",
+                    "{} {} ({})",
                     self.timezone.effective_display_name(),
+                    self.timezone.get_timezone_abbreviation(),
                     self.timezone.offset_string()
                 )
             }
@@ -243,15 +244,21 @@ impl<'a> Widget for TimelineWidget<'a> {
                     Some(label) => {
                         let city_name = self.timezone.get_city_name();
                         format!(
-                            "{} ({} {})",
+                            "{} ({} {} ({}))",
                             label,
                             city_name,
+                            self.timezone.get_timezone_abbreviation(),
                             self.timezone.offset_string()
                         )
                     }
                     None => {
                         let city_name = self.timezone.get_city_name();
-                        format!("{} {}", city_name, self.timezone.offset_string())
+                        format!(
+                            "{} {} ({})",
+                            city_name,
+                            self.timezone.get_timezone_abbreviation(),
+                            self.timezone.offset_string()
+                        )
                     }
                 }
             }

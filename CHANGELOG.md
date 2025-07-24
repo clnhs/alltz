@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Timezone abbreviations (PDT, EST, GMT, etc.) now displayed alongside city names and UTC offsets
+  - Format: "Las Vegas PDT (UTC-7)" instead of "Las Vegas UTC-7"
+  - Abbreviations are DST-aware and update automatically (e.g., PST ↔ PDT)
+
 ## [0.1.3] - 2025-07-20
 
 ### Added
