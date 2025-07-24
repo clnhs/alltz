@@ -1,0 +1,211 @@
+_version: 2
+
+# CLI application description and arguments
+app:
+  description: "🌍 Terminal-based timezone viewer for developers and remote teams"
+  long_description: "alltz is a terminal application for tracking multiple timezones simultaneously. Features include DST indicators, color themes, and intuitive timeline scrubbing."
+  
+  # Command descriptions
+  commands:
+    list: "List all available timezones"
+    time: "Show current time in a specific timezone"
+    zone: "Show timezone information and current time"
+    
+  # CLI argument descriptions
+  args:
+    timezone: "Start with a specific timezone selected"
+    twelve_hour: "Use 12-hour time format instead of 24-hour"
+    theme: "Start with a specific color theme"
+    city_time: "City name to show time for"
+    city_zone: "City name to get information for"
+
+# CLI output messages
+cli:
+  # List command
+  list:
+    header: "🌍 Available Timezones:"
+    footer: "Use 'alltz time <city>' to see current time in any timezone"
+    
+  # Time command
+  time:
+    header: "🕐 Current time in {city_name}:"
+    local_header: "🏠 Your local time:"
+    not_found: "❌ City '{city}' not found. Use 'alltz list' to see available timezones."
+    
+  # Zone command
+  zone:
+    header: "🌍 Timezone Information for {city_name}:"
+    code: "   Code:         {code}"
+    timezone: "   Timezone:     {tz}"
+    utc_offset: "   UTC Offset:   UTC{offset_hours:+}"
+    coordinates_n_w: "   Coordinates:  {lat:.2}°N, {lon:.2}°W"
+    coordinates_n_e: "   Coordinates:  {lat:.2}°N, {lon:.2}°E"
+    coordinates_s_w: "   Coordinates:  {lat:.2}°S, {lon:.2}°W"
+    coordinates_s_e: "   Coordinates:  {lat:.2}°S, {lon:.2}°E"
+    current_time: "   Current Time: {time}"
+    dst_status: "   DST Status:   Current offset UTC{offset_hours:+}"
+    not_found: "❌ City '{city}' not found. Use 'alltz list' to see available timezones."
+    
+  # Warnings and errors
+  timezone_not_found_warning: "⚠️  Warning: Timezone '{timezone_name}' not found. Use 'alltz list' to see available options."
+  unknown_theme_error: "Unknown theme: {s}. Available themes: default, ocean, forest, sunset, cyberpunk, monochrome"
+  general_error: "Error: {err}"
+
+# Main application UI
+ui:
+  # Header
+  header:
+    app_title: "alltz v{}"
+    local_time: "Local: {local_time_str}"
+    timeline_time: "Timeline: {timeline_time_str}"
+    
+  # Zone display
+  zones:
+    no_zones: "No timezones configured"
+    zones_title: "Timezones"
+    local_zone: "Local"
+    
+  # Legend
+  legend:
+    night: "Night"
+    awake: "Awake"
+    work: "Work"
+    midnight: "Midnight"
+    now: "Now"
+    timeline: "Timeline"
+    
+  # Footer
+  footer: "?: help │ a: add │ q: quit"
+
+# Help modal
+help:
+  title: "🕐 HELP & KEYBOARD SHORTCUTS"
+  
+  # Section headers
+  sections:
+    time_navigation: "TIME NAVIGATION"
+    zone_navigation: "ZONE NAVIGATION"
+    display_options: "DISPLAY OPTIONS"
+    zone_management: "ZONE MANAGEMENT"
+    indicators: "INDICATORS"
+    controls: "CONTROLS"
+    
+  # Help items
+  items:
+    # Time navigation
+    scrub_timeline: "h/← or l/→     Scrub timeline (1 hour)"
+    fine_scrub: "Shift + h/l    Fine scrub (1 minute)"
+    adjust_15min: "[ or ]         Adjust by ±15 minutes"
+    adjust_1hour: "{ or }         Adjust by ±1 hour"
+    reset_time: "t              Reset to current time"
+    
+    # Zone navigation
+    navigate_zones: "j/↓ or k/↑     Navigate between zones"
+    selected_info: "               Selected has colored border"
+    
+    # Display options
+    toggle_format: "m              Toggle 12/24 hour format"
+    toggle_names: "n              Toggle short/full names"
+    toggle_date: "d              Toggle date display"
+    toggle_sun_times: "s              Toggle sunrise/sunset times"
+    cycle_themes: "c              Cycle color themes"
+    
+    # Zone management
+    add_zone: "a              Add new timezone"
+    remove_zone: "r              Remove selected timezone"
+    rename_zone: "e              Rename selected timezone"
+    clear_name: "E              Clear custom name"
+    quick_select: "1-8            Quick-select search results"
+    
+    # Indicators
+    current_time: "│              Red line: Current time"
+    timeline_position: "┃              Colored line: Timeline position"
+    dst_spring: "⇈              DST spring forward"
+    dst_fall: "⇊              DST fall back"
+    hour_blocks: "░ ▒ ▓          Night, Awake, Work hours"
+    
+    # Controls
+    show_help: "?              Show/hide help"
+    quit: "q              Quit"
+    cancel: "Esc            Cancel operation"
+    
+  footer: "Press any key to close"
+
+# Add zone modal
+add_zone:
+  title: " Add Timezone "
+  search_label: "Search: {}"
+  
+  # Table headers
+  table:
+    number: "#"
+    city_country: "City, Country"
+    time: "Time"
+    offset: "Offset"
+    code: "Code"
+    
+  # Controls
+  controls:
+    with_results: "↑↓: Navigate | Enter: Add selected | 1-8: Quick select | Esc: Cancel"
+    search_mode: "Type to search cities, countries, or abbreviations | Esc: Cancel"
+    
+  # Search help
+  search:
+    no_results: "No matching timezones found."
+    try_searching: "Try searching for:"
+    examples_cities: "  • City names: Tokyo, New York, London"
+    examples_countries: "  • Countries: Japan, USA, Germany"
+    examples_abbrev: "  • Abbreviations: NYC, SF, LA"
+    examples_regions: "  • Regions: Bay Area, Silicon Valley"
+    
+    help_header: "Search for cities, countries, or abbreviations:"
+    help_examples: "Examples:"
+    help_cities: "  Tokyo, London, Mumbai"
+    help_codes: "  NYC, SF, LA, DC"
+    help_countries: "  Japan, USA, Germany"
+    help_regions: "  Bay Area, Silicon Valley"
+
+# Rename zone modal
+rename_zone:
+  title: " Rename Timezone "
+  renaming_label: "Renaming: {city_name}"
+  custom_name_label: "Custom name: {}"
+  controls: "Enter: Save | Esc: Cancel | Empty to remove custom name"
+
+# Error and warning messages
+errors:
+  config_create_warning: "Warning: Could not create default config file at {}"
+  config_save_failed: "Failed to save config: {e}"
+  cities_parse_failed: "Failed to parse cities.json"
+  invalid_timezone: "Invalid timezone in cities.json"
+
+# Default city names
+defaults:
+  cities:
+    los_angeles: "Los Angeles"
+    new_york: "New York"
+    utc: "UTC"
+    london: "London"
+    berlin: "Berlin"
+    tokyo: "Tokyo"
+    sydney: "Sydney"
+  country_unknown: "Unknown"
+
+# Color theme names
+themes:
+  default: "default"
+  ocean: "ocean"
+  forest: "forest"
+  sunset: "sunset"
+  cyberpunk: "cyberpunk"
+  monochrome: "monochrome"
+
+# Time and date formatting
+time:
+  # Date formats (using standard format specifiers)
+  date_short: "%d %b"  # "15 Jul"
+  time_24h: "%H:%M %a"  # "14:30 Wed"
+  time_12h: "%I:%M %p %a"  # "02:30 PM Wed"
+  
+  # Sunrise/sunset format
+  sun_times: "☀ {}:{}{} ☽ {}:{}{}"

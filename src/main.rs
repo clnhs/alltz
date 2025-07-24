@@ -1,3 +1,9 @@
+#[macro_use]
+extern crate rust_i18n;
+
+// Load translations from locales directory
+i18n!("locales");
+
 mod app;
 mod config;
 mod time;
@@ -76,11 +82,14 @@ fn parse_theme(s: &str) -> Result<config::ColorTheme, String> {
         "sunset" => Ok(config::ColorTheme::Sunset),
         "cyberpunk" => Ok(config::ColorTheme::Cyberpunk),
         "monochrome" => Ok(config::ColorTheme::Monochrome),
-        _ => Err(format!("Unknown theme: {s}. Available themes: default, ocean, forest, sunset, cyberpunk, monochrome")),
+        _ => Err(t!("cli.unknown_theme_error", s = s).to_string()),
     }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
+    // Set default locale
+    rust_i18n::set_locale("en");
+    
     let cli = Cli::parse();
 
     if let Some(command) = cli.command {
@@ -107,7 +116,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     terminal.show_cursor()?;
 
     if let Err(err) = result {
-        println!("Error: {err}");
+        println!("{}", t!("cli.general_error", err = err));
     }
 
     Ok(())
@@ -137,6 +146,9 @@ fn run_app<B: ratatui::backend::Backend>(
                     } else if app.renaming_zone {
                         // Special input handling for rename zone modal
                         match key.code {
+                            KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+                                Some(Message::Quit)
+                            }
                             KeyCode::Char(c) => {
                                 let mut input = app.rename_zone_input.clone();
                                 input.push(c);
@@ -154,6 +166,9 @@ fn run_app<B: ratatui::backend::Backend>(
                     } else if app.adding_zone {
                         // Special input handling for add zone modal
                         match key.code {
+                            KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+                                Some(Message::Quit)
+                            }
                             KeyCode::Char(c) => {
                                 // Handle numeric selection of search results (1-9)
                                 if c.is_ascii_digit() && !app.zone_search_results.is_empty() {
@@ -185,6 +200,9 @@ fn run_app<B: ratatui::backend::Backend>(
                     } else {
                         match key.code {
                             KeyCode::Char('q') => Some(Message::Quit),
+                            KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+                                Some(Message::Quit)
+                            }
                             KeyCode::Char('?') => Some(Message::ToggleHelp),
                             KeyCode::Char('a') => Some(Message::StartAddZone),
                             KeyCode::Char('r') => Some(Message::RemoveCurrentZone),
@@ -263,17 +281,14 @@ fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
 
             // Handle broken pipe gracefully
             let result = (|| -> io::Result<()> {
-                writeln!(handle, "🌍 Available Timezones:")?;
+                writeln!(handle, "{}", t!("cli.list.header"))?;
                 writeln!(handle)?;
                 let timezones = TimeZoneManager::get_all_available_timezones();
                 for (_, city, code, lat, lon) in timezones {
                     writeln!(handle, "  {city:<15} {code:<4} ({lat:>7.2}, {lon:>8.2})")?;
                 }
                 writeln!(handle)?;
-                writeln!(
-                    handle,
-                    "Use 'alltz time <city>' to see current time in any timezone"
-                )?;
+                writeln!(handle, "{}", t!("cli.list.footer"))?;
                 Ok(())
             })();
 
@@ -295,15 +310,13 @@ fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
                 let local_time = now.with_timezone(tz);
                 let local_system = now.with_timezone(&Local);
 
-                println!("🕐 Current time in {city_name}:");
+                println!("{}", t!("cli.time.header", city_name = city_name));
                 println!("   {}", local_time.format("%H:%M:%S %Z (%a, %b %d)"));
                 println!();
-                println!("🏠 Your local time:");
+                println!("{}", t!("cli.time.local_header"));
                 println!("   {}", local_system.format("%H:%M:%S %Z (%a, %b %d)"));
             } else {
-                eprintln!(
-                    "❌ City '{city}' not found. Use 'alltz list' to see available timezones."
-                );
+                eprintln!("{}", t!("cli.time.not_found", city = city));
                 std::process::exit(1);
             }
         }
@@ -319,22 +332,28 @@ fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
                 let offset_seconds = local_time.offset().fix().local_minus_utc();
                 let offset_hours = offset_seconds / 3600;
 
-                println!("🌍 Timezone Information for {city_name}:");
-                println!("   Code:         {code}");
-                println!("   Timezone:     {tz}");
-                println!("   UTC Offset:   UTC{offset_hours:+}");
-                println!("   Coordinates:  {:.2}°N, {:.2}°W", lat, lon.abs());
+                println!("{}", t!("cli.zone.header", city_name = city_name));
+                println!("{}", t!("cli.zone.code", code = code));
+                println!("{}", t!("cli.zone.timezone", tz = tz));
+                println!("{}", t!("cli.zone.utc_offset", offset_hours = offset_hours));
+                if *lat >= 0.0 && *lon <= 0.0 {
+                    println!("{}", t!("cli.zone.coordinates_n_w", lat = lat, lon = lon.abs()));
+                } else if *lat >= 0.0 && *lon > 0.0 {
+                    println!("{}", t!("cli.zone.coordinates_n_e", lat = lat, lon = lon));
+                } else if *lat < 0.0 && *lon <= 0.0 {
+                    println!("{}", t!("cli.zone.coordinates_s_w", lat = lat.abs(), lon = lon.abs()));
+                } else {
+                    println!("{}", t!("cli.zone.coordinates_s_e", lat = lat.abs(), lon = lon));
+                }
                 println!(
-                    "   Current Time: {}",
-                    local_time.format("%H:%M:%S %Z (%a, %b %d, %Y)")
+                    "{}",
+                    t!("cli.zone.current_time", time = local_time.format("%H:%M:%S %Z (%a, %b %d, %Y)"))
                 );
 
                 // Simple DST status (just show current offset)
-                println!("   DST Status:   Current offset UTC{offset_hours:+}");
+                println!("{}", t!("cli.zone.dst_status", offset_hours = offset_hours));
             } else {
-                eprintln!(
-                    "❌ City '{city}' not found. Use 'alltz list' to see available timezones."
-                );
+                eprintln!("{}", t!("cli.zone.not_found", city = city));
                 std::process::exit(1);
             }
         }
@@ -364,9 +383,7 @@ fn create_app_with_options(cli: Cli) -> Result<App, Box<dyn Error>> {
                 app.selected_zone_index = app_index;
             }
         } else {
-            eprintln!(
-                "⚠️  Warning: Timezone '{timezone_name}' not found. Use 'alltz list' to see available options."
-            );
+            eprintln!("{}", t!("cli.timezone_not_found_warning", timezone_name = timezone_name));
         }
     }
 

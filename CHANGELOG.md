@@ -11,6 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Timezone abbreviations (PDT, EST, GMT, etc.) now displayed alongside city names and UTC offsets
   - Format: "Las Vegas PDT (UTC-7)" instead of "Las Vegas UTC-7"
   - Abbreviations are DST-aware and update automatically (e.g., PST ↔ PDT)
+  - Enhanced abbreviation mapping for South American, Asian, and other timezones that show numeric offsets
+- Localization infrastructure preparation
+  - Added rust-i18n dependency for future multi-language support
+  - Extracted 120+ hardcoded strings to locale files
+  - Created comprehensive English locale file with organized translations
+  - Set up foundation for future language additions
+
+### Fixed
+- Ctrl+C now works properly in all application modes (main view, add zone, rename zone, help)
+- Improved timezone abbreviations for regions like Brazil (now shows "BRT" instead of "-03")
 
 ## [0.1.3] - 2025-07-20
 

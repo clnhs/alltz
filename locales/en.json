@@ -1,0 +1,29 @@
+{
+  "cli": {
+    "list": {
+      "header": "🌍 Available Timezones:",
+      "footer": "Use 'alltz time <city>' to see current time in any timezone"
+    },
+    "time": {
+      "header": "🕐 Current time in %{city_name}:",
+      "local_header": "🏠 Your local time:",
+      "not_found": "❌ City '{city}' not found. Use 'alltz list' to see available timezones."
+    },
+    "zone": {
+      "header": "🌍 Timezone Information for {city_name}:",
+      "code": "   Code:         {code}",
+      "timezone": "   Timezone:     {tz}",
+      "utc_offset": "   UTC Offset:   UTC{offset_hours:+}",
+      "coordinates_n_w": "   Coordinates:  {lat:.2}°N, {lon:.2}°W",
+      "coordinates_n_e": "   Coordinates:  {lat:.2}°N, {lon:.2}°E", 
+      "coordinates_s_w": "   Coordinates:  {lat:.2}°S, {lon:.2}°W",
+      "coordinates_s_e": "   Coordinates:  {lat:.2}°S, {lon:.2}°E",
+      "current_time": "   Current Time: {time}",
+      "dst_status": "   DST Status:   Current offset UTC{offset_hours:+}",
+      "not_found": "❌ City '{city}' not found. Use 'alltz list' to see available timezones."
+    },
+    "timezone_not_found_warning": "⚠️  Warning: Timezone '{timezone_name}' not found. Use 'alltz list' to see available options.",
+    "unknown_theme_error": "Unknown theme: {s}. Available themes: default, ocean, forest, sunset, cyberpunk, monochrome",
+    "general_error": "Error: {err}"
+  }
+}
