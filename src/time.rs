@@ -107,67 +107,72 @@ impl TimeZone {
         let now = Utc::now();
         let local_time = now.with_timezone(&self.tz);
         let chrono_abbrev = local_time.format("%Z").to_string();
-        
-        // If chrono returns a numeric offset (like "-03" or "+05:30"), 
+
+        // If chrono returns a numeric offset (like "-03" or "+05:30"),
         // try to provide a better named abbreviation for common timezones
         if chrono_abbrev.starts_with('+') || chrono_abbrev.starts_with('-') {
             // Get the timezone string for manual mapping
             let tz_string = self.tz.to_string();
-            
+
             // Manual mapping for common timezones that don't have proper abbreviations
             match tz_string.as_str() {
                 // Brazil
-                "America/Sao_Paulo" | "America/Bahia" | "America/Fortaleza" | "America/Recife" => "BRT",
-                "America/Manaus" | "America/Porto_Velho" | "America/Rio_Branco" => "AMT", 
+                "America/Sao_Paulo" | "America/Bahia" | "America/Fortaleza" | "America/Recife" => {
+                    "BRT"
+                }
+                "America/Manaus" | "America/Porto_Velho" | "America/Rio_Branco" => "AMT",
                 "America/Noronha" => "FNT",
-                
-                // Argentina  
-                "America/Argentina/Buenos_Aires" | "America/Argentina/Cordoba" | 
-                "America/Argentina/Mendoza" | "America/Argentina/Tucuman" => "ART",
-                
+
+                // Argentina
+                "America/Argentina/Buenos_Aires"
+                | "America/Argentina/Cordoba"
+                | "America/Argentina/Mendoza"
+                | "America/Argentina/Tucuman" => "ART",
+
                 // Chile
                 "America/Santiago" => "CLT",
                 "Pacific/Easter" => "EAST",
-                
+
                 // Colombia
                 "America/Bogota" => "COT",
-                
+
                 // Venezuela
                 "America/Caracas" => "VET",
-                
+
                 // Peru
                 "America/Lima" => "PET",
-                
+
                 // Ecuador
                 "America/Guayaquil" => "ECT",
-                
+
                 // Uruguay
                 "America/Montevideo" => "UYT",
-                
+
                 // Paraguay
                 "America/Asuncion" => "PYT",
-                
+
                 // Bolivia
                 "America/La_Paz" => "BOT",
-                
+
                 // India (which often shows as +05:30)
                 "Asia/Kolkata" => "IST",
-                
+
                 // Nepal
                 "Asia/Kathmandu" => "NPT",
-                
+
                 // Myanmar
                 "Asia/Yangon" => "MMT",
-                
+
                 // Iran
                 "Asia/Tehran" => "IRST",
-                
-                // Afghanistan  
+
+                // Afghanistan
                 "Asia/Kabul" => "AFT",
-                
+
                 // If no manual mapping found, return the chrono abbreviation
                 _ => &chrono_abbrev,
-            }.to_string()
+            }
+            .to_string()
         } else {
             // If chrono returned a proper abbreviation, use it
             chrono_abbrev

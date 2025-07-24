@@ -89,7 +89,7 @@ fn parse_theme(s: &str) -> Result<config::ColorTheme, String> {
 fn main() -> Result<(), Box<dyn Error>> {
     // Set default locale
     rust_i18n::set_locale("en");
-    
+
     let cli = Cli::parse();
 
     if let Some(command) = cli.command {
@@ -337,17 +337,29 @@ fn handle_command(command: Commands) -> Result<(), Box<dyn Error>> {
                 println!("{}", t!("cli.zone.timezone", tz = tz));
                 println!("{}", t!("cli.zone.utc_offset", offset_hours = offset_hours));
                 if *lat >= 0.0 && *lon <= 0.0 {
-                    println!("{}", t!("cli.zone.coordinates_n_w", lat = lat, lon = lon.abs()));
+                    println!(
+                        "{}",
+                        t!("cli.zone.coordinates_n_w", lat = lat, lon = lon.abs())
+                    );
                 } else if *lat >= 0.0 && *lon > 0.0 {
                     println!("{}", t!("cli.zone.coordinates_n_e", lat = lat, lon = lon));
                 } else if *lat < 0.0 && *lon <= 0.0 {
-                    println!("{}", t!("cli.zone.coordinates_s_w", lat = lat.abs(), lon = lon.abs()));
+                    println!(
+                        "{}",
+                        t!("cli.zone.coordinates_s_w", lat = lat.abs(), lon = lon.abs())
+                    );
                 } else {
-                    println!("{}", t!("cli.zone.coordinates_s_e", lat = lat.abs(), lon = lon));
+                    println!(
+                        "{}",
+                        t!("cli.zone.coordinates_s_e", lat = lat.abs(), lon = lon)
+                    );
                 }
                 println!(
                     "{}",
-                    t!("cli.zone.current_time", time = local_time.format("%H:%M:%S %Z (%a, %b %d, %Y)"))
+                    t!(
+                        "cli.zone.current_time",
+                        time = local_time.format("%H:%M:%S %Z (%a, %b %d, %Y)")
+                    )
                 );
 
                 // Simple DST status (just show current offset)
@@ -383,7 +395,13 @@ fn create_app_with_options(cli: Cli) -> Result<App, Box<dyn Error>> {
                 app.selected_zone_index = app_index;
             }
         } else {
-            eprintln!("{}", t!("cli.timezone_not_found_warning", timezone_name = timezone_name));
+            eprintln!(
+                "{}",
+                t!(
+                    "cli.timezone_not_found_warning",
+                    timezone_name = timezone_name
+                )
+            );
         }
     }
 
